@@ -355,12 +355,12 @@ EnginePath TrainMonitor::engineOnSection(QString section)
 {
 	EnginePath engine;
 
-	for (auto it : m_engineList)
+	for (EnginePath itr : m_engineList)
 	{
-		if (it.getCurrentSection().getNode() == section)
+		if (itr.getCurrentSection().getNode() == section)
 		{
-			engine = it;
-			continue;
+			engine = itr;
+			break;
 		}
 	}
 
@@ -373,19 +373,19 @@ bool TrainMonitor::updateEnginePath(QString engine)
 	EnginePath path;
 
 	bool found = false;
-	for (auto it : m_engineList)
+	for (EnginePath itr : m_engineList)
 	{
-		if (it.getEngine() == engine)
+		if (itr.getEngine() == engine)
 		{
-			it.setCurrentSection(it.getNextSection1());
-			it.setNextSection1(it.getNextSection2());
-			it.setNextSection2(it.getNextSection3());
-			it.setNextSection3(it.getNextSection4());
-			it.setNextSection4(findNextSection(it.getNextSection3(),
-				it.getNextSection4()));
+			itr.setCurrentSection(itr.getNextSection1());
+			itr.setNextSection1(itr.getNextSection2());
+			itr.setNextSection2(itr.getNextSection3());
+			itr.setNextSection3(itr.getNextSection4());
+			itr.setNextSection4(findNextSection(itr.getNextSection3(),
+				itr.getNextSection4()));
 
 			found = true;
-			continue;
+			break;
 		}
 	}
 
