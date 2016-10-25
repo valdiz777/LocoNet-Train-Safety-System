@@ -542,7 +542,15 @@ QString LocoSerial::parse_B0(LocoPacket _packet) {
 	LocoByte _arg2 = _packet.get_locobyte(2);
 	bool _state = _arg2.get_qBitArray()[2];
 
-	QByteArray _adr;
+    int _swch = _arg1.get_decimal();
+    _swch++;
+
+    if((QString::compare(_arg2.get_hex(), "00", Qt::CaseInsensitive) && QString::compare(_arg2.get_hex(), "10", Qt::CaseInsensitive)) == 0)
+    _description.append(" The Switch: " + QString::number(_swch) + " is thrown ");
+    else
+    _description.append(" The Switch: " + QString::number(_swch) + " is closed ");
+
+    QByteArray _adr;
 	_adr.append(_arg2.get_hex().mid(1, 1)); // Load MS byte of address
 	_adr.append(_arg1.get_hex()); // Load LS 2 bytes of address
 
