@@ -54,7 +54,7 @@ void LocoSerial::do_writePacket(LocoPacket _packet)
 
 void LocoSerial::do_writeBytes(QByteArray _bytes)
 {
-	if (!usbBuffer) {
+    if (usbBuffer == NULL) {
 		return;
 	}
 	if (!usbBuffer->isOpen())
@@ -108,16 +108,15 @@ void LocoSerial::do_close()
 	usbBuffer->deleteLater();
 }
 
-bool LocoSerial::do_open(QSerialPortInfo _port)
+bool LocoSerial::do_open(QextPortInfo _port)
 {
-	usbBuffer = new QSerialPort;
+    usbBuffer = new QextSerialPort(_port.portName, QextSerialPort::EventDriven);;
 	usbBuffer->close();
-	usbBuffer->setPort(_port);
-	usbBuffer->setBaudRate(57600);
-	usbBuffer->setFlowControl(QSerialPort::HardwareControl);
+    usbBuffer->setBaudRate(BAUD57600);
+    usbBuffer->setFlowControl(FLOW_HARDWARE);
 
 	//usbBuffer->open(QIODevice::ReadWrite);
-	if (*debug) qDebug() << timeStamp() << "Serial Device being opened: " << _port.portName();
+    if (*debug) qDebug() << timeStamp() << "Serial Device being opened: " << _port.portName;
 	if (usbBuffer->open(QIODevice::ReadWrite)) //(usbBuffer->isOpen())
 	{
 		if (*debug) qDebug() << timeStamp() << "Serial port appears to have opened sucessfully.";

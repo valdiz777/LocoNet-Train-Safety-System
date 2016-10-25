@@ -9,8 +9,8 @@
 
 #include <QString>
 #include <QDebug>
-#include <QSerialPort>
-#include <QSerialPortInfo>
+#include "qextserialport.h"
+#include "qextserialenumerator.h"
 #include <QByteArray>
 #include <QTimer>
 #include <QTime>
@@ -46,14 +46,14 @@ signals:
 	void serialClosed();
 	void printPacketDesc(QString);
 	void occupancyDataReady(QString, bool);
-	//void delayWrite(QByteArray _bytes);
+    //void delayWrite(QByteArray _bytes);
 
 	public slots:
 	void do_writePacket(LocoPacket _packet);
 	void do_writeBytes(QByteArray _bytes);
 	void do_querySlot(LocoByte _slot);
 	void do_close();
-	bool do_open(QSerialPortInfo _port);
+    bool do_open(QextPortInfo _port);
 	void do_read();
 	QString parse(LocoPacket _packet);
 	void do_run();
@@ -97,14 +97,14 @@ protected:
 	protected slots:
 
 private:
-	QPointer<QSerialPort> usbBuffer;
+    QPointer<QextSerialPort> usbBuffer;
 	QPointer<QTimer> readTimer;
 	LocoPacket * incomingPacket;
 	LocoPacket * outgoingPacket;
 	bool * debug;
     int last_time;
-	//int * waitForReply;
-	//QVector<LocoPacket> * outgoingQueue;
+    //int * waitForReply;
+    //QVector<LocoPacket> * outgoingQueue;
 };
 
 #endif // LOCOSERIAL_H

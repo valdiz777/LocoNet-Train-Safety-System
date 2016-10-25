@@ -3,8 +3,7 @@
 
 #include <QMainWindow>
 #include <QtNetwork>
-#include <QSerialPort>
-#include <QSerialPortInfo>
+#include "qextserialenumerator.h"
 #include <QDebug>
 #include <QByteArray>
 #include <QVariant>
@@ -60,7 +59,7 @@ public:
 	void handle_DBclosed();
 
 signals:
-	void locoserial_open(QSerialPortInfo _device);
+    void locoserial_open(QextPortInfo _device);
 	void locoserial_write(LocoPacket outgoingPacket);
 	void locosql_open(QString hostname, int port, QString database, QString username, QString password);
 
@@ -68,7 +67,7 @@ private:
 	Ui::MainWindow *ui;
 	LocoPacket outgoingPacket;
 	LocoPacket incomingPacket;
-	QSerialPortInfo usbPorts;
+    QextPortInfo usbPorts;
 	LocoSerial * locoserial;
 	QThread threadSerial;
 	LocoSQL * locosql;

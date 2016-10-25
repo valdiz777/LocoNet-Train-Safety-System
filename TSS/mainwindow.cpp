@@ -232,13 +232,13 @@ void MainWindow::do_OPfromComboBox()
 
 void MainWindow::do_refreshSerialList()
 {
-	QList<QSerialPortInfo> _ports = usbPorts.availablePorts();
-	int _index = _ports.count();
+    int _index = 0;
 	ui->comboBox_serialList->clear();
-	for (int i = 0; i < _index; ++i)
-	{
-		ui->comboBox_serialList->insertItem(i, _ports.at(i).portName());
-		ui->textBrowser_console->append(_ports.at(i).portName());
+    foreach (QextPortInfo portInfo, QextSerialEnumerator::getPorts())
+    {
+        ui->comboBox_serialList->insertItem(_index, portInfo.portName);
+        ui->textBrowser_console->append(portInfo.portName);
+        _index++;
 	}
 }
 
@@ -298,7 +298,7 @@ void MainWindow::handle_serialClosed()
 void MainWindow::do_openSerial()
 {
 	int _portIndex = ui->comboBox_serialList->currentIndex();
-	QSerialPortInfo _device = usbPorts.availablePorts().at(_portIndex);
+    QextPortInfo _device = QextSerialEnumerator::getPorts().at(_portIndex);
 	emit locoserial_open(_device);
 }
 
