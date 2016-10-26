@@ -27,7 +27,7 @@ namespace std {
 // }
 
 namespace SwitchInfo{
-    enum class TURNOUT_STATE{thrown, closed, not_set};
+    enum class TURNOUT_STATE{not_set = 0, thrown = 1, closed = 2};
 }
 
 class Section
@@ -35,7 +35,7 @@ class Section
 
 public:
 	Section();
-    Section(int boardNum, int section, SwitchInfo::TURNOUT_STATE switchState, QString node, int numOfConns, QString conn1,
+    Section(int boardNum, int section, SwitchInfo::TURNOUT_STATE switchDirection, QString node, int numOfConns, QString conn1,
 		QString conn2, QString conn3, QString conn4);
 	~Section();
 
@@ -63,16 +63,18 @@ public:
 	//void setConn4( QString conn1 );
 	QString getConn4();
 
-	bool getSwitchDirection();
+    SwitchInfo::TURNOUT_STATE getSwitchDirection();
 
 	bool ConnectToMySQL();
+
+    QString Section::getSwitchDirectionString();
 
 	void GenerateSectionList();
 	void toggleSwitchDirectionLeft();
 	void toggleSwitchDirectionRight();
 	void setOccupancy(bool state);
 	bool getOccupancy();
-
+    QStringList TURNOUT_STATE_STRING = {"not_set", "thrown", "closed"};
 private:
     int m_boardNum;
     int m_section;
@@ -82,9 +84,9 @@ private:
 	QString m_conn2;
 	QString m_conn3;
 	QString m_conn4;
-	bool m_switchDirection;		// true for left; false for right
+    //bool m_switchDirection;		// true for left; false for right
 	bool m_occupancy;
-    SwitchInfo::TURNOUT_STATE m_switchState;
+    SwitchInfo::TURNOUT_STATE m_switchDirection;
 };
 
 #endif

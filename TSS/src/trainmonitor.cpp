@@ -323,7 +323,7 @@ Section TrainMonitor::findNextSection(Section previousSection,
 		{
 			if (currentSection.getConn1() == previousSection.getNode())
 			{
-				if (currentSection.getSwitchDirection())	// configured left
+                if (currentSection.getSwitchDirection() == SwitchInfo::TURNOUT_STATE::thrown)	// configured left, assuming left = thrown is this right?[vcn]
 				{
 					nextSection = retrieveSections(
 						currentSection.getConn2());

@@ -15,23 +15,22 @@ Section::Section()
 	m_conn2 = "";
 	m_conn3 = "";
 	m_conn4 = "";
-	m_switchDirection = true;		// true for left; false for right
+    m_switchDirection = SwitchInfo::TURNOUT_STATE::not_set;		// true for left; false for right
 	m_occupancy = false;
 }
 
-Section::Section(int boardNum, int section, SwitchInfo::TURNOUT_STATE switchState, QString Node, int NumOfConns,
+Section::Section(int boardNum, int section, SwitchInfo::TURNOUT_STATE switchDirection, QString Node, int NumOfConns,
 	QString Conn1, QString Conn2, QString Conn3, QString Conn4)
 {
     m_boardNum = boardNum;
     m_section = section;
-    m_switchState = switchState;
 	m_node = Node;
 	m_numOfConns = NumOfConns;
 	m_conn1 = Conn1;
 	m_conn2 = Conn2;
 	m_conn3 = Conn3;
 	m_conn4 = Conn4;
-	m_switchDirection = true;
+    m_switchDirection = switchDirection;
 	m_occupancy = false;
 }
 
@@ -133,11 +132,15 @@ QString Section::getConn4()
 
 }*/
 
-bool Section::getSwitchDirection()
+SwitchInfo::TURNOUT_STATE Section::getSwitchDirection()
 {
 	return m_switchDirection;
 }
 
+QString Section::getSwitchDirectionString()
+{
+    return TURNOUT_STATE_STRING[(int)m_switchDirection];
+}
 
 bool Section::ConnectToMySQL()
 {
@@ -152,7 +155,8 @@ void Section::toggleSwitchDirectionLeft()
 #pragma message("[MKJ] Look into updating all engine paths")
 	// When we do this, we must update all engine paths that contain this
 	// switch
-	m_switchDirection = true;
+    m_switchDirection = SwitchInfo::TURNOUT_STATE::thrown;
+     // emit signal to toggle turnout [vcn]
 }
 
 void Section::toggleSwitchDirectionRight()
@@ -160,7 +164,8 @@ void Section::toggleSwitchDirectionRight()
 #pragma message("[MKJ] Look into updating all engine paths")
 	// When we do this, we must update all engine paths that contain this
 	// switch
-	m_switchDirection = false;
+    m_switchDirection = SwitchInfo::TURNOUT_STATE::closed;
+    // emit signal to toggle turnout [vcn]
 }
 
 void Section::setOccupancy(bool state)
