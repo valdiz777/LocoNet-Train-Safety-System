@@ -26,20 +26,24 @@ namespace std {
 // 	};
 // }
 
+namespace SwitchInfo{
+    enum class TURNOUT_STATE{thrown, closed, not_set};
+}
+
 class Section
 {
 
 public:
 	Section();
-	Section(int x, int y, QString node, int numOfConns, QString conn1,
+    Section(int boardNum, int section, SwitchInfo::TURNOUT_STATE switchState, QString node, int numOfConns, QString conn1,
 		QString conn2, QString conn3, QString conn4);
 	~Section();
 
-	//void setX( int X );
-	int getX();
+    void setBoardNum( int boardNum );
+    int getBoardNum();
 
-	//void setY( int Y );
-	int getY();
+    void setSection( int section );
+    int getSection();
 
 	//void setNode( QString node );
 	QString getNode();
@@ -68,10 +72,10 @@ public:
 	void toggleSwitchDirectionRight();
 	void setOccupancy(bool state);
 	bool getOccupancy();
+
 private:
-	int m_x;
-	int m_y;
-	//TrackType::TrackType type;
+    int m_boardNum;
+    int m_section;
 	QString m_node;
 	int m_numOfConns;
 	QString m_conn1;
@@ -80,6 +84,7 @@ private:
 	QString m_conn4;
 	bool m_switchDirection;		// true for left; false for right
 	bool m_occupancy;
+    SwitchInfo::TURNOUT_STATE m_switchState;
 };
 
 #endif

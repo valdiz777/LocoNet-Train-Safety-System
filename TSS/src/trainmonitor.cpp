@@ -254,7 +254,8 @@ void TrainMonitor::generateSectionList()
 	}
 
 	QTextStream in(&infile);
-	int id, x, y, trackType;
+    int id, boardNum, section;
+    SwitchInfo::TURNOUT_STATE switchState;
 	QString node;
 	int numOfConns;
 	QString conn1, conn2, conn3, conn4;
@@ -265,9 +266,9 @@ void TrainMonitor::generateSectionList()
 
 		QStringList splitString = in.readLine().split(",");
 		id = splitString[0].toInt();
-		x = splitString[1].toInt();
-		y = splitString[2].toInt();
-		trackType = splitString[3].toInt();
+        boardNum = splitString[1].toInt();
+        section = splitString[2].toInt();
+        switchState = (splitString[3].toInt() == 1)? SwitchInfo::TURNOUT_STATE::thrown : (splitString[3].toInt() == 2)? SwitchInfo::TURNOUT_STATE::closed:SwitchInfo::TURNOUT_STATE::not_set;
 		node = splitString[4];
 		numOfConns = splitString[5].toInt();
 		conn1 = splitString[6];
@@ -276,7 +277,7 @@ void TrainMonitor::generateSectionList()
 		conn4 = splitString[9];
 		trackInfoId = splitString[10].toInt();
 
-		Section sec = Section(x, y, node, numOfConns, conn1, conn2,
+        Section sec = Section(boardNum, section, switchState, node, numOfConns, conn1, conn2,
 			conn3, conn4);
 		qDebug() << "SECTION:" << sec.getNode() << " CONN1:" << conn1 << ", CONN2:" << conn2;
 

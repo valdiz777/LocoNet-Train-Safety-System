@@ -7,8 +7,8 @@ Section::Section()
 {
 #pragma message("[MKJ] Clean up when everything is done")
 #pragma message("[MKJ] Look for things that would be useful in a log")
-	m_x = -1;
-	m_y = -1;
+    m_boardNum = -1;
+    m_section = -1;
 	m_node = "";
 	m_numOfConns = -1;
 	m_conn1 = "";
@@ -19,12 +19,12 @@ Section::Section()
 	m_occupancy = false;
 }
 
-Section::Section(int X, int Y, QString Node, int NumOfConns,
+Section::Section(int boardNum, int section, SwitchInfo::TURNOUT_STATE switchState, QString Node, int NumOfConns,
 	QString Conn1, QString Conn2, QString Conn3, QString Conn4)
 {
-	m_x = X;
-	m_y = Y;
-	//type = Type;
+    m_boardNum = boardNum;
+    m_section = section;
+    m_switchState = switchState;
 	m_node = Node;
 	m_numOfConns = NumOfConns;
 	m_conn1 = Conn1;
@@ -40,26 +40,25 @@ Section::~Section()
 
 }
 
-// CRUD for X
-/*void Section::setX( int X )
+void Section::setBoardNum( int boardNum )
 {
-
-}*/
-
-int Section::getX()
-{
-	return m_x;
+    m_boardNum = boardNum;
 }
 
-// CRUD for Y
-/*void Section::setY( int Y )
+int Section::getBoardNum()
 {
+    return m_boardNum;
+}
 
-}*/
 
-int Section::getY()
+void Section::setSection( int section )
 {
-	return m_y;
+    m_section = section;
+}
+
+int Section::getSection()
+{
+    return m_section;
 }
 
 // CRUD for Node
