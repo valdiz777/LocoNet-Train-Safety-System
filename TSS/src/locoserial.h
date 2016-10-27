@@ -39,14 +39,9 @@ signals:
 	void writtenPacket(LocoPacket);
 	void writtenBytes(QByteArray);
 	void droppedPacket();
-    //void trainUpdated(LocoTrain);
-    //void blockUpdated(LocoBlock);
-    //void switchUpdated(int _adr, bool _state);
 	void serialOpened();
 	void serialClosed();
 	void printPacketDesc(QString);
-    //void occupancyDataReady(QString, bool);
-    //void delayWrite(QByteArray _bytes);
 
 	public slots:
 	void do_writePacket(LocoPacket _packet);
@@ -65,6 +60,8 @@ signals:
 	void do_trackReset();
 	void do_trackOn();
 	void do_trackOff();
+    void do_closeTurnout(int locoTurnout);
+    void do_throwTurnout(int locoTurnout);
 
 protected:
 	void readTimerStop();

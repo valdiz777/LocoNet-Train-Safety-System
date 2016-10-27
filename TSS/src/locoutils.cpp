@@ -221,14 +221,12 @@ QString LocoUtils::parse_B0(LocoPacket _packet) {
     int _swch = _arg1.get_decimal();
     _swch++;
 
-    if((QString::compare(_arg2.get_hex(), "00", Qt::CaseInsensitive) && QString::compare(_arg2.get_hex(), "10", Qt::CaseInsensitive)) == 0)
+    if(!_state)
     {
         _description.append(" The Switch: " + QString::number(_swch) + " is thrown ");
-       _state = true;
     }
     else {
         _description.append(" The Switch: " + QString::number(_swch) + " is closed ");
-        _state = false;
     }
 
     QByteArray _adr;

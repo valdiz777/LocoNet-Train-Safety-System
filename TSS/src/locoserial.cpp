@@ -111,6 +111,8 @@ bool LocoSerial::do_open(QextPortInfo _port)
 		if (*debug) qDebug() << timeStamp() << "Serial port appears to have opened sucessfully.";
 		connect(usbBuffer, SIGNAL(readyRead()), this, SLOT(do_read()));
 		readTimerStart(20);
+        qDebug() << "TESTING SectionOFF HANDLER" << endl;
+        LocoUtils utils; utils.do_sectionOff(1,10);
 		emit serialOpened();
 		return(true);
 	}
@@ -191,8 +193,7 @@ void LocoSerial::do_trackOn()
 void LocoSerial::do_trackOff()
 {
 	LocoPacket _packet;
-	_packet.set_allFromHex("827D");
-	qDebug() << timeStamp() << " >>>TRACK OFF NOW!!!<<<";
+    _packet.set_allFromHex("827D");
 	do_writePacket(_packet);
 }
 
@@ -260,6 +261,30 @@ void LocoSerial::do_slotUse(LocoByte _slot)
 	_packet.do_appendLocoByte(_slot);
 	_packet.do_genChecksum();
 	do_writePacket(_packet);
+}
+
+void LocoSerial::do_closeTurnout(int locoTurnout)
+{
+    QString on = "B0" + QString::number( locoTurnout-1, 16 ) + "30";
+    QString off = "B0" + QString::number( locoTurnout-1, 16 ) + "20";
+    LocoPacket outputOn;
+    outputOn.set_allFromHex(on);
+    LocoPacket outputOff;
+    outputOff.set_allFromHex(off);
+    do_writePacket(outputOn);
+    do_writePacket(outputOff);
+}
+
+void LocoSerial::do_throwTurnout(int locoTurnout)
+{
+    QString on = "B0" + QString::number( locoTurnout-1, 16 ) + "10";
+    QString off = "B0" + QString::number( locoTurnout-1, 16 ) + "00";
+    LocoPacket outputOn;
+    outputOn.set_allFromHex(on);
+    LocoPacket outputOff;
+    outputOff.set_allFromHex(off);
+    do_writePacket(outputOn);
+    do_writePacket(outputOff);
 }
 
 
