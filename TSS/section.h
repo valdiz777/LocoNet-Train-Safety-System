@@ -8,7 +8,7 @@
 #include <iostream>
 #include <list>
 #include <vector>
-
+#include <utility>
 
 namespace std {
 	class Section;
@@ -68,6 +68,11 @@ public:
 	void toggleSwitchDirectionRight();
 	void setOccupancy(bool state);
 	bool getOccupancy();
+
+    bool getThrown();
+    void setThrown(bool thrown);
+    bool getThrownLeft();
+
 private:
 	int m_x;
 	int m_y;
@@ -78,7 +83,8 @@ private:
 	QString m_conn2;
 	QString m_conn3;
 	QString m_conn4;
-	bool m_switchDirection;		// true for left; false for right
+    bool m_thrown;		// true for left; false for right
+    bool m_thrownLeft;
 	bool m_occupancy;
 };
 

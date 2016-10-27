@@ -46,10 +46,11 @@ void TrainMonitor::do_handleOccupancy(QString section, bool state)
 	qDebug() << "New Occupancy Data at Monitor:" << section << " State:" << state;
 	Section monitoredSection = retrieveSections(section);
 	monitoredSection.setOccupancy(state);
-	if (state) Monitor(monitoredSection);
+    //if (state) Monitor(monitoredSection);
+    if (state) Monitor(section);
 }
 
-void TrainMonitor::Monitor(Section sec)
+void TrainMonitor::Monitor(QString section)
 {
 	//while (!m_engineSectionQueue.empty())
 	//{
@@ -58,164 +59,138 @@ void TrainMonitor::Monitor(Section sec)
 		//updateEnginePath(es.path.getEngine());
 
 #pragma message("[MKJ] Will nextSection1 be enough padding for a crash scenario?")
-		//Section monitorSection = es.path.getNextSection1();
+        //Section monitorSection = es.path.getNextSection1();
 
-		//switch (monitorSection.getNumOfConns())
-		//{
-		//case 1:		// Endpoint case
-		//{
-			//endpointMonitor(monitorSection);
-			//break;
-		//}
-		//case 2:		// Straight case
-		//{
-			//straightMonitor(monitorSection, es);
-	if (sec.getNumOfConns() == 1) {
-		endpointMonitor(sec);
-	}
-	else {
-		straightMonitor(sec);
-	}
-	//break;
-//}
-//case 3:		// Switch case
-//{
-	//switchMonitor(monitorSection, es);
-	//break;
-//}
-//case 4:		// Crossover case
-//{
-	//crossoverMonitor(monitorSection, es);
-	//break;
-//}
-//default:
-//{
-	//qFatal("Invalid track type");
-	//break;
-//}
-//}
-//}
+    Section currentSection = retrieveSections(section);
+
+    switch (currentSection.getNumOfConns())
+    {
+        case 1:		// Endpoint case
+        {
+            updateSingleConnList(currentSection);
+            endpointMonitor(currentSection);
+            break;
+        }
+        case 2:		// Straight case
+        {
+            updateDoubleConnList(currentSection);
+            straightMonitor(currentSection);
+            break;
+        }
+        case 3:		// Switch case
+        {
+            updateTripleConnList(currentSection);
+            switchMonitor(currentSection);
+            break;
+        }
+        case 4:		// Crossover case
+        {
+            updateQuadConnList(currentSection);
+            //crossoverMonitor(currentSection);
+            break;
+        }
+        default:
+        {
+            qFatal("Invalid track type");
+            break;
+        }
+    }
 }
 
 void TrainMonitor::endpointMonitor(Section sec)
 {
 	// Shutdown the section since the means the train is headed
-	// towards the end of the track
-	//qDebug() << "SECTION:" << sec.getNode() << "BYE BYE";
-
-	emit trackOff();
+    // towards the end of the track
+    for (auto section : sectionPairs)
+    {
+        if (sec.getNode() == section.second)
+        {
+            if(section.first != "")
+            {
+                emit trackOff();
+            }
+        }
+    }
 }
 
 void TrainMonitor::straightMonitor(Section sec)
 {
-	Section oneWay = retrieveSections(sec.getConn1());
-	Section theOtherWay = retrieveSections(sec.getConn2());
-	qDebug() << "SECTION:" << sec.getNode() << " CONN1:" << oneWay.getNode() << ", CONN2:" << theOtherWay.getNode();
+    QString nextSection;
+    bool found = false;
 
-	/*if (sec.getConn2() == "4-13") {
+    for (auto section : sectionPairs)
+    {
+        if(sec.getNode() == section.second)
+        {
+            nextSection = getNextStraightSection(
+                        retrieveSections(section.first), retrieveSections(section.second));
 
-		emit trackOff();
-	 }*/
-
-	 //Section check1;
-	 //Section check2;
-
-	 //if (sec.getConn1() == "1-11" || sec.getConn2() == "1-11") emit trackOff();
-
-	 /*if(oneWay.getConn1() == sec.getNode())
-	 {
-		 check1 = retrieveSections(oneWay.getConn2());
-
-		 //emit trackOff();
-	 }
-	 else
-	 {
-		 check1 = retrieveSections(oneWay.getConn1());
-		 //emit trackOff();
-	 }
-
-	 if(theOtherWay.getConn1() == sec.getNode())
-	 {
-		 check2 = retrieveSections(theOtherWay.getConn2());
-		// emit trackOff();
-	 }
-	 else
-	 {
-		 check2 = retrieveSections(theOtherWay.getConn1());
-		 //emit trackOff();
-	 }*/
-
-	 //qDebug() << "CHECK1_Occ:" << check1.getOccupancy() << " Check2_OCC:" << check2.getOccupancy();
-
-	 /*if( check1.getOccupancy() == true)
-	 {
-
-		 qDebug() << "EMITTING TRACK OFF. SHUT DOWN NOW";
-		 emit trackOff();
-	 }
-
-	 if( check2.getOccupancy() == true)
-	 {
-
-		 qDebug() << "EMITTING TRACK OFF. SHUT DOWN NOW";
-		 emit trackOff();
-	 }*/
-
-	if (oneWay.getOccupancy() == true || (retrieveSections(oneWay.getConn2()).getOccupancy() == true))
-	{
-
-		qDebug() << "EMITTING TRACK OFF. SHUT DOWN NOW";
-		emit trackOff();
-	}
-
-	if (theOtherWay.getOccupancy() == true || (retrieveSections(theOtherWay.getConn2()).getOccupancy() == true))
-	{
-
-		qDebug() << "EMITTING TRACK OFF. SHUT DOWN NOW";
-		emit trackOff();
-	}
+            found = true;
+        }
+    }
 
 
-	/*// Determine which track section is the one that must be checked
-	// for vacancy
-	QString sectionInQuestion;
-	if (sec.getConn1() == es.sec.getNode())
-	{
-		sectionInQuestion = sec.getConn2();
-	}
-	else
-	{
-		sectionInQuestion = sec.getConn1();
-	}
+    if(!found)
+    {
+        //QFatal << "Shit didn't work homie!!!";
+    }
 
-	// Determine which train is on the section in question. If there is
-	// none, a default EnginePath will be returned.
-	EnginePath ep;
-
-	// Check to see if there was an engine in the section that we need to
-	// be monitoring for a potential crash.
-	if (engineOnSection(sectionInQuestion).getEngine() != "")
-	{
-		// Check to see if the two trains are heading towards each other
-		// in a crash situation
-		if (es.path.getDirection() != engineOnSection(
-			sectionInQuestion).getDirection())
-		{
-			// Shutdown the piece of track that would see the crash (sec)
-			emit (trackOff());
-		}
-	}*/
+    for(auto section : sectionPairs)
+    {
+        if(nextSection == section.second)
+        {
+            emit trackOff();
+        }
+    }
 }
 
-void TrainMonitor::switchMonitor(Section sec, engineSection es)
+void TrainMonitor::switchMonitor(Section sec)
 {
+    QString monitorSection;
+    QString nextSection;
+    for (auto section : sectionPairs)
+    {
+        if(sec.getNode() == section.second)
+        {
+            nextSection = getNextStraightSection(
+                        retrieveSections(section.first), retrieveSections(section.second));
+        }
 
+        if(nextSection != "")
+        {
+            switch (retrieveSections(nextSection).getNumOfConns())
+            {
+                case 1:
+                    emit trackOff();
+                    break;
+                case 2:
+                    monitorSection = getNextStraightSection(
+                                retrieveSections(section.first), retrieveSections(nextSection));
+                    break;
+                case 3:
+                    monitorSection = getNextStraightSection(
+                                retrieveSections(section.second), retrieveSections(nextSection));
+                    break;
+                case 4:
+                    // TODO
+                    break;
+            }
+        }
+    }
+
+    for (auto section : sectionPairs)
+    {
+        if(section.second == monitorSection)
+        {
+            emit trackOff();
+        }
+    }
 }
 
-void TrainMonitor::crossoverMonitor(Section sec, engineSection es)
-{
+//void TrainMonitor::crossoverMonitor(Section sec, engineSection es)
+//{
 
-}
+//}
 
 Section TrainMonitor::retrieveSections(QString section)
 {
@@ -322,7 +297,7 @@ Section TrainMonitor::findNextSection(Section previousSection,
 		{
 			if (currentSection.getConn1() == previousSection.getNode())
 			{
-				if (currentSection.getSwitchDirection())	// configured left
+                if (currentSection.getThrownLeft())	// configured left
 				{
 					nextSection = retrieveSections(
 						currentSection.getConn2());
@@ -413,3 +388,133 @@ void TrainMonitor::toggleSwitchDirectionRight(QString section)
 	Section sec = retrieveSections(section);
 	sec.toggleSwitchDirectionRight();
 }
+
+/// Updates to an endpoint.....fix comment later
+void TrainMonitor::updateSingleConnList(Section current)
+{
+    bool found = false;
+    for(auto sec : sectionPairs)
+    {
+        if (sec.second == current.getConn1())
+        {
+            sec.first = sec.second;
+            sec.second = current.getNode();
+            found = true;
+        }
+    }
+
+    if(!found)
+    {
+        /// TODO
+//        std::pair<QString, QString> secPair=
+//                new std::pair<QString, QString>("", current.getNode());
+    }
+}
+
+/// Updates strait aways.....
+void TrainMonitor::updateDoubleConnList(Section current)
+{
+    bool found = false;
+    for(auto sec : sectionPairs)
+    {
+        if (sec.second == current.getConn1() ||
+                sec.second == current.getConn2())
+        {
+            sec.first = sec.second;
+            sec.second = current.getNode();
+            found = true;
+        }
+    }
+
+    if(!found)
+    {
+//        std::pair<QString, QString> =
+//                new std::pair<QString, QString>(, current.getNode())
+    }
+}
+
+/// Updates switches.....
+void TrainMonitor::updateTripleConnList(Section current)
+{
+    bool found = false;
+    for(auto sec : sectionPairs)
+    {
+        if (sec.second == current.getConn1() ||
+                sec.second == current.getConn2() ||
+                sec.second == current.getConn3())
+        {
+            sec.first = sec.second;
+            sec.second = current.getNode();
+            found = true;
+        }
+    }
+
+    if(!found)
+    {
+//        std::pair<QString, QString> =
+//                new std::pair<QString, QString>(, current.getNode())
+    }
+}
+
+/// Updates Crossovers....
+void TrainMonitor::updateQuadConnList(Section current)
+{
+    // TODO
+}
+
+QString TrainMonitor::getNextStraightSection(Section previous, Section current)
+{
+    QString nextSection;
+    if(previous.getNode() == current.getConn1())
+    {
+        nextSection = current.getConn2();
+    }
+    else
+    {
+        nextSection = current.getConn1();
+    }
+
+    return nextSection;
+}
+
+QString TrainMonitor::getNextSwitchSection(Section previous, Section current)
+{
+    QString nextSection;
+
+    if(previous.getNode() == current.getConn2() ||
+            previous.getNode() == current.getConn3())
+    {
+        nextSection = current.getConn1();
+    }
+    else
+    {
+        if(!current.getThrownLeft())
+        {
+            if(current.getThrown())
+            {
+                nextSection = current.getConn3();
+            }
+            else
+            {
+                nextSection = current.getConn2();
+            }
+        }
+        else
+        {
+            if(current.getThrown())
+            {
+                nextSection = current.getConn2();
+            }
+            else
+            {
+                nextSection = current.getConn3();
+            }
+        }
+    }
+
+    return nextSection;
+}
+
+
+
+

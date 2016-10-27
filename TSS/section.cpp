@@ -15,7 +15,7 @@ Section::Section()
 	m_conn2 = "";
 	m_conn3 = "";
 	m_conn4 = "";
-	m_switchDirection = true;		// true for left; false for right
+    m_thrown = true;		// true for left; false for right
 	m_occupancy = false;
 }
 
@@ -31,7 +31,7 @@ Section::Section(int X, int Y, QString Node, int NumOfConns,
 	m_conn2 = Conn2;
 	m_conn3 = Conn3;
 	m_conn4 = Conn4;
-	m_switchDirection = true;
+    m_thrown = true;
 	m_occupancy = false;
 }
 
@@ -134,11 +134,25 @@ QString Section::getConn4()
 
 }*/
 
-bool Section::getSwitchDirection()
+bool getSwitchDirection()
 {
-	return m_switchDirection;
+    return false;
 }
 
+bool Section::getThrown()
+{
+    return m_thrown;
+}
+
+bool Section::getThrownLeft()
+{
+    return m_thrownLeft;
+}
+
+void Section::setThrown(bool thrown)
+{
+    m_thrown = thrown;
+}
 
 bool Section::ConnectToMySQL()
 {
@@ -153,15 +167,15 @@ void Section::toggleSwitchDirectionLeft()
 #pragma message("[MKJ] Look into updating all engine paths")
 	// When we do this, we must update all engine paths that contain this
 	// switch
-	m_switchDirection = true;
+    m_thrown = true;
 }
 
 void Section::toggleSwitchDirectionRight()
 {
 #pragma message("[MKJ] Look into updating all engine paths")
 	// When we do this, we must update all engine paths that contain this
-	// switch
-	m_switchDirection = false;
+    // switch
+    m_thrown = false;
 }
 
 void Section::setOccupancy(bool state)
