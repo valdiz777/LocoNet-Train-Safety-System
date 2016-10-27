@@ -7,30 +7,47 @@ Section::Section()
 {
 #pragma message("[MKJ] Clean up when everything is done")
 #pragma message("[MKJ] Look for things that would be useful in a log")
-    m_boardNum = -1;
-    m_section = -1;
+	m_x = -1;
+	m_y = -1;
 	m_node = "";
 	m_numOfConns = -1;
 	m_conn1 = "";
 	m_conn2 = "";
 	m_conn3 = "";
 	m_conn4 = "";
-    m_switchDirection = SwitchInfo::TURNOUT_STATE::not_set;		// true for left; false for right
+<<<<<<< HEAD
+<<<<<<< HEAD
+    m_switchDirection = switchinfo::TURNOUT_STATE::not_set;		// true for left; false for right
 	m_occupancy = false;
 }
 
-Section::Section(int boardNum, int section, SwitchInfo::TURNOUT_STATE switchDirection, QString Node, int NumOfConns,
+Section::Section(int boardNum, int section, switchinfo::TURNOUT_STATE switchDirection, QString Node, int NumOfConns,
+=======
+    m_thrown = true;		// true for left; false for right
+	m_occupancy = false;
+}
+
+Section::Section(int X, int Y, QString Node, int NumOfConns,
+>>>>>>> afa02037edc3cc22573e9ae6713e4101fcb7aa44
+=======
+    m_thrown = true;		// true for left; false for right
+	m_occupancy = false;
+}
+
+Section::Section(int X, int Y, QString Node, int NumOfConns,
+>>>>>>> afa02037edc3cc22573e9ae6713e4101fcb7aa44
 	QString Conn1, QString Conn2, QString Conn3, QString Conn4)
 {
-    m_boardNum = boardNum;
-    m_section = section;
+	m_x = X;
+	m_y = Y;
+	//type = Type;
 	m_node = Node;
 	m_numOfConns = NumOfConns;
 	m_conn1 = Conn1;
 	m_conn2 = Conn2;
 	m_conn3 = Conn3;
 	m_conn4 = Conn4;
-    m_switchDirection = switchDirection;
+    m_thrown = true;
 	m_occupancy = false;
 }
 
@@ -39,25 +56,26 @@ Section::~Section()
 
 }
 
-void Section::setBoardNum( int boardNum )
+// CRUD for X
+/*void Section::setX( int X )
 {
-    m_boardNum = boardNum;
+
+}*/
+
+int Section::getX()
+{
+	return m_x;
 }
 
-int Section::getBoardNum()
+// CRUD for Y
+/*void Section::setY( int Y )
 {
-    return m_boardNum;
-}
 
+}*/
 
-void Section::setSection( int section )
+int Section::getY()
 {
-    m_section = section;
-}
-
-int Section::getSection()
-{
-    return m_section;
+	return m_y;
 }
 
 // CRUD for Node
@@ -132,14 +150,48 @@ QString Section::getConn4()
 
 }*/
 
-SwitchInfo::TURNOUT_STATE Section::getSwitchDirection()
+<<<<<<< HEAD
+<<<<<<< HEAD
+switchinfo::TURNOUT_STATE Section::getSwitchDirection()
+=======
+bool getSwitchDirection()
+>>>>>>> afa02037edc3cc22573e9ae6713e4101fcb7aa44
 {
-	return m_switchDirection;
+    return false;
 }
 
-QString Section::getSwitchDirectionString()
+bool Section::getThrown()
 {
-    return TURNOUT_STATE_STRING[(int)m_switchDirection];
+    return m_thrown;
+}
+
+bool Section::getThrownLeft()
+{
+    return m_thrownLeft;
+}
+
+void Section::setThrown(bool thrown)
+{
+=======
+bool getSwitchDirection()
+{
+    return false;
+}
+
+bool Section::getThrown()
+{
+    return m_thrown;
+}
+
+bool Section::getThrownLeft()
+{
+    return m_thrownLeft;
+}
+
+void Section::setThrown(bool thrown)
+{
+>>>>>>> afa02037edc3cc22573e9ae6713e4101fcb7aa44
+    m_thrown = thrown;
 }
 
 bool Section::ConnectToMySQL()
@@ -155,17 +207,35 @@ void Section::toggleSwitchDirectionLeft()
 #pragma message("[MKJ] Look into updating all engine paths")
 	// When we do this, we must update all engine paths that contain this
 	// switch
-    m_switchDirection = SwitchInfo::TURNOUT_STATE::thrown;
+<<<<<<< HEAD
+<<<<<<< HEAD
+    m_switchDirection = switchinfo::TURNOUT_STATE::thrown;
      // emit signal to toggle turnout [vcn]
+=======
+    m_thrown = true;
+>>>>>>> afa02037edc3cc22573e9ae6713e4101fcb7aa44
+=======
+    m_thrown = true;
+>>>>>>> afa02037edc3cc22573e9ae6713e4101fcb7aa44
 }
 
 void Section::toggleSwitchDirectionRight()
 {
 #pragma message("[MKJ] Look into updating all engine paths")
 	// When we do this, we must update all engine paths that contain this
+<<<<<<< HEAD
+<<<<<<< HEAD
 	// switch
-    m_switchDirection = SwitchInfo::TURNOUT_STATE::closed;
+    m_switchDirection = switchinfo::TURNOUT_STATE::closed;
     // emit signal to toggle turnout [vcn]
+=======
+    // switch
+    m_thrown = false;
+>>>>>>> afa02037edc3cc22573e9ae6713e4101fcb7aa44
+=======
+    // switch
+    m_thrown = false;
+>>>>>>> afa02037edc3cc22573e9ae6713e4101fcb7aa44
 }
 
 void Section::setOccupancy(bool state)

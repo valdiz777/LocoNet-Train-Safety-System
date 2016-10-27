@@ -5,7 +5,7 @@
  * tss - "Train Safety System"
  * Prevent train collisions in digitrax HO model
  * Multithreaded program that provides an anti-collision safety system for Loco trains for uah's train safety system lab.
- * Valentine Nwachukwu [valdiz777@gmail.com], Richard Oteri [ruo0001@uah.edu]
+ * Valentine Nwachukwu [valdiz777@gmail.com], Richard Oteri [ruo0001@uah.edu], Michael Jones [mkj0002@uah.edu], Adam Cowell [adam.a.colwell@gmail.com]
  *
  * License: I've tried hard not to step on any copyrights associated with Digitrax code,
  * don't sue me please.
@@ -49,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	locoudp->moveToThread(&threadUDP);
 	trainmonitor = new TrainMonitor;
 	trainmonitor->moveToThread(&threadMonitor);
-
+    locoutils = new LocoUtils;
 	outgoingPacket.clear();
 
 	ui->lineEdit_opcode->setInputMask("hh");
@@ -83,9 +83,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(locoserial, &LocoSerial::printPacketDesc, this, &MainWindow::do_printDescriptions); // QT-5 style works
 	connect(locoserial, &LocoSerial::serialOpened, this, &MainWindow::handle_serialOpened);
 	connect(locoserial, &LocoSerial::serialClosed, this, &MainWindow::handle_serialClosed);
-	connect(locoserial, &LocoSerial::blockUpdated, locosql, &LocoSQL::do_updateBlock);
-	connect(locoserial, &LocoSerial::trainUpdated, locosql, &LocoSQL::do_updateTrain);
-	connect(&threadSerial, &QThread::finished, locoserial, &QObject::deleteLater);
+    connect(&threadSerial, &QThread::finished, locoserial, &QObject::deleteLater);
 	// Handle Initializing from Sig/Slot
 	//connect(ui->pushButton_thread_beginSerial, SIGNAL(clicked()), locoserial, SLOT(do_run()));
 	//connect(ui->pushButton_thread_beginSerial, SIGNAL(clicked(bool)), ui->pushButton_thread_beginSerial, SLOT(setEnabled(bool)));
@@ -109,7 +107,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	//connect(ui->pushButton_thread_beginSQL, SIGNAL(clicked(bool)), ui->pushButton_thread_beginSQL, SLOT(setEnabled(bool)));
 
 	// TrainMonitor
-	connect(locoserial, &LocoSerial::occupancyDataReady, trainmonitor, &TrainMonitor::do_handleOccupancy);
 	connect(trainmonitor, &TrainMonitor::slotScan, locoserial, &LocoSerial::do_slotScan);
 	connect(trainmonitor, &TrainMonitor::slotDispatch, locoserial, &LocoSerial::do_slotDispatch);
 	connect(trainmonitor, &TrainMonitor::slotReq, locoserial, &LocoSerial::do_slotReq);
@@ -118,7 +115,17 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(trainmonitor, &TrainMonitor::trackReset, locoserial, &LocoSerial::do_trackReset);
 	connect(trainmonitor, &TrainMonitor::trackOn, locoserial, &LocoSerial::do_trackOn);
 	connect(trainmonitor, &TrainMonitor::trackOff, locoserial, &LocoSerial::do_trackOff);
+    connect(trainmonitor, &TrainMonitor::sectionOff, locoutils, &LocoUtils::do_sectionOff);
+    connect(trainmonitor, &TrainMonitor::sectionOn, locoutils, &LocoUtils::do_sectionOn);
 	connect(&threadMonitor, &QThread::finished, trainmonitor, &QObject::deleteLater);
+
+    // LocoUtils
+    connect(locoutils, &LocoUtils::trainUpdated, locosql, &LocoSQL::do_updateTrain);
+    connect(locoutils, &LocoUtils::blockUpdated, locosql, &LocoSQL::do_updateBlock);
+    connect(locoutils, &LocoUtils::occupancyDataReady, trainmonitor, &TrainMonitor::do_handleOccupancy);
+    connect(locoutils, &LocoUtils::querySlot, locoserial, &LocoSerial::do_querySlot);
+
+    // Kickstart threads
 
 	// Kickstart threads
 	threadSerial.start();

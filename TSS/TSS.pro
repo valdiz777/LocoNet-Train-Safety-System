@@ -31,20 +31,22 @@ SOURCES += src/main.cpp\
     src/section.cpp \
     src/trainmonitor.cpp \
     src/enginepath.cpp \
-    src/log.cpp
+    src/log.cpp \
+    src/locoutils.cpp
 
 HEADERS  += src/mainwindow.h \
         src/locopacket.h \
     src/locobyte.h \
     src/locotrain.h \
     src/locoblock.h \
-    src/locoserial.h \
     src/locosql.h \
     src/locoudp.h \
     src/section.h \
     src/enginepath.h \
     src/trainmonitor.h \
-    src/log.h
+    src/log.h \
+    src/locoserial.h \
+    src/locoutils.h
 
 FORMS    += src/mainwindow.ui
 

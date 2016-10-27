@@ -37,9 +37,16 @@ public:
 	~TrainMonitor();
 	void startMonitor();
 	void stopMonitor();
-	void Monitor(Section monitorSection);
+    void Monitor(QString monitorSection);
 	void addEngineSectionToQueue(EnginePath Path, Section section);
-
+    void updateSingleConnList(Section current);
+    void updateDoubleConnList(Section current);
+    void updateTripleConnList(Section current);
+    void updateQuadConnList(Section current);
+    //void straightMonitor(Section sec);
+    QString getNextStraightSection(Section previous, Section current);
+    QString getNextSwitchSection(Section previous, Section current);
+    QString getNextEndpointSection(Section previous, Section current);
 	public slots:
 	void do_run();
 	void do_handleOccupancy(QString sec, bool state);
@@ -53,6 +60,8 @@ signals:
 	void trackReset();
 	void trackOn();
 	void trackOff();
+    void sectionOff(int boardNum, int section);
+    void sectionOn(int boardNum, int section);
 
 protected:
 
@@ -61,11 +70,12 @@ private:
 	//~TrainMonitor();
 	void endpointMonitor(Section sec);
 	//void straightMonitor(Section sec, engineSection es);
-	void straightMonitor(Section sec);
-	void switchMonitor(Section sec, engineSection es);
-	void crossoverMonitor(Section sec, engineSection es);
+    void straightMonitor(Section sec);
+    void switchMonitor(Section sec);
+    void crossoverMonitor(Section sec);
+    QList<std::pair<QString, QString>> sectionPairs; // First QString = lastSection, Second = currentSection
 
-	bool running;
+    bool running;
 	QQueue<engineSection> m_engineSectionQueue;
 	void generateSectionList();
 	Section retrieveSections(QString section);
