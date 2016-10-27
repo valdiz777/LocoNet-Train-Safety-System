@@ -406,8 +406,9 @@ void TrainMonitor::updateSingleConnList(Section current)
     if(!found)
     {
         /// TODO
-//        std::pair<QString, QString> secPair=
-//                new std::pair<QString, QString>("", current.getNode());
+        std::pair<QString, QString> secPair=
+                new std::pair<QString, QString>("", current.getNode());
+        sectionPairs.push_back(secPair);
     }
 }
 
@@ -428,8 +429,10 @@ void TrainMonitor::updateDoubleConnList(Section current)
 
     if(!found)
     {
-//        std::pair<QString, QString> =
-//                new std::pair<QString, QString>(, current.getNode())
+        /// TODO
+        std::pair<QString, QString> secPair=
+                new std::pair<QString, QString>("", current.getNode());
+        sectionPairs.push_back(secPair);
     }
 }
 
@@ -450,10 +453,13 @@ void TrainMonitor::updateTripleConnList(Section current)
     }
 
     if(!found)
-    {
-//        std::pair<QString, QString> =
-//                new std::pair<QString, QString>(, current.getNode())
-    }
+        if(!found)
+        {
+            /// TODO
+            std::pair<QString, QString> secPair=
+                    new std::pair<QString, QString>("", current.getNode());
+            sectionPairs.push_back(secPair);
+        }
 }
 
 /// Updates Crossovers....
