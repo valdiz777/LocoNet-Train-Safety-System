@@ -215,19 +215,20 @@ QString LocoUtils::parse_B0(LocoPacket _packet) {
     QString _description = "B0:";
     LocoByte _arg1 = _packet.get_locobyte(1);
     LocoByte _arg2 = _packet.get_locobyte(2);
-    //bool _state = _arg2.get_qBitArray()[2];
-    switchinfo::TURNOUT_STATE _switchState = switchinfo::TURNOUT_STATE::not_set;
+    bool _state = _arg2.get_qBitArray()[2];
+
 
     int _swch = _arg1.get_decimal();
     _swch++;
 
-    if((QString::compare(_arg2.get_hex(), "00", Qt::CaseInsensitive) && QString::compare(_arg2.get_hex(), "10", Qt::CaseInsensitive)) == 0) {
+    if((QString::compare(_arg2.get_hex(), "00", Qt::CaseInsensitive) && QString::compare(_arg2.get_hex(), "10", Qt::CaseInsensitive)) == 0)
+    {
         _description.append(" The Switch: " + QString::number(_swch) + " is thrown ");
-        _switchState = switchinfo::TURNOUT_STATE::thrown;
+       _state = true;
     }
     else {
         _description.append(" The Switch: " + QString::number(_swch) + " is closed ");
-        _switchState = switchinfo::TURNOUT_STATE::closed;
+        _state = false;
     }
 
     QByteArray _adr;
@@ -235,7 +236,7 @@ QString LocoUtils::parse_B0(LocoPacket _packet) {
     _adr.append(_arg1.get_hex()); // Load LS 2 bytes of address
 
     LocoUtils emitter;
-    emitter.switchUpdated(_swch, _switchState);
+    emitter.switchUpdated(_swch, _state);
     return(_description);
 }
 

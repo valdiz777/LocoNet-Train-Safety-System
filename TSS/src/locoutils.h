@@ -60,7 +60,7 @@ public slots:
 signals:
     void trainUpdated(LocoTrain);
     void blockUpdated(LocoBlock);
-    void switchUpdated(int _adr, switchinfo::TURNOUT_STATE _switchState);
+    void switchUpdated(int _adr, bool _state);
     void occupancyDataReady(QString, bool);
     void querySlot(LocoByte _arg);
 };

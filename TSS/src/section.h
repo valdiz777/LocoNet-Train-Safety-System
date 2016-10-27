@@ -26,25 +26,21 @@ namespace std {
 // 	};
 // }
 
-
-namespace switchinfo{
-    enum class TURNOUT_STATE{not_set = 0, thrown = 1, closed = 2};
-}
-
 class Section
 {
 
 public:
 	Section();
-    Section(int boardNum, int section, switchinfo::TURNOUT_STATE switchDirection, QString node, int numOfConns, QString conn1,
+	Section(int x, int y, QString node, int numOfConns, QString conn1,
+
 		QString conn2, QString conn3, QString conn4);
 	~Section();
 
-	//void setX( int X );
-    int getBoardNum();
+    //void setX( int X );
+	int getX();
 
 	//void setY( int Y );
-    int getSection();
+    int getY();
 
 	//void setNode( QString node );
 	QString getNode();
@@ -64,7 +60,7 @@ public:
 	//void setConn4( QString conn1 );
 	QString getConn4();
 
-    switchinfo::TURNOUT_STATE getSwitchDirection();
+	bool getSwitchDirection();
 
 	bool ConnectToMySQL();
 
@@ -91,7 +87,6 @@ private:
     bool m_thrown;		// true for left; false for right
     bool m_thrownLeft;
 	bool m_occupancy;
-    switchinfo::TURNOUT_STATE m_switchDirection;
 };
 
 #endif

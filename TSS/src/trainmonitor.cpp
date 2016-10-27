@@ -229,16 +229,7 @@ void TrainMonitor::generateSectionList()
 	}
 
 	QTextStream in(&infile);
-<<<<<<< HEAD
-<<<<<<< HEAD
-    int id, boardNum, section;
-    switchinfo::TURNOUT_STATE switchState;
-=======
 	int id, x, y, trackType;
->>>>>>> afa02037edc3cc22573e9ae6713e4101fcb7aa44
-=======
-	int id, x, y, trackType;
->>>>>>> afa02037edc3cc22573e9ae6713e4101fcb7aa44
 	QString node;
 	int numOfConns;
 	QString conn1, conn2, conn3, conn4;
@@ -249,21 +240,9 @@ void TrainMonitor::generateSectionList()
 
 		QStringList splitString = in.readLine().split(",");
 		id = splitString[0].toInt();
-<<<<<<< HEAD
-<<<<<<< HEAD
-        boardNum = splitString[1].toInt();
-        section = splitString[2].toInt();
-        switchState = (splitString[3].toInt() == 1)? switchinfo::TURNOUT_STATE::thrown : (splitString[3].toInt() == 2)? switchinfo::TURNOUT_STATE::closed:switchinfo::TURNOUT_STATE::not_set;
-=======
 		x = splitString[1].toInt();
 		y = splitString[2].toInt();
 		trackType = splitString[3].toInt();
->>>>>>> afa02037edc3cc22573e9ae6713e4101fcb7aa44
-=======
-		x = splitString[1].toInt();
-		y = splitString[2].toInt();
-		trackType = splitString[3].toInt();
->>>>>>> afa02037edc3cc22573e9ae6713e4101fcb7aa44
 		node = splitString[4];
 		numOfConns = splitString[5].toInt();
 		conn1 = splitString[6];
@@ -318,15 +297,7 @@ Section TrainMonitor::findNextSection(Section previousSection,
 		{
 			if (currentSection.getConn1() == previousSection.getNode())
 			{
-<<<<<<< HEAD
-<<<<<<< HEAD
-                if (currentSection.getSwitchDirection() == switchinfo::TURNOUT_STATE::thrown)	// configured left, assuming left = thrown is this right?[vcn]
-=======
                 if (currentSection.getThrownLeft())	// configured left
->>>>>>> afa02037edc3cc22573e9ae6713e4101fcb7aa44
-=======
-                if (currentSection.getThrownLeft())	// configured left
->>>>>>> afa02037edc3cc22573e9ae6713e4101fcb7aa44
 				{
 					nextSection = retrieveSections(
 						currentSection.getConn2());

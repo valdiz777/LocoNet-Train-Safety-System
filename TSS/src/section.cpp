@@ -15,27 +15,11 @@ Section::Section()
 	m_conn2 = "";
 	m_conn3 = "";
 	m_conn4 = "";
-<<<<<<< HEAD
-<<<<<<< HEAD
-    m_switchDirection = switchinfo::TURNOUT_STATE::not_set;		// true for left; false for right
-	m_occupancy = false;
-}
-
-Section::Section(int boardNum, int section, switchinfo::TURNOUT_STATE switchDirection, QString Node, int NumOfConns,
-=======
     m_thrown = true;		// true for left; false for right
 	m_occupancy = false;
 }
 
 Section::Section(int X, int Y, QString Node, int NumOfConns,
->>>>>>> afa02037edc3cc22573e9ae6713e4101fcb7aa44
-=======
-    m_thrown = true;		// true for left; false for right
-	m_occupancy = false;
-}
-
-Section::Section(int X, int Y, QString Node, int NumOfConns,
->>>>>>> afa02037edc3cc22573e9ae6713e4101fcb7aa44
 	QString Conn1, QString Conn2, QString Conn3, QString Conn4)
 {
 	m_x = X;
@@ -150,29 +134,7 @@ QString Section::getConn4()
 
 }*/
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-switchinfo::TURNOUT_STATE Section::getSwitchDirection()
-=======
-bool getSwitchDirection()
->>>>>>> afa02037edc3cc22573e9ae6713e4101fcb7aa44
-{
-    return false;
-}
 
-bool Section::getThrown()
-{
-    return m_thrown;
-}
-
-bool Section::getThrownLeft()
-{
-    return m_thrownLeft;
-}
-
-void Section::setThrown(bool thrown)
-{
-=======
 bool getSwitchDirection()
 {
     return false;
@@ -190,7 +152,6 @@ bool Section::getThrownLeft()
 
 void Section::setThrown(bool thrown)
 {
->>>>>>> afa02037edc3cc22573e9ae6713e4101fcb7aa44
     m_thrown = thrown;
 }
 
@@ -207,35 +168,15 @@ void Section::toggleSwitchDirectionLeft()
 #pragma message("[MKJ] Look into updating all engine paths")
 	// When we do this, we must update all engine paths that contain this
 	// switch
-<<<<<<< HEAD
-<<<<<<< HEAD
-    m_switchDirection = switchinfo::TURNOUT_STATE::thrown;
-     // emit signal to toggle turnout [vcn]
-=======
     m_thrown = true;
->>>>>>> afa02037edc3cc22573e9ae6713e4101fcb7aa44
-=======
-    m_thrown = true;
->>>>>>> afa02037edc3cc22573e9ae6713e4101fcb7aa44
 }
 
 void Section::toggleSwitchDirectionRight()
 {
 #pragma message("[MKJ] Look into updating all engine paths")
 	// When we do this, we must update all engine paths that contain this
-<<<<<<< HEAD
-<<<<<<< HEAD
-	// switch
-    m_switchDirection = switchinfo::TURNOUT_STATE::closed;
-    // emit signal to toggle turnout [vcn]
-=======
     // switch
     m_thrown = false;
->>>>>>> afa02037edc3cc22573e9ae6713e4101fcb7aa44
-=======
-    // switch
-    m_thrown = false;
->>>>>>> afa02037edc3cc22573e9ae6713e4101fcb7aa44
 }
 
 void Section::setOccupancy(bool state)
