@@ -113,6 +113,7 @@ bool LocoSerial::do_open(QextPortInfo _port)
 		readTimerStart(20);
         qDebug() << "TESTING SectionOFF HANDLER" << endl;
         LocoUtils utils; utils.do_sectionOff(1,10);
+        //LocoUtils utils; utils.do_sectionOn(1,10);
 		emit serialOpened();
 		return(true);
 	}

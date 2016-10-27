@@ -297,7 +297,7 @@ void LocoUtils::do_sectionOff(int boardNum, int section)
     }
 
     }
-    QString _echocmd = "echo " + QString::number(boardNum)+ QString(QChar(TO_HEX(section)))+"0";
+    QString _echocmd = "echo " + QString::number(boardNum)+ QString(QChar(TO_HEX(section-1)))+"0";
 
     // Send message
     echo.setStandardOutputProcess(&netcat);
@@ -351,7 +351,7 @@ void LocoUtils::do_sectionOn(int boardNum, int section)
     }
 
     }
-    QString _echocmd = "echo " + QString::number(boardNum)+ QString(QChar(TO_HEX(section)))+"1";
+    QString _echocmd = "echo " + QString::number(boardNum)+ QString(QChar(TO_HEX(section-1)))+"1";
 
     // Send message
     echo.setStandardOutputProcess(&netcat);
