@@ -199,6 +199,7 @@ QString LocoUtils::parse_B2(LocoPacket _packet)
     LocoUtils emitter;
 
     emitter.blockUpdated(_newBlock);
+    qDebug() << "emitting occupancyDataReady" << endl;
     emitter.occupancyDataReady(trackSection, _occupied);
     return(_description);
 }
