@@ -20,7 +20,8 @@ Section::Section()
 }
 
 Section::Section(int boardNum, int section, QString Node, int NumOfConns,
-	QString Conn1, QString Conn2, QString Conn3, QString Conn4)
+    QString Conn1, QString Conn2, QString Conn3, QString Conn4,
+    bool LTNum)
 {
     m_boardNum = boardNum;
     m_section = section;
@@ -33,6 +34,7 @@ Section::Section(int boardNum, int section, QString Node, int NumOfConns,
 	m_conn4 = Conn4;
     m_thrown = true;
 	m_occupancy = false;
+    m_LTNum = LTNum;
 }
 
 Section::~Section()
@@ -187,5 +189,10 @@ void Section::setOccupancy(bool state)
 bool Section::getOccupancy()
 {
 	return m_occupancy;
+}
+
+bool Section::getLTNum()
+{
+    return m_LTNum;
 }
 

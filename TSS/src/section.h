@@ -77,6 +77,7 @@ public:
     bool getThrown();
     void setThrown(bool thrown);
     bool getThrownLeft();
+    bool getLTNum();
 
 private:
     int m_boardNum;
@@ -91,6 +92,7 @@ private:
     bool m_thrown;		// true for left; false for right
     bool m_thrownLeft;
 	bool m_occupancy;
+    bool m_LTNum;
 };
 
 #endif

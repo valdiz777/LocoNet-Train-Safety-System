@@ -521,6 +521,23 @@ QString TrainMonitor::getNextSwitchSection(Section previous, Section current)
     return nextSection;
 }
 
+void TrainMonitor::do_handleSwitch(QString LT, bool closed)
+{
+    for(auto section : m_sectionList)
+    {
+        if(section.getLTNum() )
+        {
+            if(closed)
+            {
+                section.setThrown(false);
+            }
+            else
+            {
+                section.setThrown(true);
+            }
+        }
+    }
+}
 
 
 
