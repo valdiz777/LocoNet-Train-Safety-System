@@ -1,5 +1,4 @@
 #include "trainmonitor.h"
-#include "enginepath.h"
 #include <QFile>
 #include <QDir>
 #include <QTextStream>
@@ -21,26 +20,6 @@ void TrainMonitor::do_run() {
 	generateSectionList();
 }
 
-
-/*TrainMonitor TrainMonitor::getInstance()
-{
-	static TrainMonitor ret;
-	return ret;
-}*/
-
-// For sure, we will need an engine path and a section to perform the
-// safety algorithm. We may need to parse a string to get both of these
-// pieces of information or we may be provided it.
-void TrainMonitor::addEngineSectionToQueue(EnginePath Path, Section section)
-{
-#pragma message("[MKJ] Get with Valentine and Richard to determine what we will need to do at this point")
-	engineSection es;
-	es.path = Path;
-	es.sec = section;
-
-	m_engineSectionQueue.enqueue(es);
-}
-
 void TrainMonitor::do_handleOccupancy(QString section, bool state)
 {
 	qDebug() << "New Occupancy Data at Monitor:" << section << " State:" << state;
@@ -52,11 +31,11 @@ void TrainMonitor::do_handleOccupancy(QString section, bool state)
 
 void TrainMonitor::Monitor(QString section)
 {
-	//while (!m_engineSectionQueue.empty())
-	//{
-		//engineSection es = m_engineSectionQueue.front();
-		//m_engineSectionQueue.dequeue();
-		//updateEnginePath(es.path.getEngine());
+    //while (!m_engineSectionQueue.empty())
+    //{
+        //engineSection es = m_engineSectionQueue.front();
+        //m_engineSectionQueue.dequeue();
+        //updateEnginePath(es.path.getEngine());
 
 #pragma message("[MKJ] Will nextSection1 be enough padding for a crash scenario?")
         //Section monitorSection = es.path.getNextSection1();
@@ -229,30 +208,26 @@ void TrainMonitor::generateSectionList()
 	}
 
 	QTextStream in(&infile);
-	int id, x, y, trackType;
 	QString node;
 	int numOfConns;
-	QString conn1, conn2, conn3, conn4;
-	int trackInfoId;
+    QString conn1, conn2, conn3;
+    int ltNum; bool thrownLeft;
 
 	while (!in.atEnd())
 	{
 
 		QStringList splitString = in.readLine().split(",");
-		id = splitString[0].toInt();
-		x = splitString[1].toInt();
-		y = splitString[2].toInt();
-		trackType = splitString[3].toInt();
-		node = splitString[4];
-		numOfConns = splitString[5].toInt();
-		conn1 = splitString[6];
-		conn2 = splitString[7];
-		conn3 = splitString[8];
-		conn4 = splitString[9];
-		trackInfoId = splitString[10].toInt();
+        node = splitString[0];
+        numOfConns = splitString[1].toInt();
+        conn1 = splitString[2];
+        conn2 = splitString[3];
+        conn3 = splitString[4];
+        ltNum = splitString[5].toInt();
+        thrownLeft = (splitString[6] == "false")? false : true;
 
-		Section sec = Section(x, y, node, numOfConns, conn1, conn2,
-			conn3, conn4);
+        if (numOfConns == 3) emit(throwTurnout(ltNum));
+        Section sec = Section(node, numOfConns, conn1, conn2,
+            conn3, ltNum, thrownLeft);
 		qDebug() << "SECTION:" << sec.getNode() << " CONN1:" << conn1 << ", CONN2:" << conn2;
 
 		m_sectionList.append(sec);
@@ -325,70 +300,6 @@ Section TrainMonitor::findNextSection(Section previousSection,
 	return nextSection;
 }
 
-
-EnginePath TrainMonitor::engineOnSection(QString section)
-{
-	EnginePath engine;
-
-	for (auto it : m_engineList)
-	{
-		if (it.getCurrentSection().getNode() == section)
-		{
-			engine = it;
-			continue;
-		}
-	}
-
-	return engine;
-}
-
-bool TrainMonitor::updateEnginePath(QString engine)
-{
-#pragma message("[MKJ] This is the nominal updateEnginePath. We need to add a reverseUpdateEnginePath for when the direction is reversed")
-	EnginePath path;
-
-	bool found = false;
-	for (auto it : m_engineList)
-	{
-		if (it.getEngine() == engine)
-		{
-			it.setCurrentSection(it.getNextSection1());
-			it.setNextSection1(it.getNextSection2());
-			it.setNextSection2(it.getNextSection3());
-			it.setNextSection3(it.getNextSection4());
-			it.setNextSection4(findNextSection(it.getNextSection3(),
-				it.getNextSection4()));
-
-			found = true;
-			continue;
-		}
-	}
-
-	if (!found)
-	{
-		qWarning("Invalid engine. Are you sure the engine exists?");
-	}
-
-
-	return found;
-}
-
-void TrainMonitor::toggleSwitchDirectionLeft(QString section)
-{
-	// When we do this, we must update all engine paths that contain this
-	// switch
-	Section sec = retrieveSections(section);
-	sec.toggleSwitchDirectionLeft();
-}
-
-void TrainMonitor::toggleSwitchDirectionRight(QString section)
-{
-	// When we do this, we must update all engine paths that contain this
-	// switch
-	Section sec = retrieveSections(section);
-	sec.toggleSwitchDirectionRight();
-}
-
 /// Updates to an endpoint.....fix comment later
 void TrainMonitor::updateSingleConnList(Section current)
 {
@@ -406,8 +317,9 @@ void TrainMonitor::updateSingleConnList(Section current)
     if(!found)
     {
         /// TODO
-//        std::pair<QString, QString> secPair=
-//                new std::pair<QString, QString>("", current.getNode());
+        std::pair<QString, QString> secPair=
+                std::make_pair<QString, QString>("", current.getNode());
+        sectionPairs.push_back(secPair);
     }
 }
 
@@ -428,8 +340,10 @@ void TrainMonitor::updateDoubleConnList(Section current)
 
     if(!found)
     {
-//        std::pair<QString, QString> =
-//                new std::pair<QString, QString>(, current.getNode())
+        /// TODO
+        std::pair<QString, QString> secPair=
+                std::make_pair<QString, QString>("", current.getNode());
+        sectionPairs.push_back(secPair);
     }
 }
 
@@ -450,10 +364,13 @@ void TrainMonitor::updateTripleConnList(Section current)
     }
 
     if(!found)
-    {
-//        std::pair<QString, QString> =
-//                new std::pair<QString, QString>(, current.getNode())
-    }
+        if(!found)
+        {
+            /// TODO
+            std::pair<QString, QString> secPair =
+                     std::make_pair<QString, QString>("", current.getNode());
+            sectionPairs.push_back(secPair);
+        }
 }
 
 /// Updates Crossovers....
@@ -515,6 +432,23 @@ QString TrainMonitor::getNextSwitchSection(Section previous, Section current)
     return nextSection;
 }
 
+void TrainMonitor::do_handleSwitch(QString LT, bool closed)
+{
+    for(auto section : m_sectionList)
+    {
+        if(section.getLtNum() )
+        {
+            if(closed)
+            {
+                section.setThrown(false);
+            }
+            else
+            {
+                section.setThrown(true);
+            }
+        }
+    }
+}
 
 
 
