@@ -22,6 +22,7 @@ void TrainMonitor::do_run() {
 
 void TrainMonitor::do_handleOccupancy(QString section, bool state)
 {
+    qDebug() << __PRETTY_FUNCTION__;
 	qDebug() << "New Occupancy Data at Monitor:" << section << " State:" << state;
 	Section monitoredSection = retrieveSections(section);
 	monitoredSection.setOccupancy(state);
@@ -86,7 +87,10 @@ void TrainMonitor::endpointMonitor(Section sec)
         {
             if(section.first != "")
             {
-                emit trackOff();
+                qDebug() << "Shutting off section " section.second;
+                Section shutdownSection = retrieveSections(section.second);
+                QStringList shutdownList = shutdownSection.getNode().split("-");
+                emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
             }
         }
     }
@@ -119,6 +123,7 @@ void TrainMonitor::straightMonitor(Section sec)
         if(nextSection == section.second)
         {
             //emit trackOff();
+            qDebug() << "Shutting off section " section.second;
             Section shutdownSection = retrieveSections(section.second);
             QStringList shutdownList = shutdownSection.getNode().split("-");
             emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
@@ -144,6 +149,7 @@ void TrainMonitor::switchMonitor(Section sec)
             {
                 case 1: {
                     //emit trackOff();
+                    qDebug() << "Shutting off section " section.second;
                     Section shutdownSection = retrieveSections(nextSection);
                     QStringList shutdownList = shutdownSection.getNode().split("-");
                     emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
@@ -169,6 +175,7 @@ void TrainMonitor::switchMonitor(Section sec)
         if(section.second == monitorSection)
         {
             //emit trackOff();
+            qDebug() << "Shutting off section " section.second;
             Section shutdownSection = retrieveSections(section.second);
             QStringList shutdownList = shutdownSection.getNode().split("-");
             emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
@@ -456,6 +463,7 @@ QString TrainMonitor::getNextSwitchSection(Section previous, Section current)
 
 void TrainMonitor::do_handleSwitch(int LT, bool closed)
 {
+    qDebug() << __PRETTY_FUNCTION__;
     for(auto section : m_sectionList)
     {
         if(section.getLtNum() == LT)
