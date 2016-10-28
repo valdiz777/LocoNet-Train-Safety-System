@@ -22,7 +22,7 @@ void TrainMonitor::do_run() {
 
 void TrainMonitor::do_handleOccupancy(QString section, bool state)
 {
-    //qDebug() << __PRETTY_FUNCTION__;
+    qDebug() << "do_handleOccupancy entered";
 	qDebug() << "New Occupancy Data at Monitor:" << section << " State:" << state;
 	Section monitoredSection = retrieveSections(section);
 	monitoredSection.setOccupancy(state);
@@ -467,7 +467,8 @@ QString TrainMonitor::getNextSwitchSection(Section previous, Section current)
 
 void TrainMonitor::do_handleSwitch(int LT, bool closed)
 {
-    //qDebug() << __PRETTY_FUNCTION__;
+    qDebug() << "do_handleSwitch() entered";
+
     for(auto section : m_sectionList)
     {
         if(section.getLtNum() == LT)
