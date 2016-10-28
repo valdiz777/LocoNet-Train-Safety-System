@@ -87,7 +87,7 @@ bool Section::getOccupancy()
 	return m_occupancy;
 }
 
-bool Section::getLtNum()
+int Section::getLtNum()
 {
     return m_ltnum;
 }

@@ -43,7 +43,7 @@ public:
     bool getThrown();
     void setThrown(bool thrown);
     bool getThrownLeft();
-    bool getLtNum();
+    int getLtNum();
 
 private:
 	QString m_node;

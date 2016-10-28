@@ -442,11 +442,11 @@ QString TrainMonitor::getNextSwitchSection(Section previous, Section current)
     return nextSection;
 }
 
-void TrainMonitor::do_handleSwitch(QString LT, bool closed)
+void TrainMonitor::do_handleSwitch(int LT, bool closed)
 {
     for(auto section : m_sectionList)
     {
-        if(section.getLtNum() )
+        if(section.getLtNum() == LT)
         {
             if(closed)
             {

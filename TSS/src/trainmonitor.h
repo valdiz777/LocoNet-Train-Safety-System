@@ -35,7 +35,7 @@ public:
 	public slots:
 	void do_run();
 	void do_handleOccupancy(QString sec, bool state);
-    void do_handleSwitch(QString sec, bool closed);
+    void do_handleSwitch(int LT, bool closed);
 
 signals:
 	void slotScan(LocoByte _slot);
