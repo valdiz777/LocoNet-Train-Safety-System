@@ -248,13 +248,17 @@ void TrainMonitor::generateSectionList()
 
 void TrainMonitor::handle_serialOpened()
 {
+    int switches = 0;
     for (Section  sec : m_sectionList)
     {
         if (sec.getNumOfConns() ==  3)
         {
+            switches++;
             emit throwTurnout(sec.getLtNum());
         }
     }
+
+    qDebug() << switches << " switches have be initialized";
 }
 
 Section TrainMonitor::findNextSection(Section previousSection,
