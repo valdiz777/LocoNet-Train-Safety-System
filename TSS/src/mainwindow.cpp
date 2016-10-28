@@ -50,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	trainmonitor = new TrainMonitor;
 	trainmonitor->moveToThread(&threadMonitor);
     locoutils = new LocoUtils;
-    locoutils->moveToThread(threadLocoUtils);
+    locoutils->moveToThread(&threadLocoUtils);
 	outgoingPacket.clear();
 
 	ui->lineEdit_opcode->setInputMask("hh");
