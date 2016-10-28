@@ -2,6 +2,7 @@
 #include <QFile>
 #include <QDir>
 #include <QTextStream>
+#include <QThread>
 
 TrainMonitor::TrainMonitor()
 {
@@ -262,6 +263,7 @@ void TrainMonitor::handle_serialOpened()
         {
             switches++;
             emit throwTurnout(sec.getLtNum());
+            QThread::msleep(500);
         }
     }
 
