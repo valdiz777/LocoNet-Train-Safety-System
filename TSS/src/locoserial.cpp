@@ -294,7 +294,6 @@ QString LocoSerial::parse(LocoPacket _packet)
 	if (!_packet.hasOP() || !_packet.validChk()) {
 		return("packet is malformed >.<");
 	}
-    LocoSerial util;
 
 	// This looks so gross >.<
 	if (_opCode == "E7") {
@@ -407,8 +406,7 @@ QString LocoSerial::parse_E7(LocoPacket _packet)
     }
     _newTrain.set_state(_state);
 
-    LocoSerial emitter;
-    emitter.trainUpdated(_newTrain);
+    emit trainUpdated(_newTrain);
     _description.append(" Speed: " + _speed.get_hex() + " Slot: " + _slot.get_hex() + " Direction: " + QString::number(_dir) + " State: " + _state);
 
     if (_description == "E7:") {
@@ -537,11 +535,11 @@ QString LocoSerial::parse_B2(LocoPacket _packet)
     }
 
     LocoBlock _newBlock(_address, _aux, _occupied);
-    LocoSerial emitter;
 
-    emitter.blockUpdated(_newBlock);
+
+    emit blockUpdated(_newBlock);
     qDebug() << "emitting occupancyDataReady" << endl;
-    emitter.occupancyDataReady(trackSection, _occupied);
+    emit occupancyDataReady(trackSection, _occupied);
     return(_description);
 }
 
@@ -572,8 +570,8 @@ QString LocoSerial::parse_B0(LocoPacket _packet) {
     _adr.append(_arg2.get_hex().mid(1, 1)); // Load MS byte of address
     _adr.append(_arg1.get_hex()); // Load LS 2 bytes of address
 
-    LocoSerial emitter;
-    emitter.switchUpdated(_swch, _state);
+
+    emit switchUpdated(_swch, _state);
     return(_description);
 }
 
@@ -591,15 +589,14 @@ QString LocoSerial::LocoSerial::parse_A0(LocoPacket _packet) {
     QString _description = "A0: Setting slot speed.";
     LocoByte _arg1 = _packet.get_locobyte(1);
     LocoByte _arg2 = _packet.get_locobyte(2);
-    LocoSerial emitter;
-    emitter.querySlot(_arg1); // Ask for E7 slot data
+
+    emit querySlot(_arg1); // Ask for E7 slot data
     return(_description);
 }
 
 
 int LocoSerial::getTimeDiff()
 {
-    LocoSerial util;
     int temp = QTime::currentTime().toString("zzz").toInt();
     int result = abs((last_time -  temp));
     last_time = temp;
