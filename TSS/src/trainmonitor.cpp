@@ -226,8 +226,10 @@ void TrainMonitor::generateSectionList()
 	while (!in.atEnd())
 	{
 
+
 		QStringList splitString = in.readLine().split(",");
         node = splitString[0];
+        qDebug() << "node:" << node;
         numOfConns = splitString[1].toInt();
         conn1 = splitString[2];
         conn2 = splitString[3];
