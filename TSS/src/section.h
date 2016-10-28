@@ -43,6 +43,7 @@ public:
     bool getThrown();
     void setThrown(bool thrown);
     bool getThrownLeft();
+    bool getLtNum();
 
 private:
 	QString m_node;
@@ -54,7 +55,6 @@ private:
     bool m_thrownLeft;
     bool m_thrown;		// true for left; false for right
 	bool m_occupancy;
-
 };
 
 #endif

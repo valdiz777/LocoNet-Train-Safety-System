@@ -35,6 +35,7 @@ public:
 	public slots:
 	void do_run();
 	void do_handleOccupancy(QString sec, bool state);
+    void do_handleSwitch(QString sec, bool closed);
 
 signals:
 	void slotScan(LocoByte _slot);
@@ -63,12 +64,9 @@ private:
     bool running;
 	void generateSectionList();
 	Section retrieveSections(QString section);
-	bool updateEnginePath(QString engine);
 	QList<Section> m_sectionList;
-	QList<EnginePath> m_engineList;
 	Section findNextSection(Section previousSection, Section currentSection);
 	void toggleSwitchDirectionLeft(QString section);
 	void toggleSwitchDirectionRight(QString section);
-	EnginePath engineOnSection(QString section);
 };
 #endif
