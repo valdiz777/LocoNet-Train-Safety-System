@@ -30,7 +30,6 @@ SOURCES += src/main.cpp\
     src/locoudp.cpp \
     src/section.cpp \
     src/trainmonitor.cpp \
-    src/enginepath.cpp \
     src/log.cpp \
     src/locoutils.cpp
 
@@ -42,7 +41,6 @@ HEADERS  += src/mainwindow.h \
     src/locosql.h \
     src/locoudp.h \
     src/section.h \
-    src/enginepath.h \
     src/trainmonitor.h \
     src/log.h \
     src/locoserial.h \
