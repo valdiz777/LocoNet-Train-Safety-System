@@ -118,7 +118,10 @@ void TrainMonitor::straightMonitor(Section sec)
     {
         if(nextSection == section.second)
         {
-            emit trackOff();
+            //emit trackOff();
+            Section shutdownSection = retrieveSections(section.second);
+            QStringList shutdownList = shutdownSection.getNode.split("-");
+            emit sectionOff(shutdownList[0],shutdownList[1]);
         }
     }
 }
@@ -140,7 +143,11 @@ void TrainMonitor::switchMonitor(Section sec)
             switch (retrieveSections(nextSection).getNumOfConns())
             {
                 case 1:
-                    emit trackOff();
+                    //emit trackOff();
+                    Section shutdownSection = retrieveSections(nextSection);
+                    QStringList shutdownList = shutdownSection.getNode.split("-");
+                    emit sectionOff(shutdownList[0],shutdownList[1]);
+
                     break;
                 case 2:
                     monitorSection = getNextStraightSection(
@@ -161,7 +168,10 @@ void TrainMonitor::switchMonitor(Section sec)
     {
         if(section.second == monitorSection)
         {
-            emit trackOff();
+            //emit trackOff();
+            Section shutdownSection = retrieveSections(section.second);
+            QStringList shutdownList = shutdownSection.getNode.split("-");
+            emit sectionOff(shutdownList[0],shutdownList[1]);
         }
     }
 }
