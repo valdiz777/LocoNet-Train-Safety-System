@@ -49,8 +49,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	locoudp->moveToThread(&threadUDP);
 	trainmonitor = new TrainMonitor;
 	trainmonitor->moveToThread(&threadMonitor);
-    locoutils = new LocoUtils;
-    locoutils->moveToThread(&threadLocoUtils);
 	outgoingPacket.clear();
 
 	ui->lineEdit_opcode->setInputMask("hh");
@@ -84,7 +82,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(locoserial, &LocoSerial::printPacketDesc, this, &MainWindow::do_printDescriptions); // QT-5 style works
 	connect(locoserial, &LocoSerial::serialOpened, this, &MainWindow::handle_serialOpened);
 	connect(locoserial, &LocoSerial::serialClosed, this, &MainWindow::handle_serialClosed);
+    connect(locoserial, &LocoSerial::trainUpdated, locosql, &LocoSQL::do_updateTrain);
+    connect(locoserial, &LocoSerial::blockUpdated, locosql, &LocoSQL::do_updateBlock);
+    connect(locoserial, &LocoSerial::occupancyDataReady, trainmonitor, &TrainMonitor::do_handleOccupancy);
+    connect(locoserial, &LocoSerial::querySlot, locoserial, &LocoSerial::do_querySlot);
     connect(&threadSerial, &QThread::finished, locoserial, &QObject::deleteLater);
+
 	// Handle Initializing from Sig/Slot
 	//connect(ui->pushButton_thread_beginSerial, SIGNAL(clicked()), locoserial, SLOT(do_run()));
 	//connect(ui->pushButton_thread_beginSerial, SIGNAL(clicked(bool)), ui->pushButton_thread_beginSerial, SLOT(setEnabled(bool)));
@@ -116,19 +119,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(trainmonitor, &TrainMonitor::trackReset, locoserial, &LocoSerial::do_trackReset);
 	connect(trainmonitor, &TrainMonitor::trackOn, locoserial, &LocoSerial::do_trackOn);
 	connect(trainmonitor, &TrainMonitor::trackOff, locoserial, &LocoSerial::do_trackOff);
-    connect(trainmonitor, &TrainMonitor::sectionOff, locoutils, &LocoUtils::do_sectionOff);
-    connect(trainmonitor, &TrainMonitor::sectionOn, locoutils, &LocoUtils::do_sectionOn);
+    connect(trainmonitor, &TrainMonitor::sectionOff, locoserial, &LocoSerial::do_sectionOff);
+    connect(trainmonitor, &TrainMonitor::sectionOn, locoserial, &LocoSerial::do_sectionOn);
     connect(trainmonitor, &TrainMonitor::closeTurnout, locoserial, &LocoSerial::do_closeTurnout);
     connect(trainmonitor, &TrainMonitor::throwTurnout, locoserial, &LocoSerial::do_throwTurnout);
     connect(locoserial, &LocoSerial::serialOpened, trainmonitor, &TrainMonitor::handle_serialOpened);
 	connect(&threadMonitor, &QThread::finished, trainmonitor, &QObject::deleteLater);
-
-    // LocoUtils
-    connect(locoutils, &LocoUtils::trainUpdated, locosql, &LocoSQL::do_updateTrain);
-    connect(locoutils, &LocoUtils::blockUpdated, locosql, &LocoSQL::do_updateBlock);
-    connect(locoutils, &LocoUtils::occupancyDataReady, trainmonitor, &TrainMonitor::do_handleOccupancy);
-    connect(locoutils, &LocoUtils::querySlot, locoserial, &LocoSerial::do_querySlot);
-    connect(&threadLocoUtils, &QThread::finished, locoutils, &QObject::deleteLater);
 
     // Kickstart threads
 
@@ -141,8 +137,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	locoudp->do_run(); // Auto start locoudp
 	threadMonitor.start(); // Auto start trainmonitor
 	trainmonitor->do_run();
-    threadLocoUtils.start();// Auto start locoutils
-    locoutils->do_run();
 
 	// Configure interface
 	ui->comboBox_opcodes->setEditable(false);

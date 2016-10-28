@@ -24,7 +24,6 @@
 #include "locosql.h"
 #include "locoudp.h"
 #include "trainmonitor.h"
-#include "locoutils.h"
 
 namespace Ui {
 	class MainWindow;
@@ -77,8 +76,6 @@ private:
 	TrainMonitor * trainmonitor;
 	QThread threadMonitor;
 	QList<Section> m_sectionList;
-    LocoUtils * locoutils;
-    QThread threadLocoUtils;
 };
 
 #endif // MAINWINDOW_H

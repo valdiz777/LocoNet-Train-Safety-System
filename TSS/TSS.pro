@@ -30,8 +30,7 @@ SOURCES += src/main.cpp\
     src/locoudp.cpp \
     src/section.cpp \
     src/trainmonitor.cpp \
-    src/log.cpp \
-    src/locoutils.cpp
+    src/log.cpp
 
 HEADERS  += src/mainwindow.h \
         src/locopacket.h \
@@ -43,8 +42,7 @@ HEADERS  += src/mainwindow.h \
     src/section.h \
     src/trainmonitor.h \
     src/log.h \
-    src/locoserial.h \
-    src/locoutils.h
+    src/locoserial.h
 
 FORMS    += src/mainwindow.ui
 
