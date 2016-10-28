@@ -43,7 +43,7 @@ void TrainMonitor::Monitor(QString section)
         //Section monitorSection = es.path.getNextSection1();
 
     Section currentSection = retrieveSections(section);
-
+    qDebug() << "Starting monitor ....." << endl;
     switch (currentSection.getNumOfConns())
     {
         case 1:		// Endpoint case
