@@ -237,9 +237,6 @@ void TrainMonitor::generateSectionList()
         ltNum = splitString[5].toInt();
         thrownLeft = (splitString[6] == "false")? false : true;
 
-        if (numOfConns == 3)
-            emit throwTurnout(ltNum);
-
         Section sec = Section(node, numOfConns, conn1, conn2,
             conn3, ltNum, thrownLeft);
 		qDebug() << "SECTION:" << sec.getNode() << " CONN1:" << conn1 << ", CONN2:" << conn2;
@@ -247,6 +244,17 @@ void TrainMonitor::generateSectionList()
 		m_sectionList.append(sec);
 	}
 	infile.close();
+}
+
+void TrainMonitor::handle_serialOpened()
+{
+    for (Section  sec : m_sectionList)
+    {
+        if (sec.getNumOfConns() ==  3)
+        {
+            emit throwTurnout(sec.getLtNum());
+        }
+    }
 }
 
 Section TrainMonitor::findNextSection(Section previousSection,

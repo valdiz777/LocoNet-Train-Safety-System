@@ -37,6 +37,8 @@ public:
 	void do_handleOccupancy(QString sec, bool state);
     void do_handleSwitch(int LT, bool closed);
 
+    void handle_serialOpened();
+
 signals:
 	void slotScan(LocoByte _slot);
 	void slotDispatch(LocoByte _slot);

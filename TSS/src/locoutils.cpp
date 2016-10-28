@@ -197,12 +197,9 @@ QString LocoUtils::parse_B2(LocoPacket _packet)
 
     LocoBlock _newBlock(_address, _aux, _occupied);
     LocoUtils emitter;
-    if (emitter.getTimeDiff() > 100) {
 
-        emitter.blockUpdated(_newBlock);
-        emitter.occupancyDataReady(trackSection, _occupied);
-    }
-
+    emitter.blockUpdated(_newBlock);
+    emitter.occupancyDataReady(trackSection, _occupied);
     return(_description);
 }
 

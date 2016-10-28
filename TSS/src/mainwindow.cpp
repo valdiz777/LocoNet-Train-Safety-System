@@ -119,6 +119,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(trainmonitor, &TrainMonitor::sectionOn, locoutils, &LocoUtils::do_sectionOn);
     connect(trainmonitor, &TrainMonitor::closeTurnout, locoserial, &LocoSerial::do_closeTurnout);
     connect(trainmonitor, &TrainMonitor::throwTurnout, locoserial, &LocoSerial::do_throwTurnout);
+    connect(locoserial, &LocoSerial::serialOpened, trainmonitor, &TrainMonitor::handle_serialOpened);
 	connect(&threadMonitor, &QThread::finished, trainmonitor, &QObject::deleteLater);
 
     // LocoUtils
