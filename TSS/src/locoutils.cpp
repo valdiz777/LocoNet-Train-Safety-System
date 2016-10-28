@@ -32,6 +32,11 @@ LocoUtils::~LocoUtils()
 }
 
 
+void LocoUtils::do_run()
+{
+
+}
+
 /*
  * Packet related functions
  */

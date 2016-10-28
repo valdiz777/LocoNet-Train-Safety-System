@@ -54,6 +54,7 @@ public:
     QProcess netcat;
 
 public slots:
+    void do_run();
     void do_sectionOff(int boardNum, int section);
     void do_sectionOn(int boardNum, int section);
 

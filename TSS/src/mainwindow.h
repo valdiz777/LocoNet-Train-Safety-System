@@ -78,6 +78,7 @@ private:
 	QThread threadMonitor;
 	QList<Section> m_sectionList;
     LocoUtils * locoutils;
+    QThread threadLocoUtils;
 };
 
 #endif // MAINWINDOW_H

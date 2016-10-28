@@ -50,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	trainmonitor = new TrainMonitor;
 	trainmonitor->moveToThread(&threadMonitor);
     locoutils = new LocoUtils;
+    locoutils->moveToThread(threadLocoUtils);
 	outgoingPacket.clear();
 
 	ui->lineEdit_opcode->setInputMask("hh");
@@ -127,6 +128,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(locoutils, &LocoUtils::blockUpdated, locosql, &LocoSQL::do_updateBlock);
     connect(locoutils, &LocoUtils::occupancyDataReady, trainmonitor, &TrainMonitor::do_handleOccupancy);
     connect(locoutils, &LocoUtils::querySlot, locoserial, &LocoSerial::do_querySlot);
+    connect(&threadLocoUtils, &QThread::finished, locoutils, &QObject::deleteLater);
 
     // Kickstart threads
 
@@ -139,6 +141,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	locoudp->do_run(); // Auto start locoudp
 	threadMonitor.start(); // Auto start trainmonitor
 	trainmonitor->do_run();
+    threadLocoUtils.start();// Auto start locoutils
+    locoutils->do_run();
 
 	// Configure interface
 	ui->comboBox_opcodes->setEditable(false);
