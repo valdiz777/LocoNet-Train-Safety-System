@@ -120,8 +120,8 @@ void TrainMonitor::straightMonitor(Section sec)
         {
             //emit trackOff();
             Section shutdownSection = retrieveSections(section.second);
-            QStringList shutdownList = shutdownSection.getNode.split("-");
-            emit sectionOff(shutdownList[0],shutdownList[1]);
+            QStringList shutdownList = shutdownSection.getNode().split("-");
+            emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
         }
     }
 }
@@ -142,22 +142,22 @@ void TrainMonitor::switchMonitor(Section sec)
         {
             switch (retrieveSections(nextSection).getNumOfConns())
             {
-                case 1:
+                case 1: {
                     //emit trackOff();
                     Section shutdownSection = retrieveSections(nextSection);
-                    QStringList shutdownList = shutdownSection.getNode.split("-");
-                    emit sectionOff(shutdownList[0],shutdownList[1]);
+                    QStringList shutdownList = shutdownSection.getNode().split("-");
+                    emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
 
                     break;
-                case 2:
+                } case 2: {
                     monitorSection = getNextStraightSection(
                                 retrieveSections(section.first), retrieveSections(nextSection));
                     break;
-                case 3:
+                } case 3: {
                     monitorSection = getNextStraightSection(
                                 retrieveSections(section.second), retrieveSections(nextSection));
                     break;
-                case 4:
+                } case 4:
                     // TODO
                     break;
             }
@@ -170,8 +170,8 @@ void TrainMonitor::switchMonitor(Section sec)
         {
             //emit trackOff();
             Section shutdownSection = retrieveSections(section.second);
-            QStringList shutdownList = shutdownSection.getNode.split("-");
-            emit sectionOff(shutdownList[0],shutdownList[1]);
+            QStringList shutdownList = shutdownSection.getNode().split("-");
+            emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
         }
     }
 }
