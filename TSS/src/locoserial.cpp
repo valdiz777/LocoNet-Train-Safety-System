@@ -655,6 +655,8 @@ void LocoSerial::do_sectionOff(int boardNum, int section)
     while ((retval = netcat.waitForFinished()));
         buffer.append(netcat.readAll());
     qDebug() << "Section Off Output: " << buffer;
+    echo.close();
+    netcat.close();
 
 }
 
@@ -709,5 +711,7 @@ void LocoSerial::do_sectionOn(int boardNum, int section)
     while ((retval = netcat.waitForFinished()));
         buffer.append(netcat.readAll());
     qDebug() << "Section Off Output: " << buffer;
+    echo.close();
+    netcat.close();
 
 }
