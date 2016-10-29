@@ -108,20 +108,21 @@ void TrainMonitor::straightMonitor(Section sec)
 
     for (auto section : sectionPairs)
     {
+
+        qDebug() << sec.getNode() << " sec.second is:" << section.second << endl;
         if(sec.getNode() == section.second)
         {
             nextSection = getNextStraightSection(
                         retrieveSections(section.first), retrieveSections(section.second));
-
             found = true;
         }
     }
 
 
-    if(!found)
+   /* if(!found)
     {
         qDebug() << "Shit didn't work homie!!!";
-    }
+    }*/
 
     for(auto section : sectionPairs)
     {
@@ -359,6 +360,7 @@ void TrainMonitor::updateSingleConnList(Section current)
 
     if(!found)
     {
+        qDebug() << "Section " << current.getNode() << " not found, adding to list" << endl;
         /// TODO
         std::pair<QString, QString> secPair=
                 std::make_pair<QString, QString>("", current.getNode());
@@ -383,6 +385,7 @@ void TrainMonitor::updateDoubleConnList(Section current)
 
     if(!found)
     {
+        qDebug() << "Section " << current.getNode() << " not found, adding to list" << endl;
         /// TODO
         std::pair<QString, QString> secPair=
                 std::make_pair<QString, QString>("", current.getNode());
@@ -409,6 +412,7 @@ void TrainMonitor::updateTripleConnList(Section current)
     if(!found)
         if(!found)
         {
+            qDebug() << "Section " << current.getNode() << " not found, adding to list" << endl;
             /// TODO
             std::pair<QString, QString> secPair =
                      std::make_pair<QString, QString>("", current.getNode());
