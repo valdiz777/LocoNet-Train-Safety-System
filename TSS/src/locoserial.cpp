@@ -660,7 +660,7 @@ int LocoSerial::getTimeDiff()
 void LocoSerial::do_sectionOff(int boardNum, int section)
 {
     bool _isStal = true;
-
+    qDebug() << "Shutting off" << boardNum << "-" << section<<endl;
     // Prepare message and check if star or stal
     switch (boardNum)
     {
