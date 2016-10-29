@@ -77,22 +77,51 @@ void LocoSerial::readTimerStart(int _msec)
 
 int LocoSerial::getSectionOnCmds() const
 {
-    return sectionOnCmds;
+    return m_sectionOnCmds;
 }
 
 void LocoSerial::setSectionOnCmds(int value)
 {
-    sectionOnCmds = value;
+    m_sectionOnCmds = value;
+}
+
+void LocoSerial::powerSection(QString echoMsg, QString netcatMsg, bool OnCmd)
+{
+    QProcess echo;
+    QProcess netcat;
+    if (OnCmd) {
+       setSectionOnCmds(getSectionOnCmds() + 1);
+    } else {
+       setSectionOffCmds(getSectionOffCmds() + 1);
+    }
+
+    // send message
+    echo.setStandardOutputProcess(&netcat);
+    echo.start(echoMsg);
+    netcat.start(netcatMsg);
+    netcat.setProcessChannelMode(QProcess::ForwardedChannels);
+
+    // Wait for it to start
+    if(!echo.waitForStarted())
+        qFatal("Failed to turn off section, echo process not working\n");
+
+    bool retval = false;
+    QByteArray buffer;
+    while ((retval = netcat.waitForFinished()));
+        buffer.append(netcat.readAll());
+    qDebug() << "Section On Output: " << buffer;
+    echo.close();
+    netcat.close();
 }
 
 int LocoSerial::getSectionOffCmds() const
 {
-    return sectionOffCmds;
+    return m_sectionOffCmds;
 }
 
 void LocoSerial::setSectionOffCmds(int value)
 {
-    sectionOffCmds = value;
+    m_sectionOffCmds = value;
 }
 
 void LocoSerial::readTimerStop()
@@ -626,6 +655,7 @@ int LocoSerial::getTimeDiff()
 
 void LocoSerial::do_sectionOff(int boardNum, int section)
 {
+    setSectionOffCmds(getSectionOffCmds() + 1);
     bool _isStal = true;
 
     // Prepare message and check if star or stal
@@ -654,16 +684,14 @@ void LocoSerial::do_sectionOff(int boardNum, int section)
 
     }
     QString _echocmd = "echo " + QString::number(boardNum)+ QString(QChar(TO_HEX(section-1)))+"0";
+    QString _netcatcmd = "netcat " + (_isStal)? stal: star;
 
+    QProcess echo;
+    QProcess netcat;
     // Send message
     echo.setStandardOutputProcess(&netcat);
     echo.start(_echocmd);
-    if (_isStal) {
-        netcat.start("netcat " + stal);
-    } else {
-        netcat.start("netcat " + star);
-    }
-
+    netcat.start(_netcatcmd);
     netcat.setProcessChannelMode(QProcess::ForwardedChannels);
 
     // Wait for it to start
@@ -675,13 +703,13 @@ void LocoSerial::do_sectionOff(int boardNum, int section)
     while ((retval = netcat.waitForFinished()));
         buffer.append(netcat.readAll());
     qDebug() << "Section Off Output: " << buffer;
-    setSectionOffCmds(getSectionOffCmds() + 1);
     echo.close();
     netcat.close();
 }
 
 void LocoSerial::do_sectionOn(int boardNum, int section)
 {
+    setSectionOnCmds(getSectionOnCmds() + 1);
     bool _isStal = true;
 
     // Prepare message and check if star or stal
@@ -709,17 +737,17 @@ void LocoSerial::do_sectionOn(int boardNum, int section)
     }
 
     }
-    QString _echocmd = "echo " + QString::number(boardNum)+ QString(QChar(TO_HEX(section-1)))+"1";
 
-    // Send message
+    // create commands
+    QString _echocmd = "echo " + QString::number(boardNum)+ QString(QChar(TO_HEX(section-1)))+"1";
+    QString _netcatcmd = "netcat " + (_isStal)? stal: star;
+
+    QProcess echo;
+    QProcess netcat;
+    // send message
     echo.setStandardOutputProcess(&netcat);
     echo.start(_echocmd);
-    if (_isStal) {
-        netcat.start("netcat " + stal);
-    } else {
-        netcat.start("netcat " + star);
-    }
-
+    netcat.start(_netcatcmd);
     netcat.setProcessChannelMode(QProcess::ForwardedChannels);
 
     // Wait for it to start
@@ -731,7 +759,6 @@ void LocoSerial::do_sectionOn(int boardNum, int section)
     while ((retval = netcat.waitForFinished()));
         buffer.append(netcat.readAll());
     qDebug() << "Section On Output: " << buffer;
-    setSectionOnCmds(getSectionOnCmds() + 1);
     echo.close();
     netcat.close();
 }

@@ -33,12 +33,14 @@ void TrainMonitor::do_handleOccupancy(QString section, bool state)
 
 void TrainMonitor::Monitor(QString section)
 {
-    //while (!m_engineSectionQueue.empty())
-    //{
-        //engineSection es = m_engineSectionQueue.front();
-        //m_engineSectionQueue.dequeue();
-        //updateEnginePath(es.path.getEngine());
+    qDebug() << endl << endl;
 
+    for (auto section : sectionPairs)
+    {
+        qDebug() << "last section is: " << section.first << " current section is:" << section.second << endl;
+    }
+
+    qDebug() << endl << endl;
 #pragma message("[MKJ] Will nextSection1 be enough padding for a crash scenario?")
         //Section monitorSection = es.path.getNextSection1();
 

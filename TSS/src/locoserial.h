@@ -65,14 +65,14 @@ public:
     int last_time = 0;
     QString stal = "172.21.0.63 23";
     QString star = "172.21.0.64 23";
-    QProcess echo;
-    QProcess netcat;
 
     int getSectionOffCmds() const;
     void setSectionOffCmds(int value);
 
     int getSectionOnCmds() const;
     void setSectionOnCmds(int value);
+
+    void powerSection(QString echoMsg, QString netcatMsg, bool OnCmd);
 
 signals:
     void receivedPacket(LocoPacket);
@@ -125,8 +125,8 @@ private:
 	LocoPacket * incomingPacket;
 	LocoPacket * outgoingPacket;
 	bool * debug;
-    int sectionOnCmds = 0;
-    int sectionOffCmds = 0;
+    int m_sectionOnCmds = 0;
+    int m_sectionOffCmds = 0;
     //int * waitForReply;
     //QVector<LocoPacket> * outgoingQueue;
 };
