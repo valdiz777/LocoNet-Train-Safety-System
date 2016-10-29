@@ -108,7 +108,7 @@ void TrainMonitor::endpointMonitor(Section sec)
 
 void TrainMonitor::straightMonitor(Section sec)
 {
-    QDebug() << "straightMonitor()";
+    QDebug() << "straightMonitor()" << sec.getNode();
     QString nextSection;
     bool found = false;
 
@@ -362,7 +362,8 @@ void TrainMonitor::updateSingleConnList(Section current)
     bool found = false;
     for(auto sec : sectionPairs)
     {
-        if (sec.second == current.getConn1())
+        //if (sec.second == current.getConn1())
+        if (sec.second == current.getNode())
         {
             sec.first = sec.second;
             sec.second = current.getNode();
@@ -387,8 +388,11 @@ void TrainMonitor::updateDoubleConnList(Section current)
     bool found = false;
     for(auto sec : sectionPairs)
     {
+//        if (sec.second == current.getConn1() ||
+//                sec.second == current.getConn2())
         if (sec.second == current.getConn1() ||
-                sec.second == current.getConn2())
+                sec.second == current.getConn2() ||
+                sec.second == current.getNode())
         {
             sec.first = sec.second;
             sec.second = current.getNode();
