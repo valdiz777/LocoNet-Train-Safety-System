@@ -660,7 +660,7 @@ int LocoSerial::getTimeDiff()
 void LocoSerial::do_sectionOff(int boardNum, int section)
 {
     bool _isStal = true;
-    qDebug() << "Shutting off" << boardNum << "-" << section<<endl;
+
     // Prepare message and check if star or stal
     switch (boardNum)
     {
@@ -711,8 +711,7 @@ void LocoSerial::do_sectionOff(int boardNum, int section)
     qDebug() << "Section off power Output: " << buffer << endl;
     echo.close();
     netcat.close();
-    qDebug() << "Sections off: " << getSectionOffCmds() << endl;
-   setSectionOnCmds(getSectionOffCmds() + 1);
+    setSectionOffCmds(getSectionOffCmds() + 1);
 }
 
 void LocoSerial::do_sectionOn(int boardNum, int section)
@@ -773,8 +772,7 @@ void LocoSerial::do_sectionOn(int boardNum, int section)
     qDebug() << "Section on power Output: " << buffer << endl;
     echo.close();
     netcat.close();
-    qDebug() << "Sections on: " << getSectionOnCmds() << endl;
-   setSectionOnCmds(getSectionOnCmds() + 1);
+    setSectionOnCmds(getSectionOnCmds() + 1);
 
 }
 
