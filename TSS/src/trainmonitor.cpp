@@ -430,24 +430,24 @@ void TrainMonitor::updateDoubleConnList(Section current)
     {
         qDebug() << "Section " << current.getNode() << " not found, adding to list" << endl;
         /// TODO
-        if(sectionPairs.count() == 0)
-        {
+//        if(sectionPairs.count() == 0)
+//        {
             std::pair<QString, QString> secPair=
                     std::make_pair<QString, QString>("", current.getNode());
             sectionPairs.push_back(secPair);
-        }
-        else if (current.getConn1() == "")
-        {
-            std::pair<QString, QString> secPair=
-                    std::make_pair<QString, QString>(current.getConn2(), current.getNode());
-            sectionPairs.push_back(secPair);
-        }
-        else
-        {
-            std::pair<QString, QString> secPair=
-                    std::make_pair<QString, QString>(current.getConn1(), current.getNode());
-            sectionPairs.push_back(secPair);
-        }
+//        }
+//        else if (current.getConn1() == "")
+//        {
+//            std::pair<QString, QString> secPair=
+//                    std::make_pair<QString, QString>(current.getConn2(), current.getNode());
+//            sectionPairs.push_back(secPair);
+//        }
+//        else
+//        {
+//            std::pair<QString, QString> secPair=
+//                    std::make_pair<QString, QString>(current.getConn1(), current.getNode());
+//            sectionPairs.push_back(secPair);
+//        }
     }
 }
 
