@@ -155,7 +155,7 @@ void TrainMonitor::switchMonitor(Section sec)
                         retrieveSections(section.first), retrieveSections(section.second));
         }
 
-        if(nextSection != "")
+        /*if(nextSection != "")
         {
             switch (retrieveSections(nextSection).getNumOfConns())
             {
@@ -179,12 +179,13 @@ void TrainMonitor::switchMonitor(Section sec)
                     // TODO
                     break;
             }
-        }
+        }*/
     }
 
     for (auto section : sectionPairs)
     {
-        if(section.second == monitorSection)
+//        if(section.second == monitorSection)
+        if(section.second == nextSection)
         {
             //emit trackOff();
             qDebug() << "Shutting off section " << section.second;
@@ -362,8 +363,7 @@ void TrainMonitor::updateSingleConnList(Section current)
     bool found = false;
     for(auto sec : sectionPairs)
     {
-        //if (sec.second == current.getConn1())
-        if (sec.second == current.getNode())
+        if (sec.second == current.getConn1())
         {
             sec.first = sec.second;
             sec.second = current.getNode();
@@ -388,11 +388,8 @@ void TrainMonitor::updateDoubleConnList(Section current)
     bool found = false;
     for(auto sec : sectionPairs)
     {
-//        if (sec.second == current.getConn1() ||
-//                sec.second == current.getConn2())
         if (sec.second == current.getConn1() ||
-                sec.second == current.getConn2() ||
-                sec.second == current.getNode())
+                sec.second == current.getConn2())
         {
             sec.first = sec.second;
             sec.second = current.getNode();
