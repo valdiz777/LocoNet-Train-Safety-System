@@ -687,7 +687,7 @@ void LocoSerial::do_sectionOff(int boardNum, int section)
 
     }
     QString _echocmd = "echo " + QString::number(boardNum)+ QString(QChar(TO_HEX(section-1)))+"0";
-    QString _netcatcmd = "netcat " + (_isStal)? stal: star;
+    QString _netcatcmd = "nc " + (_isStal)? stal: star;
 
     // send message
     powerSection(_echocmd, _netcatcmd, false);
@@ -725,7 +725,7 @@ void LocoSerial::do_sectionOn(int boardNum, int section)
 
     // create commands
     QString _echocmd = "echo " + QString::number(boardNum)+ QString(QChar(TO_HEX(section-1)))+"1";
-    QString _netcatcmd = "netcat " + (_isStal)? stal: star;
+    QString _netcatcmd = "nc " + (_isStal)? stal: star;
 
     // send message
     powerSection(_echocmd, _netcatcmd, true);
