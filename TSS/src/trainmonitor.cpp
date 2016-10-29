@@ -365,6 +365,7 @@ void TrainMonitor::updateSingleConnList(Section current)
     {
         if (sec.second == current.getConn1())
         {
+            qDebug() << "Found a pair to update (endpoint)";
             sec.first = sec.second;
             sec.second = current.getNode();
             found = true;
@@ -392,6 +393,7 @@ void TrainMonitor::updateDoubleConnList(Section current)
         if (sec.second == current.getConn1() ||
                 sec.second == current.getConn2())
         {
+            qDebug() << "Found a pair to update (straight)";
             sec.first = sec.second;
             sec.second = current.getNode();
             found = true;
@@ -434,6 +436,7 @@ void TrainMonitor::updateTripleConnList(Section current)
                 sec.second == current.getConn2() ||
                 sec.second == current.getConn3())
         {
+            qDebug() << "Found a pair to update (switch)";
             sec.first = sec.second;
             sec.second = current.getNode();
             found = true;
