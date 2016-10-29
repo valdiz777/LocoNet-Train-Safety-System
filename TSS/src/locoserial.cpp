@@ -687,15 +687,17 @@ void LocoSerial::do_sectionOff(int boardNum, int section)
 
     }
     QString _echocmd = "echo " + QString::number(boardNum)+ QString(QChar(TO_HEX(section-1)))+"0";
-    QString _netcatcmd = "netcat " + (_isStal)? stal: star;
 
     QProcess echo;
     QProcess netcat;
     // send message
-    // send message
     echo.setStandardOutputProcess(&netcat);
-    echo.start(_echocmd);
-    netcat.start(_netcatcmd);
+        echo.start(_echocmd);
+        if (_isStal) {
+            netcat.start("netcat " + stal);
+        } else {
+            netcat.start("netcat " + star);
+        }
     netcat.setProcessChannelMode(QProcess::ForwardedChannels);
 
     // Wait for it to start
@@ -746,16 +748,19 @@ void LocoSerial::do_sectionOn(int boardNum, int section)
 
     // create commands
     QString _echocmd = "echo " + QString::number(boardNum)+ QString(QChar(TO_HEX(section-1)))+"1";
-    QString _netcatcmd = "netcat " + (_isStal)? stal: star;
 
     QProcess echo;
     QProcess netcat;
     // send message
-    // send message
     echo.setStandardOutputProcess(&netcat);
-    echo.start(_echocmd);
-    netcat.start(_netcatcmd);
-    netcat.setProcessChannelMode(QProcess::ForwardedChannels);
+        echo.start(_echocmd);
+        if (_isStal) {
+            netcat.start("netcat " + stal);
+        } else {
+            netcat.start("netcat " + star);
+        }
+
+        netcat.setProcessChannelMode(QProcess::ForwardedChannels);
 
     // Wait for it to start
     if(!echo.waitForStarted())
