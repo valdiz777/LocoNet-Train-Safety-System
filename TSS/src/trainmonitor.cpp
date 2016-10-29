@@ -202,7 +202,7 @@ void TrainMonitor::switchMonitor(Section sec)
 
 Section TrainMonitor::retrieveSections(QString section)
 {
-    QDebug() << "retrieveSections()";
+    QDebug() << "retrieveSections() " << section;
 	Section newSection;
 	//int NotFoundIndex;
 
