@@ -92,8 +92,10 @@ void LocoSerial::powerSection(QString echoMsg, QString netcatMsg, bool OnCmd)
     QProcess echo;
     QProcess netcat;
     if (OnCmd) {
+        qDebug() << "Sections on: " << getSectionOnCmds() << endl;
        setSectionOnCmds(getSectionOnCmds() + 1);
     } else {
+         qDebug() << "Sections off: " << getSectionOffCmds() << endl;
        setSectionOffCmds(getSectionOffCmds() + 1);
     }
 
@@ -111,7 +113,7 @@ void LocoSerial::powerSection(QString echoMsg, QString netcatMsg, bool OnCmd)
     QByteArray buffer;
     while ((retval = netcat.waitForFinished()));
         buffer.append(netcat.readAll());
-    qDebug() << "Section On Output: " << buffer;
+    qDebug() << "Section power Output: " << buffer << endl;
     echo.close();
     netcat.close();
 }
