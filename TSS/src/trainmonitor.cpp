@@ -213,7 +213,7 @@ Section TrainMonitor::retrieveSections(QString section)
 
 	if (!found)
 	{
-		qWarning("Invalid section:%s. Are you sure the section exists?", section.toLatin1().constData());
+        qDebug() << "Invalid section:" << section << ", Are you sure the section exists?" << section;
 	}
 
 	return newSection;
