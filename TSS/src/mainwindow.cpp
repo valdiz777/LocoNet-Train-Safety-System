@@ -124,6 +124,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(trainmonitor, &TrainMonitor::sectionOn, locoserial, &LocoSerial::do_sectionOn);
     connect(trainmonitor, &TrainMonitor::closeTurnout, locoserial, &LocoSerial::do_closeTurnout);
     connect(trainmonitor, &TrainMonitor::throwTurnout, locoserial, &LocoSerial::do_throwTurnout);
+    connect(trainmonitor, &TrainMonitor::clearSectionOffCount, locoserial, &LocoSerial::do_clearSectionOff);
+    connect(trainmonitor, &TrainMonitor::clearSectionOnCount, locoserial, &LocoSerial::do_clearSectionOn);
+    connect(trainmonitor, &TrainMonitor::printSectionsOff, locoserial, &LocoSerial::do_getSectionsOff);
+    connect(trainmonitor, &TrainMonitor::printSectionsOn, locoserial, &LocoSerial::do_getSectionsOn);
 	connect(&threadMonitor, &QThread::finished, trainmonitor, &QObject::deleteLater);
 
     // Kickstart threads

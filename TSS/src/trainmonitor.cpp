@@ -275,6 +275,7 @@ void TrainMonitor::handle_serialOpened()
     }
 
     qDebug() << switches << " switches have be initialized";
+    emit printSectionsOn();
 }
 
 Section TrainMonitor::findNextSection(Section previousSection,

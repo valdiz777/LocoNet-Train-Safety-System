@@ -75,14 +75,34 @@ void LocoSerial::readTimerStart(int _msec)
 	readTimer->start(_msec);
 }
 
+int LocoSerial::getSectionOnCmds() const
+{
+    return sectionOnCmds;
+}
+
+void LocoSerial::setSectionOnCmds(int value)
+{
+    sectionOnCmds = value;
+}
+
+int LocoSerial::getSectionOffCmds() const
+{
+    return sectionOffCmds;
+}
+
+void LocoSerial::setSectionOffCmds(int value)
+{
+    sectionOffCmds = value;
+}
+
 void LocoSerial::readTimerStop()
 {
-	if (!readTimer) {
-		return;
-	}
-	disconnect(readTimer, 0, 0, 0);
-	readTimer->stop();
-	readTimer->deleteLater();
+    if (!readTimer) {
+        return;
+    }
+    disconnect(readTimer, 0, 0, 0);
+    readTimer->stop();
+    readTimer->deleteLater();
 }
 
 void LocoSerial::do_close()
@@ -655,9 +675,9 @@ void LocoSerial::do_sectionOff(int boardNum, int section)
     while ((retval = netcat.waitForFinished()));
         buffer.append(netcat.readAll());
     qDebug() << "Section Off Output: " << buffer;
+    sectionOffCmds++;
     echo.close();
     netcat.close();
-
 }
 
 void LocoSerial::do_sectionOn(int boardNum, int section)
@@ -710,8 +730,29 @@ void LocoSerial::do_sectionOn(int boardNum, int section)
     QByteArray buffer;
     while ((retval = netcat.waitForFinished()));
         buffer.append(netcat.readAll());
-    qDebug() << "Section Off Output: " << buffer;
+    qDebug() << "Section On Output: " << buffer;
+    sectionOnCmds++;
     echo.close();
     netcat.close();
-
 }
+
+void LocoSerial::do_clearSectionOff()
+{
+    setSectionOffCmds(0);
+}
+
+void LocoSerial::do_clearSectionOn()
+{
+    setSectionOnCmds(0);
+}
+
+void LocoSerial::do_getSectionsOff()
+{
+    qDebug() << getSectionOffCmds() << " Sections Off" << endl;
+}
+
+void LocoSerial::do_getSectionsOn()
+{
+        qDebug() << getSectionOnCmds() << " Sections On" << endl;
+}
+

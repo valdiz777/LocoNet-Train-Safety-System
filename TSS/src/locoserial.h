@@ -68,9 +68,15 @@ public:
     QProcess echo;
     QProcess netcat;
 
+    int getSectionOffCmds() const;
+    void setSectionOffCmds(int value);
+
+    int getSectionOnCmds() const;
+    void setSectionOnCmds(int value);
+
 signals:
-	void receivedPacket(LocoPacket);
-	void writtenPacket(LocoPacket);
+    void receivedPacket(LocoPacket);
+    void writtenPacket(LocoPacket);
 	void writtenBytes(QByteArray);
 	void droppedPacket();
 	void serialOpened();
@@ -103,7 +109,10 @@ signals:
     void do_throwTurnout(int locoTurnout);
     void do_sectionOff(int boardNum, int section);
     void do_sectionOn(int boardNum, int section);
-
+    void do_clearSectionOff();
+    void do_clearSectionOn();
+    void do_getSectionsOff();
+    void do_getSectionsOn();
 protected:
 	void readTimerStop();
 	void readTimerStart(int _msec);
@@ -116,6 +125,8 @@ private:
 	LocoPacket * incomingPacket;
 	LocoPacket * outgoingPacket;
 	bool * debug;
+    int sectionOnCmds = 0;
+    int sectionOffCmds = 0;
     //int * waitForReply;
     //QVector<LocoPacket> * outgoingQueue;
 };

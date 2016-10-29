@@ -52,6 +52,10 @@ signals:
     void sectionOn(int boardNum, int section);
     void closeTurnout(int locoTurnout);
     void throwTurnout(int locoTurnout);
+    void clearSectionOnCount();
+    void clearSectionOffCount();
+    void printSectionsOn();
+    void printSectionsOff();
 
 protected:
 
