@@ -125,8 +125,8 @@ private:
 	LocoPacket * incomingPacket;
 	LocoPacket * outgoingPacket;
 	bool * debug;
-    int m_sectionOnCmds = 0;
-    int m_sectionOffCmds = 0;
+    int m_sectionOnCmds;
+    int m_sectionOffCmds;
     //int * waitForReply;
     //QVector<LocoPacket> * outgoingQueue;
 };
