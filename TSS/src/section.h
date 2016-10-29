@@ -45,8 +45,16 @@ public:
     bool getThrownLeft();
     int getLtNum();
 
+    int getBoardNum() const;
+    void setBoardNum(int boardNum);
+
+    int getSection() const;
+    void setSection(int section);
+
 private:
-	QString m_node;
+    int m_boardNum;
+    int m_section;
+    QString m_node;
 	int m_numOfConns;
 	QString m_conn1;
 	QString m_conn2;

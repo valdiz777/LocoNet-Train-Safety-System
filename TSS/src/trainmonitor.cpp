@@ -120,7 +120,7 @@ void TrainMonitor::straightMonitor(Section sec)
 
     if(!found)
     {
-        //QFatal << "Shit didn't work homie!!!";
+        qDebug() << "Shit didn't work homie!!!";
     }
 
     for(auto section : sectionPairs)
@@ -130,8 +130,7 @@ void TrainMonitor::straightMonitor(Section sec)
             //emit trackOff();
             qDebug() << "Shutting off section " << section.second;
             Section shutdownSection = retrieveSections(section.second);
-            QStringList shutdownList = shutdownSection.getNode().split("-");
-            emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
+            emit sectionOff(shutdownSection.getBoardNum(),shutdownSection.getSection());
         }
     }
 }
@@ -251,7 +250,10 @@ void TrainMonitor::generateSectionList()
 
         Section sec = Section(node, numOfConns, conn1, conn2,
             conn3, ltNum, thrownLeft);
-		qDebug() << "SECTION:" << sec.getNode() << " CONN1:" << conn1 << ", CONN2:" << conn2;
+        QStringList shutdownList = node.split("-");
+        sec.setBoardNum(shutdownList[0].toInt());
+        sec.setSection(shutdownList[1].toInt());
+        qDebug() << "TRACK SECTION:" << QString::number(sec.getBoardNum()) << "-" << QString::number(sec.getSection()) << " CONN1:" << conn1 << ", CONN2:" << conn2;
 
 		m_sectionList.append(sec);
 	}
@@ -267,6 +269,7 @@ void TrainMonitor::handle_serialOpened()
         {
             switches++;
             emit throwTurnout(sec.getLtNum());
+            emit sectionOff(sec.getBoardNum(),sec.getSection());
             QThread::msleep(100);
         }
     }
