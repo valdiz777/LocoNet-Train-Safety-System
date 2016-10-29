@@ -270,7 +270,7 @@ void TrainMonitor::handle_serialOpened()
             switches++;
             emit throwTurnout(sec.getLtNum());
             emit sectionOff(sec.getBoardNum(),sec.getSection());
-            QThread::msleep(100);
+            QThread::msleep(250);
         }
     }
 
