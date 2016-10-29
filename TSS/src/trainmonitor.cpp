@@ -49,24 +49,28 @@ void TrainMonitor::Monitor(QString section)
         case 1:		// Endpoint case
         {
             updateSingleConnList(currentSection);
+            qDebug() << "entered endpoint monitor" << endl;
             endpointMonitor(currentSection);
             break;
         }
         case 2:		// Straight case
         {
             updateDoubleConnList(currentSection);
+            qDebug() << "entered straight monitor" << endl;
             straightMonitor(currentSection);
             break;
         }
         case 3:		// Switch case
         {
             updateTripleConnList(currentSection);
+            qDebug() << "entered switch monitor" << endl;
             switchMonitor(currentSection);
             break;
         }
         case 4:		// Crossover case
         {
             updateQuadConnList(currentSection);
+            qDebug() << "entered crossover monitor" << endl;
             //crossoverMonitor(currentSection);
             break;
         }
@@ -263,7 +267,7 @@ void TrainMonitor::handle_serialOpened()
         {
             switches++;
             emit throwTurnout(sec.getLtNum());
-            QThread::msleep(500);
+            QThread::msleep(100);
         }
     }
 
