@@ -100,6 +100,7 @@ void TrainMonitor::endpointMonitor(Section sec)
                 qDebug() << "Shutting off section " << section.second;
                 Section shutdownSection = retrieveSections(section.second);
                 QStringList shutdownList = shutdownSection.getNode().split("-");
+                qDebug() << shutdownList[0].toInt(),shutdownList[1].toInt();
                 emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
             }
         }
