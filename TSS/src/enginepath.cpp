@@ -5,6 +5,11 @@ EnginePath::EnginePath()
 
 }
 
+EnginePath::~EnginePath()
+{
+
+}
+
 EnginePath::EnginePath(Section parent, Section previous, Section current, Section future)
 {
     parentSection = parent;
