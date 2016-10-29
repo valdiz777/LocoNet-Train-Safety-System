@@ -18,7 +18,8 @@ TrainMonitor::~TrainMonitor()
 }
 
 void TrainMonitor::do_run() {
-	generateSectionList();
+    QDebug() << "do_run()";
+    generateSectionList();
 }
 
 void TrainMonitor::do_handleOccupancy(QString section, bool state)
@@ -33,7 +34,8 @@ void TrainMonitor::do_handleOccupancy(QString section, bool state)
 
 void TrainMonitor::Monitor(QString section)
 {
-    qDebug() << endl << endl;
+    qDebug() << "Monitor()";
+    qDebug() << endl << endl << "Mike's debug";
 
     for (auto section : sectionPairs)
     {
@@ -86,6 +88,7 @@ void TrainMonitor::Monitor(QString section)
 
 void TrainMonitor::endpointMonitor(Section sec)
 {
+    QDebug() << "endpointMonitor()";
 	// Shutdown the section since the means the train is headed
     // towards the end of the track
     for (auto section : sectionPairs)
@@ -105,6 +108,7 @@ void TrainMonitor::endpointMonitor(Section sec)
 
 void TrainMonitor::straightMonitor(Section sec)
 {
+    QDebug() << "straightMonitor()";
     QString nextSection;
     bool found = false;
 
@@ -140,6 +144,7 @@ void TrainMonitor::straightMonitor(Section sec)
 
 void TrainMonitor::switchMonitor(Section sec)
 {
+    QDebug() << "switchMonitor()";
     QString monitorSection;
     QString nextSection;
     for (auto section : sectionPairs)
@@ -197,6 +202,7 @@ void TrainMonitor::switchMonitor(Section sec)
 
 Section TrainMonitor::retrieveSections(QString section)
 {
+    QDebug() << "retrieveSections()";
 	Section newSection;
 	//int NotFoundIndex;
 
@@ -221,6 +227,7 @@ Section TrainMonitor::retrieveSections(QString section)
 
 void TrainMonitor::generateSectionList()
 {
+    QDebug() << "generateSectionList()";
 #pragma message("[MKJ] Do we want to move this to a central location?")
 	qDebug() << "Testing file input";
 	QString filename = QDir::currentPath().append("/Sections.txt");
@@ -241,7 +248,7 @@ void TrainMonitor::generateSectionList()
 	{
 
 
-		QStringList splitString = in.readLine().split(",");
+        QStringList splitString = in.readLine().split(",");
         node = splitString[0];
         qDebug() << "node:" << node;
         numOfConns = splitString[1].toInt();
@@ -265,6 +272,7 @@ void TrainMonitor::generateSectionList()
 
 void TrainMonitor::handle_serialOpened()
 {
+    QDebug() << "handle_serialOpened()";
     int switches = 0;
     for (Section  sec : m_sectionList)
     {
@@ -284,6 +292,7 @@ void TrainMonitor::handle_serialOpened()
 Section TrainMonitor::findNextSection(Section previousSection,
 	Section currentSection)
 {
+    QDebug() << "findNextSection()";
 	Section nextSection;
 	Section temp;
 
@@ -349,6 +358,7 @@ Section TrainMonitor::findNextSection(Section previousSection,
 /// Updates to an endpoint.....fix comment later
 void TrainMonitor::updateSingleConnList(Section current)
 {
+    QDebug() << "updateSingleConnList()";
     bool found = false;
     for(auto sec : sectionPairs)
     {
@@ -373,6 +383,7 @@ void TrainMonitor::updateSingleConnList(Section current)
 /// Updates strait aways.....
 void TrainMonitor::updateDoubleConnList(Section current)
 {
+    QDebug() << "updateDoubleConnList()";
     bool found = false;
     for(auto sec : sectionPairs)
     {
@@ -398,6 +409,7 @@ void TrainMonitor::updateDoubleConnList(Section current)
 /// Updates switches.....
 void TrainMonitor::updateTripleConnList(Section current)
 {
+    QDebug() << "updateTripleConnList()";
     bool found = false;
     for(auto sec : sectionPairs)
     {
@@ -425,11 +437,13 @@ void TrainMonitor::updateTripleConnList(Section current)
 /// Updates Crossovers....
 void TrainMonitor::updateQuadConnList(Section current)
 {
+    QDebug() << "updateQuadConnList()";
     // TODO
 }
 
 QString TrainMonitor::getNextStraightSection(Section previous, Section current)
 {
+    QDebug() << "getNextStraightSection()";
     QString nextSection;
     if(previous.getNode() == current.getConn1())
     {
@@ -445,6 +459,7 @@ QString TrainMonitor::getNextStraightSection(Section previous, Section current)
 
 QString TrainMonitor::getNextSwitchSection(Section previous, Section current)
 {
+    QDebug() << "getNextSwitchSection()";
     QString nextSection;
 
     if(previous.getNode() == current.getConn2() ||
