@@ -116,7 +116,7 @@ void TrainMonitor::straightMonitor(Section sec)
 
     if(!found)
     {
-        //QFatal << "Shit didn't work homie!!!";
+        QFatal() << "Shit didn't work homie!!!";
     }
 
     for(auto section : sectionPairs)
@@ -486,6 +486,3 @@ void TrainMonitor::do_handleSwitch(int LT, bool closed)
         }
     }
 }
-
-
-
