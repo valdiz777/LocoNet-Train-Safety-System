@@ -26,7 +26,7 @@
 #define MAX 128
 
 namespace std {
-	class LocoSerial;
+    class LocoSerial;
 }
 
 class LocoSerial : public QObject
@@ -72,8 +72,6 @@ public:
     int getSectionOnCmds() const;
     void setSectionOnCmds(int value);
 
-    void powerSection(QString echoMsg, QString netcatMsg, bool OnCmd);
-
 signals:
     void receivedPacket(LocoPacket);
     void writtenPacket(LocoPacket);
@@ -113,6 +111,8 @@ signals:
     void do_clearSectionOn();
     void do_getSectionsOff();
     void do_getSectionsOn();
+    void powerSection(QString echoMsg, QString netcatMsg, bool OnCmd);
+
 protected:
 	void readTimerStop();
 	void readTimerStart(int _msec);
