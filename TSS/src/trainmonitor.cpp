@@ -388,6 +388,7 @@ void TrainMonitor::updateDoubleConnList(Section current)
     bool found = false;
     for(auto sec : sectionPairs)
     {
+        qDebug() << "current.conn1 = '" << current.getConn1() << "'\tcurrent.conn2 = '" << current.getConn2() << "'";
         if (sec.second == current.getConn1() ||
                 sec.second == current.getConn2())
         {
