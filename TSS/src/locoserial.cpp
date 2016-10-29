@@ -689,8 +689,28 @@ void LocoSerial::do_sectionOff(int boardNum, int section)
     QString _echocmd = "echo " + QString::number(boardNum)+ QString(QChar(TO_HEX(section-1)))+"0";
     QString _netcatcmd = "netcat " + (_isStal)? stal: star;
 
+    QProcess echo;
+    QProcess netcat;
     // send message
-    powerSection(_echocmd, _netcatcmd, false);
+    // send message
+    echo.setStandardOutputProcess(&netcat);
+    echo.start(_echocmd);
+    netcat.start(_netcatcmd);
+    netcat.setProcessChannelMode(QProcess::ForwardedChannels);
+
+    // Wait for it to start
+    if(!echo.waitForStarted())
+        qFatal("Failed to turn off section, echo process not working\n");
+
+    bool retval = false;
+    QByteArray buffer;
+    while ((retval = netcat.waitForFinished()));
+        buffer.append(netcat.readAll());
+    qDebug() << "Section power Output: " << buffer << endl;
+    echo.close();
+    netcat.close();
+    qDebug() << "Sections off: " << getSectionOffCmds() << endl;
+   setSectionOnCmds(getSectionOffCmds() + 1);
 }
 
 void LocoSerial::do_sectionOn(int boardNum, int section)
@@ -723,12 +743,34 @@ void LocoSerial::do_sectionOn(int boardNum, int section)
 
     }
 
+
     // create commands
     QString _echocmd = "echo " + QString::number(boardNum)+ QString(QChar(TO_HEX(section-1)))+"1";
     QString _netcatcmd = "netcat " + (_isStal)? stal: star;
 
+    QProcess echo;
+    QProcess netcat;
     // send message
-    powerSection(_echocmd, _netcatcmd, true);
+    // send message
+    echo.setStandardOutputProcess(&netcat);
+    echo.start(_echocmd);
+    netcat.start(_netcatcmd);
+    netcat.setProcessChannelMode(QProcess::ForwardedChannels);
+
+    // Wait for it to start
+    if(!echo.waitForStarted())
+        qFatal("Failed to turn off section, echo process not working\n");
+
+    bool retval = false;
+    QByteArray buffer;
+    while ((retval = netcat.waitForFinished()));
+        buffer.append(netcat.readAll());
+    qDebug() << "Section power Output: " << buffer << endl;
+    echo.close();
+    netcat.close();
+    qDebug() << "Sections on: " << getSectionOnCmds() << endl;
+   setSectionOnCmds(getSectionOnCmds() + 1);
+
 }
 
 void LocoSerial::do_clearSectionOff()
