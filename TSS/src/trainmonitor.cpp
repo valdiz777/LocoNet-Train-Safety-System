@@ -411,13 +411,13 @@ void TrainMonitor::updateDoubleConnList(Section current)
         else if (current.getConn1() == "")
         {
             std::pair<QString, QString> secPair=
-                    std::make_pair<QString, QString>(current.getConn1(), current.getNode());
+                    std::make_pair<QString, QString>(current.getConn2(), current.getNode());
             sectionPairs.push_back(secPair);
         }
         else
         {
             std::pair<QString, QString> secPair=
-                    std::make_pair<QString, QString>(current.getConn2(), current.getNode());
+                    std::make_pair<QString, QString>(current.getConn1(), current.getNode());
             sectionPairs.push_back(secPair);
         }
     }
