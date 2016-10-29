@@ -706,7 +706,7 @@ void LocoSerial::do_sectionOff(int boardNum, int section)
     QByteArray buffer;
     while ((retval = netcat.waitForFinished()));
         buffer.append(netcat.readAll());
-    qDebug() << "Section power Output: " << buffer << endl;
+    qDebug() << "Section off power Output: " << buffer << endl;
     echo.close();
     netcat.close();
     qDebug() << "Sections off: " << getSectionOffCmds() << endl;
@@ -759,13 +759,13 @@ void LocoSerial::do_sectionOn(int boardNum, int section)
 
     // Wait for it to start
     if(!echo.waitForStarted())
-        qFatal("Failed to turn off section, echo process not working\n");
+        qFatal("Failed to turn on section, echo process not working\n");
 
     bool retval = false;
     QByteArray buffer;
     while ((retval = netcat.waitForFinished()));
         buffer.append(netcat.readAll());
-    qDebug() << "Section power Output: " << buffer << endl;
+    qDebug() << "Section on power Output: " << buffer << endl;
     echo.close();
     netcat.close();
     qDebug() << "Sections on: " << getSectionOnCmds() << endl;
