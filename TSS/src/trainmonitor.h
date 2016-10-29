@@ -33,11 +33,11 @@ public:
     QString getNextStraightSection(Section previous, Section current);
     QString getNextSwitchSection(Section previous, Section current);
     QString getNextEndpointSection(Section previous, Section current);
-	public slots:
+
+public slots:
 	void do_run();
 	void do_handleOccupancy(QString sec, bool state);
     void do_handleSwitch(int LT, bool closed);
-
     void handle_serialOpened();
 
 signals:

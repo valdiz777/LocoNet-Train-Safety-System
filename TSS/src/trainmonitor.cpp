@@ -43,30 +43,34 @@ void TrainMonitor::Monitor(QString section)
         //Section monitorSection = es.path.getNextSection1();
 
     Section currentSection = retrieveSections(section);
-
+    qDebug() << "Starting monitor ....." << endl;
     switch (currentSection.getNumOfConns())
     {
         case 1:		// Endpoint case
         {
             updateSingleConnList(currentSection);
+            qDebug() << "entered endpoint monitor" << endl;
             endpointMonitor(currentSection);
             break;
         }
         case 2:		// Straight case
         {
             updateDoubleConnList(currentSection);
+            qDebug() << "entered straight monitor" << endl;
             straightMonitor(currentSection);
             break;
         }
         case 3:		// Switch case
         {
             updateTripleConnList(currentSection);
+            qDebug() << "entered switch monitor" << endl;
             switchMonitor(currentSection);
             break;
         }
         case 4:		// Crossover case
         {
             updateQuadConnList(currentSection);
+            qDebug() << "entered crossover monitor" << endl;
             //crossoverMonitor(currentSection);
             break;
         }
@@ -116,7 +120,11 @@ void TrainMonitor::straightMonitor(Section sec)
 
     if(!found)
     {
+<<<<<<< HEAD
         QFatal() << "Shit didn't work homie!!!";
+=======
+        qDebug() << "Shit didn't work homie!!!";
+>>>>>>> 040cde831d5db62e4bb96e9eb3b9a1f221c5a9ae
     }
 
     for(auto section : sectionPairs)
@@ -126,8 +134,7 @@ void TrainMonitor::straightMonitor(Section sec)
             //emit trackOff();
             qDebug() << "Shutting off section " << section.second;
             Section shutdownSection = retrieveSections(section.second);
-            QStringList shutdownList = shutdownSection.getNode().split("-");
-            emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
+            emit sectionOff(shutdownSection.getBoardNum(),shutdownSection.getSection());
         }
     }
 }
@@ -247,7 +254,10 @@ void TrainMonitor::generateSectionList()
 
         Section sec = Section(node, numOfConns, conn1, conn2,
             conn3, ltNum, thrownLeft);
-		qDebug() << "SECTION:" << sec.getNode() << " CONN1:" << conn1 << ", CONN2:" << conn2;
+        QStringList shutdownList = node.split("-");
+        sec.setBoardNum(shutdownList[0].toInt());
+        sec.setSection(shutdownList[1].toInt());
+        qDebug() << "TRACK SECTION:" << QString::number(sec.getBoardNum()) << "-" << QString::number(sec.getSection()) << " CONN1:" << conn1 << ", CONN2:" << conn2;
 
 		m_sectionList.append(sec);
 	}
@@ -263,7 +273,8 @@ void TrainMonitor::handle_serialOpened()
         {
             switches++;
             emit throwTurnout(sec.getLtNum());
-            QThread::msleep(500);
+            emit sectionOff(sec.getBoardNum(),sec.getSection());
+            QThread::msleep(250);
         }
     }
 

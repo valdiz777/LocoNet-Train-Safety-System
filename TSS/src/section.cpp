@@ -92,3 +92,23 @@ int Section::getLtNum()
     return m_ltnum;
 }
 
+int Section::getBoardNum() const
+{
+    return m_boardNum;
+}
+
+void Section::setBoardNum(int boardNum)
+{
+    m_boardNum = boardNum;
+}
+
+int Section::getSection() const
+{
+    return m_section;
+}
+
+void Section::setSection(int section)
+{
+    m_section = section;
+}
+

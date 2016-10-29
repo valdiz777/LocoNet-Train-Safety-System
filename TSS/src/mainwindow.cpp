@@ -81,6 +81,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(locoserial, &LocoSerial::writtenBytes, this, &MainWindow::do_bytesWritten);
 	connect(locoserial, &LocoSerial::printPacketDesc, this, &MainWindow::do_printDescriptions); // QT-5 style works
 	connect(locoserial, &LocoSerial::serialOpened, this, &MainWindow::handle_serialOpened);
+    connect(locoserial, &LocoSerial::serialOpened, trainmonitor, &TrainMonitor::handle_serialOpened);
 	connect(locoserial, &LocoSerial::serialClosed, this, &MainWindow::handle_serialClosed);
     connect(locoserial, &LocoSerial::trainUpdated, locosql, &LocoSQL::do_updateTrain);
     connect(locoserial, &LocoSerial::blockUpdated, locosql, &LocoSQL::do_updateBlock);
@@ -123,7 +124,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(trainmonitor, &TrainMonitor::sectionOn, locoserial, &LocoSerial::do_sectionOn);
     connect(trainmonitor, &TrainMonitor::closeTurnout, locoserial, &LocoSerial::do_closeTurnout);
     connect(trainmonitor, &TrainMonitor::throwTurnout, locoserial, &LocoSerial::do_throwTurnout);
-    connect(locoserial, &LocoSerial::serialOpened, trainmonitor, &TrainMonitor::handle_serialOpened);
 	connect(&threadMonitor, &QThread::finished, trainmonitor, &QObject::deleteLater);
 
     // Kickstart threads
