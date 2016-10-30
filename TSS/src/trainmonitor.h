@@ -58,6 +58,7 @@ signals:
     void clearSectionOffCount();
     void printSectionsOn();
     void printSectionsOff();
+    void collisionEvt(QString collisionSection, QString movingSection1, QString movingSection2);
 
 protected:
 
