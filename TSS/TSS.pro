@@ -52,3 +52,6 @@ FORMS    += src/mainwindow.ui
 DISTFILES += \
     Sections.txt \
     src/tss.rc
+
+RESOURCES += \
+    tss.qrc
