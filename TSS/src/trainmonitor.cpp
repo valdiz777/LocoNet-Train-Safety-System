@@ -66,10 +66,10 @@ void TrainMonitor::Monitor(QString section)
                 qDebug() << shutdownList[0].toInt() << "-" << shutdownList[1].toInt();
                 emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
 
-                qDebug() << "Section " << currentSection.getConn1() << " needs to be shutdown (straight)";
-                shutdownList = currentSection.getConn1().split("-");
-                qDebug() << shutdownList[0].toInt() << "-" << shutdownList[1].toInt();
-                emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
+//                qDebug() << "Section " << currentSection.getConn1() << " needs to be shutdown (straight)";
+//                shutdownList = currentSection.getConn1().split("-");
+//                qDebug() << shutdownList[0].toInt() << "-" << shutdownList[1].toInt();
+//                emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
 
                 qDebug() << "Section " << currentSection.getConn2() << " needs to be shutdown (straight)";
                 shutdownList = currentSection.getConn2().split("-");
