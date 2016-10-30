@@ -77,6 +77,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	// Serial
 	connect(this, &MainWindow::locoserial_open, locoserial, &LocoSerial::do_open);
 	connect(this, &MainWindow::locoserial_write, locoserial, &LocoSerial::do_writePacket);
+    connect(this, &MainWindow::nodeOff, locoserial, &LocoSerial::do_nodeOff);
+    connect(this, &MainWindow::nodeOn, locoserial, &LocoSerial::do_nodeOn);
 	connect(locoserial, &LocoSerial::receivedPacket, this, &MainWindow::do_packetReceived); // QT-5 style works
 	connect(locoserial, &LocoSerial::writtenBytes, this, &MainWindow::do_bytesWritten);
 	connect(locoserial, &LocoSerial::printPacketDesc, this, &MainWindow::do_printDescriptions); // QT-5 style works
@@ -243,33 +245,55 @@ void MainWindow::do_OPfromComboBox()
     do_enableArgs();
 }
 
-void MainWindow::do_showCollisionEvt(QString collisionSection, QString movingSection1, QString movingSection2)
+void MainWindow::do_showCollisionEvt(QString collisionSection, QString Section1, QString Section2)
 {
+    if(!collisionSection.isEmpty()){
+        emit nodeOff(collisionSection);
+    }
+    if(!Section1.isEmpty()){
+        emit nodeOff(Section1);
+    }
+    if(!Section2.isEmpty()){
+        emit nodeOff(Section2);
+    }
+
     QMessageBox *msgBox = new QMessageBox;
     msgBox->setAttribute( Qt::WA_DeleteOnClose);
     msgBox->setText("Collision event detected at " + collisionSection);
-    msgBox->setInformativeText("Resolve setions ["+movingSection1 + " and " + movingSection2+"]");
+    msgBox->setInformativeText("Resolve setions ["+Section1 + " and " + Section2+"]");
     msgBox->setStandardButtons(QMessageBox::Ok);
     msgBox->setDefaultButton(QMessageBox::Ok);
     msgBox->setModal(false);
-    msgBox->open( this, SLOT(msgBoxClosed(QAbstractButton*)));   
+    msgBox->open( this, SLOT(msgBoxClosed(QAbstractButton *, collisionSection, Section1, Section2)));
 }
-void MainWindow::msgBoxClosed(QAbstractButton *button){
+
+
+void MainWindow::msgBoxClosed(QAbstractButton *button,QString collisionSection, QString Section1, QString Section2){
 
     QMessageBox *msgBox = (QMessageBox *) sender();
     QMessageBox::StandardButton btn = msgBox->standardButton(button);
     if(btn == QMessageBox::Ok ){
-        qDebug() << "Thanks for clicking";
+
+        if(!collisionSection.isEmpty()){
+           emit nodeOn(collisionSection);
+        }
+        if(!Section1.isEmpty()){
+           emit nodeOn(Section1);
+        }
+        if(!Section2.isEmpty()){
+           emit nodeOn(Section2);
+        }
     }
+
     else{
         throw "unkown button";
-    }
+        }
 }
 
 void MainWindow::do_refreshSerialList()
 {
     int _index = 0;
-	ui->comboBox_serialList->clear();
+    ui->comboBox_serialList->clear();
     foreach (QextPortInfo portInfo, QextSerialEnumerator::getPorts())
     {
         ui->comboBox_serialList->insertItem(_index, portInfo.portName);

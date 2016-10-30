@@ -52,6 +52,8 @@ signals:
 	void trackOff();
     void sectionOff(int boardNum, int section);
     void sectionOn(int boardNum, int section);
+    void nodeOn(QString node);
+    void nodeOff(QString node);
     void closeTurnout(int locoTurnout);
     void throwTurnout(int locoTurnout);
     void clearSectionOnCount();
