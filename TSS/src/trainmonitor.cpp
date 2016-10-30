@@ -59,16 +59,38 @@ void TrainMonitor::Monitor(QString section)
         }
         case 2:		// Straight case
         {
-            updateDoubleConnList(currentSection);
-            qDebug() << "entered straight monitor" << endl;
-            straightMonitor(currentSection);
+            if(!updateDoubleConnList(currentSection))
+            {
+                qDebug() << "Section " << currentSection.getNode() << " needs to be shutdown (straight)";
+                QStringList shutdownList = currentSection.getNode().split("-");
+                qDebug() << shutdownList[0].toInt() << "-" << shutdownList[1].toInt();
+                emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
+
+                qDebug() << "Section " << currentSection.getConn1() << " needs to be shutdown (straight)";
+                shutdownList = currentSection.getConn1().split("-");
+                qDebug() << shutdownList[0].toInt() << "-" << shutdownList[1].toInt();
+                emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
+
+                qDebug() << "Section " << currentSection.getConn2() << " needs to be shutdown (straight)";
+                shutdownList = currentSection.getConn2().split("-");
+                qDebug() << shutdownList[0].toInt() << "-" << shutdownList[1].toInt();
+                emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
+            }
+            //qDebug() << "entered straight monitor" << endl;
+            //straightMonitor(currentSection);
             break;
         }
         case 3:		// Switch case
         {
-            updateTripleConnList(currentSection);
-            qDebug() << "entered switch monitor" << endl;
-            switchMonitor(currentSection);
+            if(!updateTripleConnList(currentSection))
+            {
+                qDebug() << "Section " << currentSection.getNode() << " needs to be shutdown (switch)";
+                qDebug() << "Section " << currentSection.getConn1() << " needs to be shutdown (switch)";
+                qDebug() << "Section " << currentSection.getConn2() << " needs to be shutdown (switch)";
+                qDebug() << "Section " << currentSection.getConn3() << " needs to be shutdown (switch)";
+            }
+//            qDebug() << "entered switch monitor" << endl;
+//            switchMonitor(currentSection);
             break;
         }
         case 4:		// Crossover case
@@ -98,10 +120,10 @@ void TrainMonitor::endpointMonitor(Section sec)
             if(section.first != "")
             {
                 qDebug() << "Shutting off section " << section.second;
-                Section shutdownSection = retrieveSections(section.second);
-                QStringList shutdownList = shutdownSection.getNode().split("-");
-                qDebug() << shutdownList[0].toInt() << "-" << shutdownList[1].toInt();
-                emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
+//                Section shutdownSection = retrieveSections(section.second);
+//                QStringList shutdownList = shutdownSection.getNode().split("-");
+//                qDebug() << shutdownList[0].toInt() << "-" << shutdownList[1].toInt();
+//                emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
             }
         }
     }
@@ -133,12 +155,13 @@ void TrainMonitor::straightMonitor(Section sec)
 
     for(auto section : sectionPairs)
     {
+        qDebug() << "nextSection: " << nextSection << " section.second:" << section.second << endl;
         if(nextSection == section.second)
         {
             //emit trackOff();
             qDebug() << "Shutting off section " << section.second;
-            Section shutdownSection = retrieveSections(section.second);
-            emit sectionOff(shutdownSection.getBoardNum(),shutdownSection.getSection());
+//            Section shutdownSection = retrieveSections(section.second);
+//            emit sectionOff(shutdownSection.getBoardNum(),shutdownSection.getSection());
         }
     }
 }
@@ -190,9 +213,9 @@ void TrainMonitor::switchMonitor(Section sec)
         {
             //emit trackOff();
             qDebug() << "Shutting off section " << section.second;
-            Section shutdownSection = retrieveSections(section.second);
-            QStringList shutdownList = shutdownSection.getNode().split("-");
-            emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
+//            Section shutdownSection = retrieveSections(section.second);
+//            QStringList shutdownList = shutdownSection.getNode().split("-");
+//            emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
         }
     }
 }
@@ -281,14 +304,14 @@ void TrainMonitor::handle_serialOpened()
         if (sec.getNumOfConns() ==  3)
         {
             switches++;
-            emit throwTurnout(sec.getLtNum());
-            emit sectionOn(sec.getBoardNum(),sec.getSection());
+//            emit throwTurnout(sec.getLtNum());
+//            emit sectionOn(sec.getBoardNum(),sec.getSection());
             QThread::msleep(200);
         }
     }
 
     qDebug() << switches << " switches have be initialized";
-    emit printSectionsOn();
+//    emit printSectionsOn();
 }
 
 Section TrainMonitor::findNextSection(Section previousSection,
@@ -393,11 +416,14 @@ void TrainMonitor::updateSingleConnList(Section current)
 }
 
 /// Updates strait aways.....
-void TrainMonitor::updateDoubleConnList(Section current)
+bool TrainMonitor::updateDoubleConnList(Section current)
 {
+    bool ret = false;
     qDebug() << "updateDoubleConnList()";
     bool found = false;
     int i = 0;
+    int numOccurrences = 0;
+
     for(auto sec : sectionPairs)
     {
         qDebug() << "current.conn1 = '" << current.getConn1() << "'\tcurrent.conn2 = '" << current.getConn2() << "'";
@@ -413,16 +439,21 @@ void TrainMonitor::updateDoubleConnList(Section current)
             if(sec.second == current.getConn1())
             {
                 past = current.getConn1();
+                ++numOccurrences;
             }
-            else
+
+            if(sec.second == current.getConn1())
             {
                 past = current.getConn2();
+                ++numOccurrences;
             }
+
             std::pair<QString, QString> secPair=
                     std::make_pair<QString, QString>((QString)past, current.getNode());
             sectionPairs.push_back(secPair);
             sectionPairs.removeAt(i);
             found = true;
+
         }
         ++i;
     }
@@ -450,14 +481,23 @@ void TrainMonitor::updateDoubleConnList(Section current)
 //            sectionPairs.push_back(secPair);
 //        }
     }
+
+    if(numOccurrences < 2)
+    {
+        ret = true;
+    }
+
+    return ret;
 }
 
 /// Updates switches.....
-void TrainMonitor::updateTripleConnList(Section current)
+bool TrainMonitor::updateTripleConnList(Section current)
 {
     qDebug() << "updateTripleConnList()";
     bool found = false;
     int i = 0;
+    int numOccurrences = 0;
+    bool ret = false;
     for(auto sec : sectionPairs)
     {
         if (sec.second == current.getConn1() ||
@@ -472,14 +512,19 @@ void TrainMonitor::updateTripleConnList(Section current)
             if(sec.second == current.getConn1())
             {
                 past = current.getConn1();
+                ++numOccurrences;
             }
-            else if (sec.second == current.getConn2())
+
+            if (sec.second == current.getConn2())
             {
                 past = current.getConn2();
+                ++numOccurrences;
             }
-            else
+
+            if (sec.second == current.getConn3())
             {
                 past = current.getConn3();
+                ++numOccurrences;
             }
 
             std::pair<QString, QString> secPair=
@@ -493,14 +538,21 @@ void TrainMonitor::updateTripleConnList(Section current)
     }
 
     if(!found)
-        if(!found)
-        {
-            qDebug() << "Section " << current.getNode() << " not found, adding to list" << endl;
-            /// TODO
-            std::pair<QString, QString> secPair =
-                     std::make_pair<QString, QString>("", current.getNode());
-            sectionPairs.push_back(secPair);
-        }
+    {
+        qDebug() << "Section " << current.getNode() << " not found, adding to list" << endl;
+        /// TODO
+        std::pair<QString, QString> secPair =
+            std::make_pair<QString, QString>("", current.getNode());
+        sectionPairs.push_back(secPair);
+    }
+
+    if(numOccurrences < 2)
+    {
+        ret = true;
+    }
+
+    return ret;
+
 }
 
 /// Updates Crossovers....

@@ -26,13 +26,14 @@ public:
 	void stopMonitor();
     void Monitor(QString monitorSection);
     void updateSingleConnList(Section current);
-    void updateDoubleConnList(Section current);
-    void updateTripleConnList(Section current);
+    bool updateDoubleConnList(Section current);
+    bool updateTripleConnList(Section current);
     void updateQuadConnList(Section current);
     //void straightMonitor(Section sec);
     QString getNextStraightSection(Section previous, Section current);
     QString getNextSwitchSection(Section previous, Section current);
     QString getNextEndpointSection(Section previous, Section current);
+    void generateSectionList();
 
 public slots:
 	void do_run();
@@ -70,7 +71,7 @@ private:
     QList<EnginePath> enginePaths; // may take place of sectionPairs.......
 
     bool running;
-	void generateSectionList();
+//	void generateSectionList();
 	Section retrieveSections(QString section);
 	QList<Section> m_sectionList;
 	Section findNextSection(Section previousSection, Section currentSection);
