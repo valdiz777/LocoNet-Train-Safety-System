@@ -15,6 +15,7 @@ OBJECTS_DIR = $$DESTDIR/.obj
 MOC_DIR = $$DESTDIR/.moc
 RCC_DIR = $$DESTDIR/.qrc
 UI_DIR = $$DESTDIR/.ui
+RC_FILE = src/tss.rc
 
 TARGET = TSS
 CONFIG += c++11
@@ -49,4 +50,5 @@ HEADERS  += src/mainwindow.h \
 FORMS    += src/mainwindow.ui
 
 DISTFILES += \
-    Sections.txt
+    Sections.txt \
+    src/tss.rc

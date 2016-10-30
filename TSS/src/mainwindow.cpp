@@ -40,7 +40,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
-
 	// Declare threads
 	locoserial = new LocoSerial;
 	locoserial->moveToThread(&threadSerial);
