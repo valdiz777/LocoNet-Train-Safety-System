@@ -15,6 +15,8 @@
 #include <QSqlQuery>
 #include <QtSql>
 #include <QThread>
+#include<QMessageBox>
+
 
 #include "locoblock.h"
 #include "locobyte.h"
@@ -51,6 +53,7 @@ public:
 	void do_printDescriptions(QString);
 	void do_loadOPComboBox();
 	void do_OPfromComboBox();
+    void do_showCollisionEvt(QString collisionSection, QString movingSection1, QString movingSection2);
 
 	void handle_serialOpened();
 	void handle_serialClosed();

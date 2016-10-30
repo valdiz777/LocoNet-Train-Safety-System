@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+
 /**
  * tss - "Train Safety System"
  * Prevent train collisions in digitrax HO model
@@ -128,6 +129,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(trainmonitor, &TrainMonitor::clearSectionOnCount, locoserial, &LocoSerial::do_clearSectionOn);
     connect(trainmonitor, &TrainMonitor::printSectionsOff, locoserial, &LocoSerial::do_getSectionsOff);
     connect(trainmonitor, &TrainMonitor::printSectionsOn, locoserial, &LocoSerial::do_getSectionsOn);
+    connect(trainmonitor, &TrainMonitor::collisionEvt, this, &MainWindow::do_showCollisionEvt);
 	connect(&threadMonitor, &QThread::finished, trainmonitor, &QObject::deleteLater);
 
     // Kickstart threads
@@ -239,7 +241,20 @@ void MainWindow::do_OPfromComboBox()
 	QVector<QString> _opcodes = _tmp.get_DBopcodes();
 	QString _hex = _opcodes[ui->comboBox_opcodes->currentIndex()];
 	ui->lineEdit_opcode->setText(_hex);
-	do_enableArgs();
+    do_enableArgs();
+}
+
+void MainWindow::do_showCollisionEvt(QString collisionSection, QString movingSection1, QString movingSection2)
+{
+    QMessageBox *msgBox = new QMessageBox;
+    msgBox->setText("Collision event detected at " + collisionSection);
+    msgBox->setInformativeText("Resolve setions ["+movingSection1 + " and " + movingSection2+"]");
+    msgBox->setStandardButtons(QMessageBox::Ok);
+    msgBox->setDefaultButton(QMessageBox::Ok);
+    msgBox->setWindowModality(Qt::NonModal);
+    msgBox->show();
+
+
 }
 
 void MainWindow::do_refreshSerialList()
