@@ -86,6 +86,8 @@ signals:
     void occupancyDataReady(QString, bool);
     void querySlot(LocoByte _arg);
 
+
+
 	public slots:
 	void do_writePacket(LocoPacket _packet);
 	void do_writeBytes(QByteArray _bytes);
@@ -112,7 +114,8 @@ signals:
     void do_getSectionsOff();
     void do_getSectionsOn();
     void powerSection(QString echoMsg, QString netcatMsg, bool OnCmd);
-
+    void do_nodeOn(QString node);
+    void do_nodeOff(QString node);
 protected:
 	void readTimerStop();
 	void readTimerStart(int _msec);

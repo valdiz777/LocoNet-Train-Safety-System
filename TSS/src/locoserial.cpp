@@ -118,6 +118,18 @@ void LocoSerial::powerSection(QString echoMsg, QString netcatMsg, bool OnCmd)
     netcat.close();
 }
 
+void LocoSerial::do_nodeOn(QString node)
+{
+    QStringList nodeProps = node.split("-");
+    do_sectionOn (nodeProps[0].toInt(), nodeProps[1].toInt());
+}
+
+void LocoSerial::do_nodeOff(QString node)
+{
+    QStringList nodeProps = node.split("-");
+    do_sectionOff (nodeProps[0].toInt(), nodeProps[1].toInt());
+}
+
 int LocoSerial::getSectionOffCmds() const
 {
     return m_sectionOffCmds;

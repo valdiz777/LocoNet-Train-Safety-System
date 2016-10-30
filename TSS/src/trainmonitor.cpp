@@ -251,6 +251,11 @@ Section TrainMonitor::retrieveSections(QString section)
 
 void TrainMonitor::generateSectionList()
 {
+    /*int i = 0;
+    if (i == 0){
+        emit collisionEvt("Test1", "Test2","Test3");//Testing purposes
+        i++;
+    }*/
     qDebug() << "generateSectionList()";
 #pragma message("[MKJ] Do we want to move this to a central location?")
     qDebug() << "Testing file input";
