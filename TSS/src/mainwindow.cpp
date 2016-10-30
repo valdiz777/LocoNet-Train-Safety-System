@@ -247,14 +247,24 @@ void MainWindow::do_OPfromComboBox()
 void MainWindow::do_showCollisionEvt(QString collisionSection, QString movingSection1, QString movingSection2)
 {
     QMessageBox *msgBox = new QMessageBox;
+    msgBox->setAttribute( Qt::WA_DeleteOnClose);
     msgBox->setText("Collision event detected at " + collisionSection);
     msgBox->setInformativeText("Resolve setions ["+movingSection1 + " and " + movingSection2+"]");
     msgBox->setStandardButtons(QMessageBox::Ok);
     msgBox->setDefaultButton(QMessageBox::Ok);
-    msgBox->setWindowModality(Qt::NonModal);
-    msgBox->show();
+    msgBox->setModal(false);
+    msgBox->open( this, SLOT(msgBoxClosed(QAbstractButton*)));   
+}
+void MainWindow::msgBoxClosed(QAbstractButton *button){
 
-
+    QMessageBox *msgBox = (QMessageBox *) sender();
+    QMessageBox::StandardButton btn = msgBox->standardButton(button);
+    if(btn == QMessageBox::Ok ){
+        qDebug() << "Thanks for clicking";
+    }
+    else{
+        throw "unkown button";
+    }
 }
 
 void MainWindow::do_refreshSerialList()

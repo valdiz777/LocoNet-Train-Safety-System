@@ -59,11 +59,12 @@ public:
 	void handle_serialClosed();
 	void handle_DBopened();
 	void handle_DBclosed();
-
+    void msgBoxClosed(QAbstractButton *button );
 signals:
     void locoserial_open(QextPortInfo _device);
 	void locoserial_write(LocoPacket outgoingPacket);
 	void locosql_open(QString hostname, int port, QString database, QString username, QString password);
+
 
 private:
 	Ui::MainWindow *ui;
