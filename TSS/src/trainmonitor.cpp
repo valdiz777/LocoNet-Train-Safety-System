@@ -120,10 +120,10 @@ void TrainMonitor::endpointMonitor(Section sec)
             if(section.first != "")
             {
                 qDebug() << "Shutting off section " << section.second;
-//                Section shutdownSection = retrieveSections(section.second);
-//                QStringList shutdownList = shutdownSection.getNode().split("-");
-//                qDebug() << shutdownList[0].toInt() << "-" << shutdownList[1].toInt();
-//                emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
+                Section shutdownSection = retrieveSections(section.second);
+                QStringList shutdownList = shutdownSection.getNode().split("-");
+                qDebug() << shutdownList[0].toInt() << "-" << shutdownList[1].toInt();
+                emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
             }
         }
     }
@@ -158,10 +158,10 @@ void TrainMonitor::straightMonitor(Section sec)
         qDebug() << "nextSection: " << nextSection << " section.second:" << section.second << endl;
         if(nextSection == section.second)
         {
-            //emit trackOff();
+
             qDebug() << "Shutting off section " << section.second;
-//            Section shutdownSection = retrieveSections(section.second);
-//            emit sectionOff(shutdownSection.getBoardNum(),shutdownSection.getSection());
+            Section shutdownSection = retrieveSections(section.second);
+            emit sectionOff(shutdownSection.getBoardNum(),shutdownSection.getSection());
         }
     }
 }
@@ -211,11 +211,10 @@ void TrainMonitor::switchMonitor(Section sec)
 //        if(section.second == monitorSection)
         if(section.second == nextSection)
         {
-            //emit trackOff();
             qDebug() << "Shutting off section " << section.second;
-//            Section shutdownSection = retrieveSections(section.second);
-//            QStringList shutdownList = shutdownSection.getNode().split("-");
-//            emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
+            Section shutdownSection = retrieveSections(section.second);
+            QStringList shutdownList = shutdownSection.getNode().split("-");
+            emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
         }
     }
 }
@@ -306,7 +305,7 @@ void TrainMonitor::handle_serialOpened()
             switches++;
             emit throwTurnout(sec.getLtNum());
             emit sectionOn(sec.getBoardNum(),sec.getSection());
-            QThread::msleep(200);
+            QThread::msleep(250);
         }
     }
 
