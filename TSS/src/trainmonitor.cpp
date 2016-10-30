@@ -304,14 +304,14 @@ void TrainMonitor::handle_serialOpened()
         if (sec.getNumOfConns() ==  3)
         {
             switches++;
-//            emit throwTurnout(sec.getLtNum());
-//            emit sectionOn(sec.getBoardNum(),sec.getSection());
+            emit throwTurnout(sec.getLtNum());
+            emit sectionOn(sec.getBoardNum(),sec.getSection());
             QThread::msleep(200);
         }
     }
 
     qDebug() << switches << " switches have be initialized";
-//    emit printSectionsOn();
+    emit printSectionsOn();
 }
 
 Section TrainMonitor::findNextSection(Section previousSection,
