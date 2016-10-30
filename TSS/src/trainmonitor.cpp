@@ -306,7 +306,7 @@ void TrainMonitor::handle_serialOpened()
             emit throwTurnout(sec.getLtNum());
         }
         emit sectionOn(sec.getBoardNum(),sec.getSection());
-        QThread::msleep(200);
+        QThread::msleep(100);
     }
 
     qDebug() << switches << " switches have be initialized";
