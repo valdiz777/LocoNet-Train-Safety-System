@@ -40,6 +40,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
+    this->setWindowIcon(QIcon(":/images/logo"));
+
 	// Declare threads
 	locoserial = new LocoSerial;
 	locoserial->moveToThread(&threadSerial);
@@ -245,49 +247,49 @@ void MainWindow::do_OPfromComboBox()
     do_enableArgs();
 }
 
-void MainWindow::do_showCollisionEvt(QString collisionSection, QString Section1, QString Section2)
+void MainWindow::do_showCollisionEvt(QStringList collisionsSections)
 {
-    if(!collisionSection.isEmpty()){
-        emit nodeOff(collisionSection);
-    }
-    if(!Section1.isEmpty()){
-        emit nodeOff(Section1);
-    }
-    if(!Section2.isEmpty()){
-        emit nodeOff(Section2);
+    QString info ="Resolve setions";
+
+    for (QString section: collisionsSections)
+    {
+        if (!section.isEmpty())
+        {
+            info.append(" [" + section + "] ");
+            emit nodeOff(section);
+        }
+
     }
 
     QMessageBox *msgBox = new QMessageBox;
     msgBox->setAttribute( Qt::WA_DeleteOnClose);
-    msgBox->setText("Collision event detected at " + collisionSection);
-    msgBox->setInformativeText("Resolve setions ["+Section1 + " and " + Section2+"]");
+    msgBox->setText("Collision event detected!");
+    msgBox->setInformativeText(info);
     msgBox->setStandardButtons(QMessageBox::Ok);
     msgBox->setDefaultButton(QMessageBox::Ok);
     msgBox->setModal(false);
-    msgBox->open( this, SLOT(msgBoxClosed(QAbstractButton *, collisionSection, Section1, Section2)));
+    msgBox->open( this, SLOT(msgBoxClosed(QAbstractButton *, collisionsSections)));
 }
 
 
-void MainWindow::msgBoxClosed(QAbstractButton *button,QString collisionSection, QString Section1, QString Section2){
+void MainWindow::msgBoxClosed(QAbstractButton *button, QStringList collisionSections){
 
     QMessageBox *msgBox = (QMessageBox *) sender();
     QMessageBox::StandardButton btn = msgBox->standardButton(button);
-    if(btn == QMessageBox::Ok ){
-
-        if(!collisionSection.isEmpty()){
-           emit nodeOn(collisionSection);
-        }
-        if(!Section1.isEmpty()){
-           emit nodeOn(Section1);
-        }
-        if(!Section2.isEmpty()){
-           emit nodeOn(Section2);
+    if(btn == QMessageBox::Ok )
+    {
+        for (QString section: collisionSections)
+        {
+            if (!section.isEmpty())
+            {
+                emit nodeOn(section);
+            }
         }
     }
-
-    else{
+    else
+    {
         throw "unkown button";
-        }
+    }
 }
 
 void MainWindow::do_refreshSerialList()

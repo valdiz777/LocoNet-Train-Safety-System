@@ -29,11 +29,11 @@ public:
     bool updateDoubleConnList(Section current);
     bool updateTripleConnList(Section current);
     void updateQuadConnList(Section current);
-    //void straightMonitor(Section sec);
     QString getNextStraightSection(Section previous, Section current);
     QString getNextSwitchSection(Section previous, Section current);
     QString getNextEndpointSection(Section previous, Section current);
     void generateSectionList();
+    void printHeader(QString message);
 
 public slots:
 	void do_run();
@@ -60,13 +60,12 @@ signals:
     void clearSectionOffCount();
     void printSectionsOn();
     void printSectionsOff();
-    void collisionEvt(QString collisionSection, QString movingSection1, QString movingSection2);
+    void collisionEvt(QStringList collisionSections);
 
 protected:
 
 private:
 	void endpointMonitor(Section sec);
-	//void straightMonitor(Section sec, engineSection es);
     void straightMonitor(Section sec);
     void switchMonitor(Section sec);
     void crossoverMonitor(Section sec);
@@ -74,7 +73,6 @@ private:
     QList<EnginePath> enginePaths; // may take place of sectionPairs.......
 
     bool running;
-//	void generateSectionList();
 	Section retrieveSections(QString section);
 	QList<Section> m_sectionList;
 	Section findNextSection(Section previousSection, Section currentSection);

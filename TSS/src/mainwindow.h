@@ -53,14 +53,14 @@ public slots:
 	void do_printDescriptions(QString);
 	void do_loadOPComboBox();
 	void do_OPfromComboBox();
-    void do_showCollisionEvt(QString collisionSection, QString movingSection1, QString movingSection2);
+    void do_showCollisionEvt(QStringList collisionsSections);
 
 
 	void handle_serialOpened();
 	void handle_serialClosed();
 	void handle_DBopened();
 	void handle_DBclosed();
-    void msgBoxClosed(QAbstractButton *button, QString collisionSection, QString movingSection1, QString movingSection2);
+    void msgBoxClosed(QAbstractButton *button, QStringList collisionSections);
 signals:
     void locoserial_open(QextPortInfo _device);
 	void locoserial_write(LocoPacket outgoingPacket);

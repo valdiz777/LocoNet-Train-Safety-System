@@ -88,7 +88,7 @@ signals:
 
 
 
-	public slots:
+public slots:
 	void do_writePacket(LocoPacket _packet);
 	void do_writeBytes(QByteArray _bytes);
     void do_querySlot(LocoByte _slot);
@@ -130,8 +130,6 @@ private:
 	bool * debug;
     int m_sectionOnCmds;
     int m_sectionOffCmds;
-    //int * waitForReply;
-    //QVector<LocoPacket> * outgoingQueue;
 };
 
 #endif // LOCOSERIAL_H

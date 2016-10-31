@@ -1,6 +1,5 @@
 #include "trainmonitor.h"
 #include <QFile>
-#include <QDir>
 #include <QTextStream>
 #include <QThread>
 
@@ -62,19 +61,9 @@ void TrainMonitor::Monitor(QString section)
             if(!updateDoubleConnList(currentSection))
             {
                 qDebug() << "Section " << currentSection.getNode() << " needs to be shutdown (straight)";
-                QStringList shutdownList = currentSection.getNode().split("-");
-                qDebug() << shutdownList[0].toInt() << "-" << shutdownList[1].toInt();
-                emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
-
                 qDebug() << "Section " << currentSection.getConn1() << " needs to be shutdown (straight)";
-                shutdownList = currentSection.getConn1().split("-");
-                qDebug() << shutdownList[0].toInt() << "-" << shutdownList[1].toInt();
-                emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
-
                 qDebug() << "Section " << currentSection.getConn2() << " needs to be shutdown (straight)";
-                shutdownList = currentSection.getConn2().split("-");
-                qDebug() << shutdownList[0].toInt() << "-" << shutdownList[1].toInt();
-                emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
+                emit collisionEvt(QStringList() << currentSection.getNode() << currentSection.getConn1() << currentSection.getConn2());
             }
             //qDebug() << "entered straight monitor" << endl;
             //straightMonitor(currentSection);
@@ -120,10 +109,7 @@ void TrainMonitor::endpointMonitor(Section sec)
             if(section.first != "")
             {
                 qDebug() << "Shutting off section " << section.second;
-                Section shutdownSection = retrieveSections(section.second);
-                QStringList shutdownList = shutdownSection.getNode().split("-");
-                qDebug() << shutdownList[0].toInt() << "-" << shutdownList[1].toInt();
-                emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
+                emit collisionEvt(QStringList() << section.second);
             }
         }
     }
@@ -160,8 +146,7 @@ void TrainMonitor::straightMonitor(Section sec)
         {
 
             qDebug() << "Shutting off section " << section.second;
-            Section shutdownSection = retrieveSections(section.second);
-            emit sectionOff(shutdownSection.getBoardNum(),shutdownSection.getSection());
+            emit collisionEvt(QStringList() << section.second);
         }
     }
 }
@@ -184,7 +169,6 @@ void TrainMonitor::switchMonitor(Section sec)
             switch (retrieveSections(nextSection).getNumOfConns())
             {
                 case 1: {
-                    //emit trackOff();
                     qDebug() << "Shutting off section " << section.second;
                     Section shutdownSection = retrieveSections(nextSection);
                     QStringList shutdownList = shutdownSection.getNode().split("-");
@@ -212,9 +196,7 @@ void TrainMonitor::switchMonitor(Section sec)
         if(section.second == nextSection)
         {
             qDebug() << "Shutting off section " << section.second;
-            Section shutdownSection = retrieveSections(section.second);
-            QStringList shutdownList = shutdownSection.getNode().split("-");
-            emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
+            emit  collisionEvt(QStringList() << section.second);
         }
     }
 }
@@ -251,15 +233,10 @@ Section TrainMonitor::retrieveSections(QString section)
 
 void TrainMonitor::generateSectionList()
 {
-    /*int i = 0;
-    if (i == 0){
-        emit collisionEvt("Test1", "Test2","Test3");//Testing purposes
-        i++;
-    }*/
-    qDebug() << "generateSectionList()";
-#pragma message("[MKJ] Do we want to move this to a central location?")
-    qDebug() << "Testing file input";
-	QString filename = QDir::currentPath().append("/Sections.txt");
+    qDebug() << "generateSectionList";
+    printHeader("Loading Section List");
+
+    QString filename = ":/config/SectionsInput";
 	QFile infile(filename);
 	if (!infile.open(QIODevice::ReadOnly | QIODevice::Text)) {
 
@@ -293,10 +270,15 @@ void TrainMonitor::generateSectionList()
         sec.setBoardNum(shutdownList[0].toInt());
         sec.setSection(shutdownList[1].toInt());
         qDebug() << "TRACK SECTION:" << QString::number(sec.getBoardNum()) << "-" << QString::number(sec.getSection()) << " CONN1:" << conn1 << ", CONN2:" << conn2;
-
 		m_sectionList.append(sec);
 	}
-	infile.close();
+    printHeader("Done loading sections");
+    infile.close();
+}
+
+void TrainMonitor::printHeader(QString message)
+{
+qDebug() << "-------------------"+ message + "-------------------" << endl;
 }
 
 void TrainMonitor::handle_serialOpened()
