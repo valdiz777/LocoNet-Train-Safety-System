@@ -236,7 +236,7 @@ void TrainMonitor::generateSectionList()
     qDebug() << "generateSectionList";
     printHeader("Loading Section List");
 
-    QString filename = ":/config/SectionsInput";
+    QString filename = ":/config/Sections";
 	QFile infile(filename);
 	if (!infile.open(QIODevice::ReadOnly | QIODevice::Text)) {
 
@@ -247,32 +247,39 @@ void TrainMonitor::generateSectionList()
 	QTextStream in(&infile);
 	QString node;
 	int numOfConns;
-    QString conn1, conn2, conn3;
+    QString conn1, conn2, conn3, conn4;
     int ltNum; bool thrownLeft;
-
+    int lines = 0;
 	while (!in.atEnd())
 	{
 
+        if (lines == 0)
+        {
+            printHeader(in.readLine());
+        }
+        else
+        {
+            QStringList splitString = in.readLine().split(",");
+            node = splitString[0];
+            numOfConns = splitString[1].toInt();
+            conn1 = splitString[2];
+            conn2 = splitString[3];
+            conn3 = splitString[4];
+            conn4 = splitString[5];
+            ltNum = splitString[6].toInt();
+            thrownLeft = (splitString[7] == "false")? false : true;
 
-        QStringList splitString = in.readLine().split(",");
-        node = splitString[0];
-        qDebug() << "node:" << node;
-        numOfConns = splitString[1].toInt();
-        conn1 = splitString[2];
-        conn2 = splitString[3];
-        conn3 = splitString[4];
-        ltNum = splitString[5].toInt();
-        thrownLeft = (splitString[6] == "false")? false : true;
-
-        Section sec = Section(node, numOfConns, conn1, conn2,
-            conn3, ltNum, thrownLeft);
-        QStringList shutdownList = node.split("-");
-        sec.setBoardNum(shutdownList[0].toInt());
-        sec.setSection(shutdownList[1].toInt());
-        qDebug() << "TRACK SECTION:" << QString::number(sec.getBoardNum()) << "-" << QString::number(sec.getSection()) << " CONN1:" << conn1 << ", CONN2:" << conn2;
-		m_sectionList.append(sec);
+            Section sec = Section(node, numOfConns, conn1, conn2,
+                conn3, conn4, ltNum, thrownLeft);
+            QStringList shutdownList = node.split("-");
+            sec.setBoardNum(shutdownList[0].toInt());
+            sec.setSection(shutdownList[1].toInt());
+            qDebug() << "TRACK SECTION:" << QString::number(sec.getBoardNum()) << "-" << QString::number(sec.getSection()) << " CONN1:" << conn1 << ", CONN2:" << conn2 << ", CONN3:" << conn3 << ", CONN4:" << conn4;;
+            m_sectionList.append(sec);
+        }
+        lines++;
 	}
-    printHeader("Done loading sections");
+    printHeader("Done loading " + QString::number(lines) + "sections");
     infile.close();
 }
 

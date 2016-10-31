@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/config">
-        <file alias="SectionsInput">Sections.txt</file>
+        <file alias="Sections">Sections.txt</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="logo">logo.ico</file>
