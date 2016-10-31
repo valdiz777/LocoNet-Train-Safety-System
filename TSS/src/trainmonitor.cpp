@@ -51,9 +51,12 @@ void TrainMonitor::Monitor(QString section)
     {
         case 1:		// Endpoint case
         {
-            updateSingleConnList(currentSection);
-            qDebug() << "entered endpoint monitor" << endl;
-            endpointMonitor(currentSection);
+            if(!updateSingleConnList(currentSection))
+            {
+                emit collisionEvt(QStringList());
+            }
+//            qDebug() << "entered endpoint monitor" << endl;
+//            endpointMonitor(currentSection);
             break;
         }
         case 2:		// Straight case
@@ -63,7 +66,9 @@ void TrainMonitor::Monitor(QString section)
                 qDebug() << "Section " << currentSection.getNode() << " needs to be shutdown (straight)";
                 qDebug() << "Section " << currentSection.getConn1() << " needs to be shutdown (straight)";
                 qDebug() << "Section " << currentSection.getConn2() << " needs to be shutdown (straight)";
-                emit collisionEvt(QStringList() << currentSection.getNode() << currentSection.getConn1() << currentSection.getConn2());
+                emit collisionEvt(QStringList() << currentSection.getNode()
+                                  << currentSection.getConn1()
+                                  << currentSection.getConn2());
             }
             //qDebug() << "entered straight monitor" << endl;
             //straightMonitor(currentSection);
@@ -77,6 +82,11 @@ void TrainMonitor::Monitor(QString section)
                 qDebug() << "Section " << currentSection.getConn1() << " needs to be shutdown (switch)";
                 qDebug() << "Section " << currentSection.getConn2() << " needs to be shutdown (switch)";
                 qDebug() << "Section " << currentSection.getConn3() << " needs to be shutdown (switch)";
+                emit collisionEvt(QStringList() << currentSection.getNode()
+                                  << currentSection.getConn1()
+                                  << currentSection.getConn2()
+                                  << currentSection.getConn3());
+
             }
 //            qDebug() << "entered switch monitor" << endl;
 //            switchMonitor(currentSection);
@@ -84,8 +94,21 @@ void TrainMonitor::Monitor(QString section)
         }
         case 4:		// Crossover case
         {
-            updateQuadConnList(currentSection);
-            qDebug() << "entered crossover monitor" << endl;
+            if(!updateQuadConnList(currentSection))
+            {
+                qDebug() << "Section " << currentSection.getNode() << " needs to be shutdown (crossover)";
+                qDebug() << "Section " << currentSection.getConn1() << " needs to be shutdown (crossover)";
+                qDebug() << "Section " << currentSection.getConn2() << " needs to be shutdown (crossover)";
+                qDebug() << "Section " << currentSection.getConn3() << " needs to be shutdown (crossover)";
+                //qDebug() << "Section " << currentSection.getConn4() << " needs to be shutdown (crossover)";
+                emit collisionEvt(QStringList() << currentSection.getNode()
+                                  << currentSection.getConn1()
+                                  << currentSection.getConn2()
+                                  << currentSection.getConn3()
+                                  /*<< currentSection.getConn4()*/);
+
+            }
+//            qDebug() << "entered crossover monitor" << endl;
             //crossoverMonitor(currentSection);
             break;
         }
@@ -374,9 +397,10 @@ Section TrainMonitor::findNextSection(Section previousSection,
 }
 
 /// Updates to an endpoint.....fix comment later
-void TrainMonitor::updateSingleConnList(Section current)
+bool TrainMonitor::updateSingleConnList(Section current)
 {
     qDebug() << "updateSingleConnList()";
+    bool ret = false;
     bool found = false;
     int i = 0;
     for(auto sec : sectionPairs)
@@ -405,7 +429,10 @@ void TrainMonitor::updateSingleConnList(Section current)
         std::pair<QString, QString> secPair=
                 std::make_pair<QString, QString>("", current.getNode());
         sectionPairs.push_back(secPair);
+        ret = true;
     }
+
+    return ret;
 }
 
 /// Updates strait aways.....
@@ -549,10 +576,73 @@ bool TrainMonitor::updateTripleConnList(Section current)
 }
 
 /// Updates Crossovers....
-void TrainMonitor::updateQuadConnList(Section current)
+bool TrainMonitor::updateQuadConnList(Section current)
 {
     qDebug() << "updateQuadConnList()";
-    // TODO
+    bool found = false;
+    int i = 0;
+    int numOccurrences = 0;
+    bool ret = false;
+    for(auto sec : sectionPairs)
+    {
+        if (sec.second == current.getConn1() ||
+                sec.second == current.getConn2())
+        {
+            qDebug() << "Found a pair to update (crossover)";
+//            sec.first = sec.second;
+//            sec.second = current.getNode();
+
+            QString past;
+
+            if (sec.second == current.getConn2())
+            {
+                past = current.getConn2();
+                ++numOccurrences;
+            }
+
+            if(sec.second == current.getConn1())
+            {
+                past = current.getConn1();
+                ++numOccurrences;
+            }
+
+            if (current.getConn3() != "" && sec.second == current.getConn3())
+            {
+                past = current.getConn3();
+                ++numOccurrences;
+            }
+
+//            if (current.getConn4() != "" && sec.second == current.getConn4())
+//            {
+//                past = current.getConn3();
+//                ++numOccurrences;
+//            }
+
+            std::pair<QString, QString> secPair=
+                    std::make_pair<QString, QString>((QString)past, current.getNode());
+            sectionPairs.push_back(secPair);
+            sectionPairs.removeAt(i);
+
+            found = true;
+        }
+        ++i;
+    }
+
+    if(!found)
+    {
+        qDebug() << "Section " << current.getNode() << " not found, adding to list" << endl;
+        /// TODO
+        std::pair<QString, QString> secPair =
+            std::make_pair<QString, QString>("", current.getNode());
+        sectionPairs.push_back(secPair);
+    }
+
+    if(numOccurrences < 2)
+    {
+        ret = true;
+    }
+
+    return ret;
 }
 
 QString TrainMonitor::getNextStraightSection(Section previous, Section current)
