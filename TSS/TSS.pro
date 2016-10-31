@@ -50,6 +50,7 @@ FORMS    += src/mainwindow.ui
 
 DISTFILES += \
     Sections.txt \
+    startTSS.bash
 
 RESOURCES += \
     tss.qrc

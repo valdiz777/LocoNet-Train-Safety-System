@@ -25,10 +25,10 @@ public:
 	void startMonitor();
 	void stopMonitor();
     void Monitor(QString monitorSection);
-    void updateSingleConnList(Section current);
+    bool updateSingleConnList(Section current);
     bool updateDoubleConnList(Section current);
     bool updateTripleConnList(Section current);
-    void updateQuadConnList(Section current);
+    bool updateQuadConnList(Section current);
     QString getNextStraightSection(Section previous, Section current);
     QString getNextSwitchSection(Section previous, Section current);
     QString getNextEndpointSection(Section previous, Section current);
