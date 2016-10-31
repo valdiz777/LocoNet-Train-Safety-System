@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
-    this->setWindowIcon(QIcon(":/images/logo"));
+	this->setWindowIcon(QIcon(":/images/logo"));
 
 	// Declare threads
 	locoserial = new LocoSerial;
@@ -79,19 +79,19 @@ MainWindow::MainWindow(QWidget *parent) :
 	// Serial
 	connect(this, &MainWindow::locoserial_open, locoserial, &LocoSerial::do_open);
 	connect(this, &MainWindow::locoserial_write, locoserial, &LocoSerial::do_writePacket);
-    connect(this, &MainWindow::nodeOff, locoserial, &LocoSerial::do_nodeOff);
-    connect(this, &MainWindow::nodeOn, locoserial, &LocoSerial::do_nodeOn);
+	connect(this, &MainWindow::nodeOff, locoserial, &LocoSerial::do_nodeOff);
+	connect(this, &MainWindow::nodeOn, locoserial, &LocoSerial::do_nodeOn);
 	connect(locoserial, &LocoSerial::receivedPacket, this, &MainWindow::do_packetReceived); // QT-5 style works
 	connect(locoserial, &LocoSerial::writtenBytes, this, &MainWindow::do_bytesWritten);
 	connect(locoserial, &LocoSerial::printPacketDesc, this, &MainWindow::do_printDescriptions); // QT-5 style works
 	connect(locoserial, &LocoSerial::serialOpened, this, &MainWindow::handle_serialOpened);
-    connect(locoserial, &LocoSerial::serialOpened, trainmonitor, &TrainMonitor::handle_serialOpened);
+	connect(locoserial, &LocoSerial::serialOpened, trainmonitor, &TrainMonitor::handle_serialOpened);
 	connect(locoserial, &LocoSerial::serialClosed, this, &MainWindow::handle_serialClosed);
-    connect(locoserial, &LocoSerial::trainUpdated, locosql, &LocoSQL::do_updateTrain);
-    connect(locoserial, &LocoSerial::blockUpdated, locosql, &LocoSQL::do_updateBlock);
-    connect(locoserial, &LocoSerial::occupancyDataReady, trainmonitor, &TrainMonitor::do_handleOccupancy);
-    connect(locoserial, &LocoSerial::querySlot, locoserial, &LocoSerial::do_querySlot);
-    connect(&threadSerial, &QThread::finished, locoserial, &QObject::deleteLater);
+	connect(locoserial, &LocoSerial::trainUpdated, locosql, &LocoSQL::do_updateTrain);
+	connect(locoserial, &LocoSerial::blockUpdated, locosql, &LocoSQL::do_updateBlock);
+	connect(locoserial, &LocoSerial::occupancyDataReady, trainmonitor, &TrainMonitor::do_handleOccupancy);
+	connect(locoserial, &LocoSerial::querySlot, locoserial, &LocoSerial::do_querySlot);
+	connect(&threadSerial, &QThread::finished, locoserial, &QObject::deleteLater);
 
 	// Handle Initializing from Sig/Slot
 	//connect(ui->pushButton_thread_beginSerial, SIGNAL(clicked()), locoserial, SLOT(do_run()));
@@ -124,18 +124,18 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(trainmonitor, &TrainMonitor::trackReset, locoserial, &LocoSerial::do_trackReset);
 	connect(trainmonitor, &TrainMonitor::trackOn, locoserial, &LocoSerial::do_trackOn);
 	connect(trainmonitor, &TrainMonitor::trackOff, locoserial, &LocoSerial::do_trackOff);
-    connect(trainmonitor, &TrainMonitor::sectionOff, locoserial, &LocoSerial::do_sectionOff);
-    connect(trainmonitor, &TrainMonitor::sectionOn, locoserial, &LocoSerial::do_sectionOn);
-    connect(trainmonitor, &TrainMonitor::closeTurnout, locoserial, &LocoSerial::do_closeTurnout);
-    connect(trainmonitor, &TrainMonitor::throwTurnout, locoserial, &LocoSerial::do_throwTurnout);
-    connect(trainmonitor, &TrainMonitor::clearSectionOffCount, locoserial, &LocoSerial::do_clearSectionOff);
-    connect(trainmonitor, &TrainMonitor::clearSectionOnCount, locoserial, &LocoSerial::do_clearSectionOn);
-    connect(trainmonitor, &TrainMonitor::printSectionsOff, locoserial, &LocoSerial::do_getSectionsOff);
-    connect(trainmonitor, &TrainMonitor::printSectionsOn, locoserial, &LocoSerial::do_getSectionsOn);
-    connect(trainmonitor, &TrainMonitor::collisionEvt, this, &MainWindow::do_showCollisionEvt);
+	connect(trainmonitor, &TrainMonitor::sectionOff, locoserial, &LocoSerial::do_sectionOff);
+	connect(trainmonitor, &TrainMonitor::sectionOn, locoserial, &LocoSerial::do_sectionOn);
+	connect(trainmonitor, &TrainMonitor::closeTurnout, locoserial, &LocoSerial::do_closeTurnout);
+	connect(trainmonitor, &TrainMonitor::throwTurnout, locoserial, &LocoSerial::do_throwTurnout);
+	connect(trainmonitor, &TrainMonitor::clearSectionOffCount, locoserial, &LocoSerial::do_clearSectionOff);
+	connect(trainmonitor, &TrainMonitor::clearSectionOnCount, locoserial, &LocoSerial::do_clearSectionOn);
+	connect(trainmonitor, &TrainMonitor::printSectionsOff, locoserial, &LocoSerial::do_getSectionsOff);
+	connect(trainmonitor, &TrainMonitor::printSectionsOn, locoserial, &LocoSerial::do_getSectionsOn);
+	connect(trainmonitor, &TrainMonitor::collisionEvt, this, &MainWindow::do_showCollisionEvt);
 	connect(&threadMonitor, &QThread::finished, trainmonitor, &QObject::deleteLater);
 
-    // Kickstart threads
+	// Kickstart threads
 
 	// Kickstart threads
 	threadSerial.start();
@@ -244,63 +244,63 @@ void MainWindow::do_OPfromComboBox()
 	QVector<QString> _opcodes = _tmp.get_DBopcodes();
 	QString _hex = _opcodes[ui->comboBox_opcodes->currentIndex()];
 	ui->lineEdit_opcode->setText(_hex);
-    do_enableArgs();
+	do_enableArgs();
 }
 
 void MainWindow::do_showCollisionEvt(QStringList collisionsSections)
 {
-    QString info ="Resolve setions";
+	QString info = "Resolve setions";
 
-    for (QString section: collisionsSections)
-    {
-        if (!section.isEmpty())
-        {
-            info.append(" [" + section + "] ");
-            emit nodeOff(section);
-        }
+	for (QString section : collisionsSections)
+	{
+		if (!section.isEmpty())
+		{
+			info.append(" [" + section + "] ");
+			emit nodeOff(section);
+		}
 
-    }
+	}
 
-    QMessageBox *msgBox = new QMessageBox;
-    msgBox->setAttribute( Qt::WA_DeleteOnClose);
-    msgBox->setText("Collision event detected!");
-    msgBox->setInformativeText(info);
-    msgBox->setStandardButtons(QMessageBox::Ok);
-    msgBox->setDefaultButton(QMessageBox::Ok);
-    msgBox->setModal(false);
-    msgBox->open( this, SLOT(msgBoxClosed(QAbstractButton *, collisionsSections)));
+	QMessageBox *msgBox = new QMessageBox;
+	msgBox->setAttribute(Qt::WA_DeleteOnClose);
+	msgBox->setText("Collision event detected!");
+	msgBox->setInformativeText(info);
+	msgBox->setStandardButtons(QMessageBox::Ok);
+	msgBox->setDefaultButton(QMessageBox::Ok);
+	msgBox->setModal(false);
+	msgBox->open(this, SLOT(msgBoxClosed(QAbstractButton *, collisionsSections)));
 }
 
 
-void MainWindow::msgBoxClosed(QAbstractButton *button, QStringList collisionSections){
+void MainWindow::msgBoxClosed(QAbstractButton *button, QStringList collisionSections) {
 
-    QMessageBox *msgBox = (QMessageBox *) sender();
-    QMessageBox::StandardButton btn = msgBox->standardButton(button);
-    if(btn == QMessageBox::Ok )
-    {
-        for (QString section: collisionSections)
-        {
-            if (!section.isEmpty())
-            {
-                emit nodeOn(section);
-            }
-        }
-    }
-    else
-    {
-        throw "unkown button";
-    }
+	QMessageBox *msgBox = (QMessageBox *)sender();
+	QMessageBox::StandardButton btn = msgBox->standardButton(button);
+	if (btn == QMessageBox::Ok)
+	{
+		for (QString section : collisionSections)
+		{
+			if (!section.isEmpty())
+			{
+				emit nodeOn(section);
+			}
+		}
+	}
+	else
+	{
+		throw "unkown button";
+	}
 }
 
 void MainWindow::do_refreshSerialList()
 {
-    int _index = 0;
-    ui->comboBox_serialList->clear();
-    foreach (QextPortInfo portInfo, QextSerialEnumerator::getPorts())
-    {
-        ui->comboBox_serialList->insertItem(_index, portInfo.portName);
-        ui->textBrowser_console->append(portInfo.portName);
-        _index++;
+	int _index = 0;
+	ui->comboBox_serialList->clear();
+	foreach(QextPortInfo portInfo, QextSerialEnumerator::getPorts())
+	{
+		ui->comboBox_serialList->insertItem(_index, portInfo.portName);
+		ui->textBrowser_console->append(portInfo.portName);
+		_index++;
 	}
 }
 
@@ -360,7 +360,7 @@ void MainWindow::handle_serialClosed()
 void MainWindow::do_openSerial()
 {
 	int _portIndex = ui->comboBox_serialList->currentIndex();
-    QextPortInfo _device = QextSerialEnumerator::getPorts().at(_portIndex);
+	QextPortInfo _device = QextSerialEnumerator::getPorts().at(_portIndex);
 	emit locoserial_open(_device);
 }
 

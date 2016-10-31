@@ -27,6 +27,16 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
@@ -34,134 +44,166 @@
     <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Distribution Files">
-      <UniqueIdentifier>{B83CAF91-C7BF-462F-B76C-EA11631F866C}</UniqueIdentifier>
-      <Extensions>*</Extensions>
-      <ParseFiles>false</ParseFiles>
-    </Filter>
-    <Filter Include="Distribution Files">
-      <UniqueIdentifier>{B83CAF91-C7BF-462F-B76C-EA11631F866C}</UniqueIdentifier>
-      <Extensions>*</Extensions>
-      <ParseFiles>false</ParseFiles>
     </Filter>
     <Filter Include="Generated Files\Debug">
-      <UniqueIdentifier>{68985fbd-c3da-41c9-96d1-02104a1917ff}</UniqueIdentifier>
+      <UniqueIdentifier>{32f9b7f2-fa63-4bbd-9a7f-e82227590525}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
     <Filter Include="Generated Files\Release">
-      <UniqueIdentifier>{63ffddfa-7733-4971-bc18-2a5f08718aa3}</UniqueIdentifier>
+      <UniqueIdentifier>{178284ce-f234-4bd2-b488-89426acb869d}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="enginepath.cpp">
+    <ClCompile Include="src\enginepath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="locoblock.cpp">
+    <ClCompile Include="src\locoblock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="locobyte.cpp">
+    <ClCompile Include="src\locobyte.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="locopacket.cpp">
+    <ClCompile Include="src\locopacket.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="locoserial.cpp">
+    <ClCompile Include="src\locoserial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="locosql.cpp">
+    <ClCompile Include="src\locosql.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="locotrain.cpp">
+    <ClCompile Include="src\locotrain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="locoudp.cpp">
+    <ClCompile Include="src\locoudp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="log.cpp">
+    <ClCompile Include="src\log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow.cpp">
+    <ClCompile Include="src\mainwindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="section.cpp">
+    <ClCompile Include="3rdparty\qextserialport\src\qextserialenumerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="trainmonitor.cpp">
+    <ClCompile Include="3rdparty\qextserialport\src\qextserialenumerator_win.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Debug\moc_locoserial.cpp">
+    <ClCompile Include="3rdparty\qextserialport\src\qextserialport.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="3rdparty\qextserialport\src\qextserialport_win.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\section.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\trainmonitor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="build\Debug\.moc\moc_locoserial.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="Release\moc_locoserial.cpp">
+    <ClCompile Include="build\Release\.moc\moc_locoserial.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="Debug\moc_locosql.cpp">
+    <ClCompile Include="build\Debug\.moc\moc_locosql.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="Release\moc_locosql.cpp">
+    <ClCompile Include="build\Release\.moc\moc_locosql.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="Debug\moc_locoudp.cpp">
+    <ClCompile Include="build\Debug\.moc\moc_locoudp.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="Release\moc_locoudp.cpp">
+    <ClCompile Include="build\Release\.moc\moc_locoudp.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="Debug\moc_mainwindow.cpp">
+    <ClCompile Include="build\Debug\.moc\moc_mainwindow.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="Release\moc_mainwindow.cpp">
+    <ClCompile Include="build\Release\.moc\moc_mainwindow.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="Debug\moc_trainmonitor.cpp">
+    <ClCompile Include="build\Debug\.moc\moc_qextserialenumerator.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="Release\moc_trainmonitor.cpp">
+    <ClCompile Include="build\Release\.moc\moc_qextserialenumerator.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="build\Debug\.moc\moc_qextserialport.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="build\Release\.moc\moc_qextserialport.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="build\Debug\.moc\moc_trainmonitor.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="build\Release\.moc\moc_trainmonitor.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_tss.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="enginepath.h">
+    <ClInclude Include="src\enginepath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="locoblock.h">
+    <ClInclude Include="src\locoblock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="locobyte.h">
+    <ClInclude Include="src\locobyte.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="locopacket.h">
+    <ClInclude Include="src\locopacket.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <CustomBuild Include="locoserial.h">
+    <CustomBuild Include="src\locoserial.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="locosql.h">
+    <CustomBuild Include="src\locosql.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <ClInclude Include="locotrain.h">
+    <ClInclude Include="src\locotrain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <CustomBuild Include="locoudp.h">
+    <CustomBuild Include="src\locoudp.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <ClInclude Include="log.h">
+    <ClInclude Include="src\log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <CustomBuild Include="mainwindow.h">
+    <CustomBuild Include="src\mainwindow.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <ClInclude Include="section.h">
+    <CustomBuild Include="3rdparty\qextserialport\src\qextserialenumerator.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <ClInclude Include="3rdparty\qextserialport\src\qextserialenumerator_p.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <CustomBuild Include="trainmonitor.h">
+    <CustomBuild Include="3rdparty\qextserialport\src\qextserialport.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <ClInclude Include="3rdparty\qextserialport\src\qextserialport_global.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdparty\qextserialport\src\qextserialport_p.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\section.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <CustomBuild Include="src\trainmonitor.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h">
@@ -169,13 +211,19 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="mainwindow.ui">
+    <CustomBuild Include="src\mainwindow.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <None Include="Sections.txt">
-      <Filter>Distribution Files</Filter>
+      <Filter>Resource Files</Filter>
     </None>
+    <None Include="logo.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <CustomBuild Include="tss.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

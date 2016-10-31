@@ -119,9 +119,10 @@ void LocoPacket::set_allFromHex(QString _hex)
 	if (validChk())
 	{
 		if (debug) qDebug() << timeStamp() << "Valid Checksum x)";
-    } else {
-                do_genChecksum();
-    }
+	}
+	else {
+		do_genChecksum();
+	}
 }
 
 bool LocoPacket::operator ==(LocoPacket _arg)
@@ -206,7 +207,7 @@ QString LocoPacket::do_genChecksum()
 {
 	if (validChk() && hasOP())
 	{
-        if(debug) qDebug() << timeStamp() << "Not generating a checksum for an already valid packet ^-^";
+		if (debug) qDebug() << timeStamp() << "Not generating a checksum for an already valid packet ^-^";
 		QString _chk = "";
 		_chk.append(locobyte_array[locobyte_array.size() - 1].get_hex());
 		return(_chk);
@@ -214,8 +215,8 @@ QString LocoPacket::do_genChecksum()
 	LocoByte _checksum;
 	for (int _index = 0; _index < locobyte_array.size(); ++_index)
 	{
-         if(debug) qDebug() << timeStamp() << "hexIndex: " << _index;
-         if(debug) qDebug() << timeStamp() << "genChecksum: " << locobyte_array[_index].get_hex() << " : " << locobyte_array[_index].get_binary() << " and: " << _checksum.get_hex() << " : " << _checksum.get_binary();
+		if (debug) qDebug() << timeStamp() << "hexIndex: " << _index;
+		if (debug) qDebug() << timeStamp() << "genChecksum: " << locobyte_array[_index].get_hex() << " : " << locobyte_array[_index].get_binary() << " and: " << _checksum.get_hex() << " : " << _checksum.get_binary();
 		_checksum.set_fromHex(do_xor(_checksum, locobyte_array[_index]));
 	}
 	_checksum.do_genComplement();

@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 	qRegisterMetaType<LocoPacket>("LocoPacket");
 	qRegisterMetaType<LocoBlock>("LocoBlock");
 	qRegisterMetaType<LocoTrain>("LocoTrain");
-    qRegisterMetaType<QextPortInfo>("QextPortInfo");
+	qRegisterMetaType<QextPortInfo>("QextPortInfo");
 
 	return a.exec();
 }

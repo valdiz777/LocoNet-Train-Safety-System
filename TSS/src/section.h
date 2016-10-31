@@ -19,7 +19,7 @@ class Section
 
 public:
 	Section();
-    Section(QString node, int numOfConns, QString conn1, QString conn2, QString conn3, QString conn4, int ltNum, bool thrownLeft);
+	Section(QString node, int numOfConns, QString conn1, QString conn2, QString conn3, QString conn4, int ltNum, bool thrownLeft);
 	~Section();
 
 	//void setNode( QString node );
@@ -40,32 +40,32 @@ public:
 	void setOccupancy(bool state);
 	bool getOccupancy();
 
-    bool getThrown();
-    void setThrown(bool thrown);
-    bool getThrownLeft();
-    int getLtNum();
+	bool getThrown();
+	void setThrown(bool thrown);
+	bool getThrownLeft();
+	int getLtNum();
 
-    int getBoardNum() const;
-    void setBoardNum(int boardNum);
+	int getBoardNum() const;
+	void setBoardNum(int boardNum);
 
-    int getSection() const;
-    void setSection(int section);
+	int getSection() const;
+	void setSection(int section);
 
-    QString getConn4() const;
-    void setConn4(const QString &conn4);
+	QString getConn4() const;
+	void setConn4(const QString &conn4);
 
 private:
-    int m_boardNum;
-    int m_section;
-    QString m_node;
+	int m_boardNum;
+	int m_section;
+	QString m_node;
 	int m_numOfConns;
 	QString m_conn1;
 	QString m_conn2;
 	QString m_conn3;
-    QString m_conn4;
-    int m_ltnum;
-    bool m_thrownLeft;
-    bool m_thrown;		// true for left; false for right
+	QString m_conn4;
+	int m_ltnum;
+	bool m_thrownLeft;
+	bool m_thrown;		// true for left; false for right
 	bool m_occupancy;
 };
 
