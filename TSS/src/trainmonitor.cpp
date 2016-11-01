@@ -18,6 +18,8 @@ TrainMonitor::~TrainMonitor()
 
 void TrainMonitor::do_run() {
 	qDebug() << "do_run()";
+    //Uncomment below to test emit collisionEvt();
+    //emit collisionEvt(QStringList() << "1-1");
     generateSectionList();
 }
 

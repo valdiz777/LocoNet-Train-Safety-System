@@ -263,6 +263,8 @@ void MainWindow::do_showCollisionEvt(QStringList collisionSections)
 	}
 
 	QMessageBox *msgBox = new QMessageBox;
+    msgBox->setIcon(QMessageBox::Icon::Critical);
+    msgBox->setWindowIcon(QIcon(":/images/logo"));
 	msgBox->setAttribute(Qt::WA_DeleteOnClose);
 	msgBox->setText("Collision event detected!");
 	msgBox->setInformativeText(info);
