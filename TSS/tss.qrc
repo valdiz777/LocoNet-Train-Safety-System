@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/config">
         <file alias="Sections">Sections.txt</file>
+        <file alias="packets">packets.txt</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="logo">logo.ico</file>

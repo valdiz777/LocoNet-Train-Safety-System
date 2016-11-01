@@ -1,4 +1,5 @@
 #include "locopacket.h"
+#include <QDir>
 
 /* Class: LocoPacket
  *
@@ -10,7 +11,6 @@
 
  /* Static Members */
 bool LocoPacket::debug = false;
-QSqlDatabase LocoPacket::packetDB = QSqlDatabase::addDatabase("QSQLITE");
 
 /*
  * Default Constructor
@@ -18,7 +18,7 @@ QSqlDatabase LocoPacket::packetDB = QSqlDatabase::addDatabase("QSQLITE");
 LocoPacket::LocoPacket()
 {
 	clear();
-	do_openDB();
+    do_loadOpcodes();
 }
 
 /*
@@ -37,14 +37,14 @@ LocoPacket::LocoPacket(QString _hex)
 	}
 	clear();
 	set_allFromHex(_hex);
-	do_openDB();
+    do_loadOpcodes();
 }
 
 LocoPacket::LocoPacket(QByteArray _bytearray)
 {
 	clear();
 	do_appendByteArray(_bytearray);
-	do_openDB();
+    do_loadOpcodes();
 }
 
 /*
@@ -65,27 +65,27 @@ void LocoPacket::clear()
 	locobyte_array.clear();
 }
 
-bool LocoPacket::do_openDB()
+bool LocoPacket::do_loadOpcodes()
 {
-	if (packetDB.isOpen())
-	{
-		return(true);
-	}
-	packetDB.setDatabaseName("packets.sqlite");
-	if (!packetDB.open())
-	{
-		qDebug() << timeStamp() << packetDB.lastError();
-		qDebug() << timeStamp() << "Unable to open packets sqlite database.";
-		return(false);
-	}
-	if (debug) qDebug() << timeStamp() << "Opened packet database.";
-	return(true);
-}
 
-void LocoPacket::do_closeDB()
-{
-	if (debug) qDebug() << timeStamp() << "Closed packet database.";
-	packetDB.close();
+    QString filename = ":/config/packets";
+    QFile infile(filename);
+    if (!infile.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qDebug() << "Cannot find input file:" << filename;
+        qDebug() << timeStamp() << "Unable to open packets config file.";
+        return(false);
+    }
+    QTextStream in(&infile);
+    while (!in.atEnd())
+    {
+        QStringList splitString = in.readLine().split(",");
+        this->opcodes.insert(splitString[0], splitString[1]);
+    }
+
+    infile.close();
+    if (debug) qDebug() << timeStamp() << "Done loading opccodes.";
+	return(true);
 }
 
 /* set_allFromHex()
@@ -119,9 +119,6 @@ void LocoPacket::set_allFromHex(QString _hex)
 	if (validChk())
 	{
 		if (debug) qDebug() << timeStamp() << "Valid Checksum x)";
-	}
-	else {
-		do_genChecksum();
 	}
 }
 
@@ -294,86 +291,55 @@ bool LocoPacket::get_isEmpty() {
 bool LocoPacket::validOP()
 {
 	if (get_isEmpty()) {
-		return false;
+        return(false);
 	}
-	if (!packetDB.isOpen())
+    if (opcodes.isEmpty())
 	{
-		bool _status = do_openDB();
-		if (!_status)
-		{
-			return(false); // Can't determine validity
-		}
+        bool _status = do_loadOpcodes();
+        if (!_status)
+        {
+            return(false); // Can't determine validity
+        }
 	}
 	QString _op = locobyte_array[0].get_hex();
 	if (debug) qDebug() << timeStamp() << "Checking opcodes database for " << _op;
-	QSqlQuery _query;
-	_query.prepare("SELECT * FROM opcodes WHERE opcode=:_op;");
-	_query.bindValue(":_op", _op);
-	if (!_query.exec())
-	{
-		if (debug) qDebug() << timeStamp() << _query.lastError();
-		if (debug) qDebug() << timeStamp() << "Query to find valid OP codes failed.";
-		return(false);
-	}
+    bool found = false;
+    for (QString opcode : opcodes.keys())
+    {
+        if (_op == opcode) found = true;
+
+    }
+
+    if (false)
+    {
+        if (debug) qDebug() << timeStamp() << "Query to find valid OP codes failed.";
+        return(false);
+    }
 	else {
-		if (debug) qDebug() << timeStamp() << _query.size() << _query.first();
-	}
-	if (_query.first())
-	{
-		return(true);
-	}
+        if (debug) qDebug() << timeStamp() << "OPCODE:" << _op << " was found in the dataset.";
+        return(true);
+    }
+
 	return(false);
 }
 
-QVector<QString> LocoPacket::get_DBopcodes()
+QVector<QString> LocoPacket::get_Opcodes()
 {
-	QVector<QString> _opcodes;
-	if (!packetDB.isOpen())
-	{
-		bool _status = do_openDB();
-		if (!_status)
-		{
-			return(_opcodes); // Can't determine validity
-		}
-	}
-	QSqlQuery _query;
-	_query.prepare("SELECT * FROM opcodes;");
-	if (!_query.exec())
-	{
-		qDebug() << timeStamp() << _query.lastError();
-		qDebug() << timeStamp() << "Query to find all OP codes failed.";
-		return(_opcodes);
-	}
-	while (_query.next())
-	{
-		_opcodes.append(_query.value("opcode").toString());
-	}
+    QVector<QString> _opcodes;
+    for (QString opcode : this->opcodes.keys())
+    {
+        _opcodes.append(opcode);
+    }
 	return(_opcodes);
 }
 
-QVector<QString> LocoPacket::get_DBnames()
+QVector<QString> LocoPacket::get_Names()
 {
 	QVector<QString> _names;
-	if (!packetDB.isOpen())
-	{
-		bool _status = do_openDB();
-		if (!_status)
-		{
-			return(_names); // Can't determine validity
-		}
-	}
-	QSqlQuery _query;
-	_query.prepare("SELECT * FROM opcodes;");
-	if (!_query.exec())
-	{
-		qDebug() << timeStamp() << _query.lastError();
-		qDebug() << timeStamp() << "Query to find all OP names failed.";
-		return(_names);
-	}
-	while (_query.next())
-	{
-		_names.append(_query.value("name").toString());
-	}
+    for (QString name : this->opcodes.values())
+    {
+        _names.append(name);
+    }
 	return(_names);
 }
 

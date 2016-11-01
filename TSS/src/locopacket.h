@@ -47,7 +47,7 @@ public:
 	QBitArray get_QBitArray();
 	int get_finalSize();
 	int get_size();
-	QString get_OPcode();
+    QString get_OPcode();
 	LocoByte get_locobyte(int _byte);
 	QString get_description(); // Pull packet description from sqlite
 	QString get_name(); // Pull packet name from sqlite
@@ -56,8 +56,8 @@ public:
 	int get_sensoraddr();
 	int get_sensoraddr(LocoByte byte1, LocoByte byte2);
 	bool get_isEmpty();
-	QVector<QString> get_DBopcodes();
-	QVector<QString> get_DBnames();
+    QVector<QString> get_Opcodes();
+    QVector<QString> get_Names();
 	void set_allFromHex(QString _hex);
 	QString do_genChecksum();
 	void do_appendByte(QString _byte);
@@ -72,16 +72,14 @@ public:
 
 protected:
 	QString do_xor(LocoByte _byte1, LocoByte _byte2);
-	bool do_openDB();
-	void do_closeDB();
+    bool do_loadOpcodes();
 
 private:
 	QString packet_text_hex;
 	QString packet_text_binary;
 	QString packet_text_desc;
 	QVector<LocoByte> locobyte_array;
-	static QSqlDatabase packetDB;
-
+    QHash<QString, QString> opcodes;
 };
 
 #endif // LOCOPACKET_H
