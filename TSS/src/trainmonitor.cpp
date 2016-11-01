@@ -18,7 +18,7 @@ TrainMonitor::~TrainMonitor()
 
 void TrainMonitor::do_run() {
 	qDebug() << "do_run()";
-	generateSectionList();
+    generateSectionList();
 }
 
 void TrainMonitor::do_handleOccupancy(QString section, bool state)

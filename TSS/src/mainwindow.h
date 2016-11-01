@@ -53,14 +53,14 @@ public:
 	void do_printDescriptions(QString);
 	void do_loadOPComboBox();
 	void do_OPfromComboBox();
-	void do_showCollisionEvt(QStringList collisionsSections);
+    void do_showCollisionEvt(QStringList collisionSections);
 
 
 	void handle_serialOpened();
 	void handle_serialClosed();
 	void handle_DBopened();
 	void handle_DBclosed();
-	void msgBoxClosed(QAbstractButton *button, QStringList collisionSections);
+    void msgBoxClosed(QAbstractButton *button);
 signals:
 	void locoserial_open(QextPortInfo _device);
 	void locoserial_write(LocoPacket outgoingPacket);

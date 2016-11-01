@@ -122,12 +122,14 @@ void LocoSerial::powerSection(QString echoMsg, QString netcatMsg, bool OnCmd)
 void LocoSerial::do_nodeOn(QString node)
 {
 	QStringList nodeProps = node.split("-");
+     qDebug() << "do_nodeOn:" << node;
 	do_sectionOn(nodeProps[0].toInt(), nodeProps[1].toInt());
 }
 
 void LocoSerial::do_nodeOff(QString node)
 {
 	QStringList nodeProps = node.split("-");
+    qDebug() << "do_nodeOff:" << node;
 	do_sectionOff(nodeProps[0].toInt(), nodeProps[1].toInt());
 }
 
@@ -673,7 +675,7 @@ int LocoSerial::getTimeDiff()
 void LocoSerial::do_sectionOff(int boardNum, int section)
 {
 	bool _isStal = true;
-
+    qDebug() << "do_sectionOff:" << QString::number(boardNum) << " " << QString::number(section);
 	// Prepare message and check if star or stal
 	switch (boardNum)
 	{
@@ -730,6 +732,7 @@ void LocoSerial::do_sectionOff(int boardNum, int section)
 
 void LocoSerial::do_sectionOn(int boardNum, int section)
 {
+    qDebug() << "do_sectionOn:" << QString::number(boardNum) << " " << QString::number(section);
 	bool _isStal = true;
 
 	// Prepare message and check if star or stal

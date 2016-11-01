@@ -247,15 +247,16 @@ void MainWindow::do_OPfromComboBox()
 	do_enableArgs();
 }
 
-void MainWindow::do_showCollisionEvt(QStringList collisionsSections)
+void MainWindow::do_showCollisionEvt(QStringList collisionSections)
 {
-	QString info = "Resolve setions";
+    QString info = "Resolve sections";
 
-	for (QString section : collisionsSections)
+    for (QString section : collisionSections)
 	{
 		if (!section.isEmpty())
 		{
 			info.append(" [" + section + "] ");
+            qDebug() << "Emitting node off for:" << section;
 			emit nodeOff(section);
 		}
 
@@ -267,14 +268,16 @@ void MainWindow::do_showCollisionEvt(QStringList collisionsSections)
 	msgBox->setInformativeText(info);
 	msgBox->setStandardButtons(QMessageBox::Ok);
 	msgBox->setDefaultButton(QMessageBox::Ok);
+    msgBox->setProperty("collisionSections", collisionSections);
 	msgBox->setModal(false);
-	msgBox->open(this, SLOT(msgBoxClosed(QAbstractButton *, collisionsSections)));
+    msgBox->open(this, SLOT(msgBoxClosed(QAbstractButton*)));
 }
 
 
-void MainWindow::msgBoxClosed(QAbstractButton *button, QStringList collisionSections) {
-
-	QMessageBox *msgBox = (QMessageBox *)sender();
+void MainWindow::msgBoxClosed(QAbstractButton *button)
+{
+    QMessageBox *msgBox = (QMessageBox *)sender();
+    QStringList collisionSections = msgBox->property("collisionSections").toStringList();
 	QMessageBox::StandardButton btn = msgBox->standardButton(button);
 	if (btn == QMessageBox::Ok)
 	{
@@ -282,14 +285,15 @@ void MainWindow::msgBoxClosed(QAbstractButton *button, QStringList collisionSect
 		{
 			if (!section.isEmpty())
 			{
+                qDebug() << "Emitting nodeON for:" << section;
 				emit nodeOn(section);
 			}
 		}
 	}
 	else
 	{
-		throw "unkown button";
-	}
+        throw "unknown button";
+    }
 }
 
 void MainWindow::do_refreshSerialList()
