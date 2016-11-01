@@ -7,8 +7,8 @@ LocoSerial::LocoSerial()
 	incomingPacket = NULL;
 	outgoingPacket = NULL;
 	usbBuffer = NULL;
-    m_sectionOffCmds = 0;
-    m_sectionOnCmds = 0;
+	m_sectionOffCmds = 0;
+	m_sectionOnCmds = 0;
 }
 
 LocoSerial::~LocoSerial()
@@ -45,7 +45,7 @@ void LocoSerial::do_writePacket(LocoPacket _packet)
 
 void LocoSerial::do_writeBytes(QByteArray _bytes)
 {
-    if (usbBuffer == NULL) {
+	if (usbBuffer == NULL) {
 		return;
 	}
 	if (!usbBuffer->isOpen())
@@ -64,7 +64,7 @@ void LocoSerial::do_querySlot(LocoByte _slot)
 {
 	QString _queryText = "BB" + _slot.get_hex() + "00";
 	LocoPacket _querySlot(_queryText);
-    do_writePacket(_querySlot); // the write() method will generate a checksum for us
+	do_writePacket(_querySlot); // the write() method will generate a checksum for us
 }
 
 void LocoSerial::readTimerStart(int _msec)
@@ -79,75 +79,78 @@ void LocoSerial::readTimerStart(int _msec)
 
 int LocoSerial::getSectionOnCmds() const
 {
-    return m_sectionOnCmds;
+	return m_sectionOnCmds;
 }
 
 void LocoSerial::setSectionOnCmds(int value)
 {
-    m_sectionOnCmds = value;
+	m_sectionOnCmds = value;
 }
 
 void LocoSerial::powerSection(QString echoMsg, QString netcatMsg, bool OnCmd)
 {
-    QProcess echo;
-    QProcess netcat;
-    if (OnCmd) {
-        qDebug() << "Sections on: " << getSectionOnCmds() << endl;
-       setSectionOnCmds(getSectionOnCmds() + 1);
-    } else {
-         qDebug() << "Sections off: " << getSectionOffCmds() << endl;
-       setSectionOffCmds(getSectionOffCmds() + 1);
-    }
+	QProcess echo;
+	QProcess netcat;
+	if (OnCmd) {
+		qDebug() << "Sections on: " << getSectionOnCmds() << endl;
+		setSectionOnCmds(getSectionOnCmds() + 1);
+	}
+	else {
+		qDebug() << "Sections off: " << getSectionOffCmds() << endl;
+		setSectionOffCmds(getSectionOffCmds() + 1);
+	}
 
-    // send message
-    echo.setStandardOutputProcess(&netcat);
-    echo.start(echoMsg);
-    netcat.start(netcatMsg);
-    netcat.setProcessChannelMode(QProcess::ForwardedChannels);
+	// send message
+	echo.setStandardOutputProcess(&netcat);
+	echo.start(echoMsg);
+	netcat.start(netcatMsg);
+	netcat.setProcessChannelMode(QProcess::ForwardedChannels);
 
-    // Wait for it to start
-    if(!echo.waitForStarted())
-        qFatal("Failed to turn off section, echo process not working\n");
+	// Wait for it to start
+	if (!echo.waitForStarted())
+		qFatal("Failed to turn off section, echo process not working\n");
 
-    bool retval = false;
-    QByteArray buffer;
-    while ((retval = netcat.waitForFinished()));
-        buffer.append(netcat.readAll());
-    qDebug() << "Section power Output: " << buffer << endl;
-    echo.close();
-    netcat.close();
+	bool retval = false;
+	QByteArray buffer;
+	while ((retval = netcat.waitForFinished()));
+	buffer.append(netcat.readAll());
+	qDebug() << "Section power Output: " << buffer << endl;
+	echo.close();
+	netcat.close();
 }
 
 void LocoSerial::do_nodeOn(QString node)
 {
-    QStringList nodeProps = node.split("-");
-    do_sectionOn (nodeProps[0].toInt(), nodeProps[1].toInt());
+	QStringList nodeProps = node.split("-");
+     qDebug() << "do_nodeOn:" << node;
+	do_sectionOn(nodeProps[0].toInt(), nodeProps[1].toInt());
 }
 
 void LocoSerial::do_nodeOff(QString node)
 {
-    QStringList nodeProps = node.split("-");
-    do_sectionOff (nodeProps[0].toInt(), nodeProps[1].toInt());
+	QStringList nodeProps = node.split("-");
+    qDebug() << "do_nodeOff:" << node;
+	do_sectionOff(nodeProps[0].toInt(), nodeProps[1].toInt());
 }
 
 int LocoSerial::getSectionOffCmds() const
 {
-    return m_sectionOffCmds;
+	return m_sectionOffCmds;
 }
 
 void LocoSerial::setSectionOffCmds(int value)
 {
-    m_sectionOffCmds = value;
+	m_sectionOffCmds = value;
 }
 
 void LocoSerial::readTimerStop()
 {
-    if (!readTimer) {
-        return;
-    }
-    disconnect(readTimer, 0, 0, 0);
-    readTimer->stop();
-    readTimer->deleteLater();
+	if (!readTimer) {
+		return;
+	}
+	disconnect(readTimer, 0, 0, 0);
+	readTimer->stop();
+	readTimer->deleteLater();
 }
 
 void LocoSerial::do_close()
@@ -164,13 +167,13 @@ void LocoSerial::do_close()
 
 bool LocoSerial::do_open(QextPortInfo _port)
 {
-    usbBuffer = new QextSerialPort(_port.portName, QextSerialPort::EventDriven);;
+	usbBuffer = new QextSerialPort(_port.portName, QextSerialPort::EventDriven);;
 	usbBuffer->close();
-    usbBuffer->setBaudRate(BAUD57600);
-    usbBuffer->setFlowControl(FLOW_HARDWARE);
+	usbBuffer->setBaudRate(BAUD57600);
+	usbBuffer->setFlowControl(FLOW_HARDWARE);
 
 	//usbBuffer->open(QIODevice::ReadWrite);
-    if (*debug) qDebug() << timeStamp() << "Serial Device being opened: " << _port.portName;
+	if (*debug) qDebug() << timeStamp() << "Serial Device being opened: " << _port.portName;
 	if (usbBuffer->open(QIODevice::ReadWrite)) //(usbBuffer->isOpen())
 	{
 		if (*debug) qDebug() << timeStamp() << "Serial port appears to have opened sucessfully.";
@@ -250,13 +253,13 @@ void LocoSerial::do_trackOn()
 {
 	LocoPacket _packet;
 	_packet.set_allFromHex("837C");
-    do_writePacket(_packet);
+	do_writePacket(_packet);
 }
 
 void LocoSerial::do_trackOff()
 {
 	LocoPacket _packet;
-    _packet.set_allFromHex("827D");
+	_packet.set_allFromHex("827D");
 	do_writePacket(_packet);
 }
 
@@ -328,26 +331,26 @@ void LocoSerial::do_slotUse(LocoByte _slot)
 
 void LocoSerial::do_closeTurnout(int locoTurnout)
 {
-    QString on = "B0" + QString::number( locoTurnout-1, 16 ) + "30";
-    QString off = "B0" + QString::number( locoTurnout-1, 16 ) + "20";
-    LocoPacket outputOn;
-    outputOn.set_allFromHex(on);
-    LocoPacket outputOff;
-    outputOff.set_allFromHex(off);
-    do_writePacket(outputOn);
-    do_writePacket(outputOff);
+	QString on = "B0" + QString::number(locoTurnout - 1, 16) + "30";
+	QString off = "B0" + QString::number(locoTurnout - 1, 16) + "20";
+	LocoPacket outputOn;
+	outputOn.set_allFromHex(on);
+	LocoPacket outputOff;
+	outputOff.set_allFromHex(off);
+	do_writePacket(outputOn);
+	do_writePacket(outputOff);
 }
 
 void LocoSerial::do_throwTurnout(int locoTurnout)
 {
-    QString on = "B0" + QString::number( locoTurnout-1, 16 ) + "10";
-    QString off = "B0" + QString::number( locoTurnout-1, 16 ) + "00";
-    LocoPacket outputOn;
-    outputOn.set_allFromHex(on);
-    LocoPacket outputOff;
-    outputOff.set_allFromHex(off);
-    do_writePacket(outputOn);
-    do_writePacket(outputOff);
+	QString on = "B0" + QString::number(locoTurnout - 1, 16) + "10";
+	QString off = "B0" + QString::number(locoTurnout - 1, 16) + "00";
+	LocoPacket outputOn;
+	outputOn.set_allFromHex(on);
+	LocoPacket outputOff;
+	outputOff.set_allFromHex(off);
+	do_writePacket(outputOn);
+	do_writePacket(outputOff);
 }
 
 
@@ -362,76 +365,76 @@ QString LocoSerial::parse(LocoPacket _packet)
 
 	// This looks so gross >.<
 	if (_opCode == "E7") {
-        return(parse_E7(_packet));
+		return(parse_E7(_packet));
 	}
 	else if (_opCode == "B2") {
-        return(parse_B2(_packet));
+		return(parse_B2(_packet));
 	}
 	else if (_opCode == "85") {
-        return(parse_85(_packet));
+		return(parse_85(_packet));
 	}
 	else if (_opCode == "83") {
-        return(parse_83(_packet));
+		return(parse_83(_packet));
 	}
 	else if (_opCode == "82") {
-        return(parse_82(_packet));
+		return(parse_82(_packet));
 	}
 	else if (_opCode == "81") {
-        return(parse_81(_packet));
+		return(parse_81(_packet));
 	}
 	else if (_opCode == "BF") {
-        return(parse_BF(_packet));
+		return(parse_BF(_packet));
 	}
 	else if (_opCode == "BD") {
-        return(parse_BD(_packet));
+		return(parse_BD(_packet));
 	}
 	else if (_opCode == "BC") {
-        return(parse_BC(_packet));
+		return(parse_BC(_packet));
 	}
 	else if (_opCode == "BB") {
-        return(parse_BB(_packet));
+		return(parse_BB(_packet));
 	}
 	else if (_opCode == "BA") {
-        return(parse_BA(_packet));
+		return(parse_BA(_packet));
 	}
 	else if (_opCode == "B9") {
-        return(parse_B9(_packet));
+		return(parse_B9(_packet));
 	}
 	else if (_opCode == "B8") {
-        return(parse_B8(_packet));
+		return(parse_B8(_packet));
 	}
 	else if (_opCode == "B6") {
-        return(parse_B6(_packet));
+		return(parse_B6(_packet));
 	}
 	else if (_opCode == "B5") {
-        return(parse_B5(_packet));
+		return(parse_B5(_packet));
 	}
 	else if (_opCode == "B4") {
-        return(parse_B4(_packet));
+		return(parse_B4(_packet));
 	}
 	else if (_opCode == "B1") {
-        return(parse_B1(_packet));
+		return(parse_B1(_packet));
 	}
 	else if (_opCode == "B0") {
-        return(parse_B0(_packet));
+		return(parse_B0(_packet));
 	}
 	else if (_opCode == "A2") {
-        return(parse_A2(_packet));
+		return(parse_A2(_packet));
 	}
 	else if (_opCode == "A1") {
-        return(parse_A1(_packet));
+		return(parse_A1(_packet));
 	}
 	else if (_opCode == "A0") {
-        return(parse_A0(_packet));
+		return(parse_A0(_packet));
 	}
 	else if (_opCode == "EF") {
-        return(parse_EF(_packet));
+		return(parse_EF(_packet));
 	}
 	else if (_opCode == "E5") {
-        return(parse_E5(_packet));
+		return(parse_E5(_packet));
 	}
 	else if (_opCode == "ED") {
-        return(parse_ED(_packet));
+		return(parse_ED(_packet));
 	}
 
 	return ("opcode [" + _opCode + "] doesn't match anything in parser :c");
@@ -442,369 +445,372 @@ QString LocoSerial::parse(LocoPacket _packet)
  */
 QString LocoSerial::parse_E7(LocoPacket _packet)
 {
-    QString _description = "E7:";
-    // Parse packet into usable variables
-    bool _busy = _packet.get_locobyte(3).get_oneBit(2);
-    bool _active = _packet.get_locobyte(3).get_oneBit(3);
-    LocoByte _slot = _packet.get_locobyte(2);
-    LocoByte _adr = _packet.get_locobyte(4);
-    LocoByte _speed = _packet.get_locobyte(5);
-    bool _dir = _packet.get_locobyte(6).get_oneBit(2);
+	QString _description = "E7:";
+	// Parse packet into usable variables
+	bool _busy = _packet.get_locobyte(3).get_oneBit(2);
+	bool _active = _packet.get_locobyte(3).get_oneBit(3);
+	LocoByte _slot = _packet.get_locobyte(2);
+	LocoByte _adr = _packet.get_locobyte(4);
+	LocoByte _speed = _packet.get_locobyte(5);
+	bool _dir = _packet.get_locobyte(6).get_oneBit(2);
 
-    LocoTrain _newTrain;
-    _newTrain.set_adr(_adr);
-    _newTrain.set_reverse(_dir);
-    _newTrain.set_slot(_slot);
-    _newTrain.set_speed(_speed);
-    QString _state = "NULL";
-    if (_busy && _active) {
-        _state = "IN_USE";
-    }
-    else if (_busy && !_active) {
-        _state = "IDLE";
-    }
-    else if (!_busy && _active) {
-        _state = "COMMON";
-    }
-    else {
-        _state = "FREE";
-    }
-    _newTrain.set_state(_state);
+	LocoTrain _newTrain;
+	_newTrain.set_adr(_adr);
+	_newTrain.set_reverse(_dir);
+	_newTrain.set_slot(_slot);
+	_newTrain.set_speed(_speed);
+	QString _state = "NULL";
+	if (_busy && _active) {
+		_state = "IN_USE";
+	}
+	else if (_busy && !_active) {
+		_state = "IDLE";
+	}
+	else if (!_busy && _active) {
+		_state = "COMMON";
+	}
+	else {
+		_state = "FREE";
+	}
+	_newTrain.set_state(_state);
 
-    emit trainUpdated(_newTrain);
-    _description.append(" Speed: " + _speed.get_hex() + " Slot: " + _slot.get_hex() + " Direction: " + QString::number(_dir) + " State: " + _state);
+	emit trainUpdated(_newTrain);
+	_description.append(" Speed: " + _speed.get_hex() + " Slot: " + _slot.get_hex() + " Direction: " + QString::number(_dir) + " State: " + _state);
 
-    if (_description == "E7:") {
-        _description.append(" No action taken?");
-    }
-    return (_description);
+	if (_description == "E7:") {
+		_description.append(" No action taken?");
+	}
+	return (_description);
 }
 
 QString LocoSerial::parse_EF(LocoPacket _packet) {
-    QString _description = "EF: Write slot data.";
-    return(_description);
+	QString _description = "EF: Write slot data.";
+	return(_description);
 }
 
 QString LocoSerial::parse_E5(LocoPacket _packet) {
-    QString _description = "E5: Move 8 bytes Peer to Peer.";
-    return(_description);
+	QString _description = "E5: Move 8 bytes Peer to Peer.";
+	return(_description);
 }
 
 QString LocoSerial::parse_ED(LocoPacket _packet) {
-    QString _description = "ED: Send n-byte packet.";
-    return(_description);
+	QString _description = "ED: Send n-byte packet.";
+	return(_description);
 }
 
 QString LocoSerial::parse_85(LocoPacket _packet) {
-    QString _description = "85: Requesting track state IDLE / EMG STOP.";
-    return(_description);
+	QString _description = "85: Requesting track state IDLE / EMG STOP.";
+	return(_description);
 }
 
 QString LocoSerial::parse_83(LocoPacket _packet) {
-    QString _description = "83: Requesting track state ON.";
-    return(_description);
+	QString _description = "83: Requesting track state ON.";
+	return(_description);
 }
 
 QString LocoSerial::parse_82(LocoPacket _packet) {
-    QString _description = "82: Requesting track state OFF.";
-    return(_description);
+	QString _description = "82: Requesting track state OFF.";
+	return(_description);
 }
 
 QString LocoSerial::parse_81(LocoPacket _packet) {
-    QString _description = "81: MASTER sent BUSY code.";
-    return(_description);
+	QString _description = "81: MASTER sent BUSY code.";
+	return(_description);
 }
 
 QString LocoSerial::parse_BF(LocoPacket _packet) {
-    QString _description = "BF: Requesting locomotive address.";
-    return(_description);
+	QString _description = "BF: Requesting locomotive address.";
+	return(_description);
 }
 
 QString LocoSerial::parse_BD(LocoPacket _packet) {
-    QString _description = "BD: Requesting switch with LACK function."; // LACK - Long ACKnowledge
-    return(_description);
+	QString _description = "BD: Requesting switch with LACK function."; // LACK - Long ACKnowledge
+	return(_description);
 }
 
 QString LocoSerial::parse_BC(LocoPacket _packet) {
-    QString _description = "BC: Requesting state of switch.";
-    return(_description);
+	QString _description = "BC: Requesting state of switch.";
+	return(_description);
 }
 
 QString LocoSerial::parse_BB(LocoPacket _packet) {
-    QString _description = "BB: Requesting SLOT data/status block.";
-    return(_description);
+	QString _description = "BB: Requesting SLOT data/status block.";
+	return(_description);
 }
 
 QString LocoSerial::parse_BA(LocoPacket _packet) {
-    QString _description = "BA: Move slot SRC to DEST.";
-    return(_description);
+	QString _description = "BA: Move slot SRC to DEST.";
+	return(_description);
 }
 
 QString LocoSerial::parse_B9(LocoPacket _packet) {
-    QString _description = "B9: Link slot ARG1 to slot ARG2.";
-    return(_description);
+	QString _description = "B9: Link slot ARG1 to slot ARG2.";
+	return(_description);
 }
 
 QString LocoSerial::parse_B8(LocoPacket _packet) {
-    QString _description = "B8: Unlink slot ARG1 from slot ARG2.";
-    return(_description);
+	QString _description = "B8: Unlink slot ARG1 from slot ARG2.";
+	return(_description);
 }
 
 QString LocoSerial::parse_B6(LocoPacket _packet) {
-    QString _description = "B6: Set FUNC bits in a CONSIST uplink element.";
-    return(_description);
+	QString _description = "B6: Set FUNC bits in a CONSIST uplink element.";
+	return(_description);
 }
 
 QString LocoSerial::parse_B5(LocoPacket _packet) {
-    QString _description = "B5: Write slot stat1.";
-    return(_description);
+	QString _description = "B5: Write slot stat1.";
+	return(_description);
 }
 
 QString LocoSerial::parse_B4(LocoPacket _packet) {
-    QString _description = "B4: Long Acknowledge - LACK.";
-    return(_description);
+	QString _description = "B4: Long Acknowledge - LACK.";
+	return(_description);
 }
 
 QString LocoSerial::parse_B2(LocoPacket _packet)
 {
-    QString _description = "B2:";
-    LocoByte _adr1 = _packet.get_locobyte(1);
-    LocoByte _adr2 = _packet.get_locobyte(2);
-    bool _aux = _adr2.get_qBitArray()[2];
-    bool _occupied;
+	QString _description = "B2:";
+	LocoByte _adr1 = _packet.get_locobyte(1);
+	LocoByte _adr2 = _packet.get_locobyte(2);
+	bool _aux = _adr2.get_qBitArray()[2];
+	bool _occupied;
 
-    int _loco_sensor = ((_packet.get_sensoraddr(_adr1, _adr2) - 1) * 2 + ((_adr2.get_decimal() & constants::OPC_INPUT_REP_SW) != 0 ? 2 : 1));
+	int _loco_sensor = ((_packet.get_sensoraddr(_adr1, _adr2) - 1) * 2 + ((_adr2.get_decimal() & constants::OPC_INPUT_REP_SW) != 0 ? 2 : 1));
 
-    int _section = ((_loco_sensor + 16 - 1) / 16) % 10;
-    _section = (_section == 0) ? 16 : _section;
-    int _bdNum = (_loco_sensor % 16);
-    _bdNum = (_bdNum == 0) ? 16 : _bdNum;
+	int _section = ((_loco_sensor + 16 - 1) / 16) % 10;
+	_section = (_section == 0) ? 16 : _section;
+	int _bdNum = (_loco_sensor % 16);
+	_bdNum = (_bdNum == 0) ? 16 : _bdNum;
 
-    QString _address = QString::number(_loco_sensor);
-
-
+	QString _address = QString::number(_loco_sensor);
 
 
-    QString trackSection = QString::number(_section) + "-" + QString::number(_bdNum);
 
 
-    if ((_adr2.get_decimal() & constants::OPC_INPUT_REP_HI) != 0) {
-
-        _description.append(" LS" + QString::number(_loco_sensor) + ": OCCUPANCY AT: " + QString::number(_section) + "-" + QString::number(_bdNum));
-        _occupied = true;
-    }
-    else
-    {
-        _description.append(" LS" + QString::number(_loco_sensor) + ": VACANCY AT: " + trackSection);
-        _occupied = false;
-    }
-
-    LocoBlock _newBlock(_address, _aux, _occupied);
+	QString trackSection = QString::number(_section) + "-" + QString::number(_bdNum);
 
 
-    emit blockUpdated(_newBlock);
-    qDebug() << "emitting occupancyDataReady" << endl;
-    emit occupancyDataReady(trackSection, _occupied);
-    return(_description);
+	if ((_adr2.get_decimal() & constants::OPC_INPUT_REP_HI) != 0) {
+
+		_description.append(" LS" + QString::number(_loco_sensor) + ": OCCUPANCY AT: " + QString::number(_section) + "-" + QString::number(_bdNum));
+		_occupied = true;
+	}
+	else
+	{
+		_description.append(" LS" + QString::number(_loco_sensor) + ": VACANCY AT: " + trackSection);
+		_occupied = false;
+	}
+
+	LocoBlock _newBlock(_address, _aux, _occupied);
+
+
+	emit blockUpdated(_newBlock);
+	qDebug() << "emitting occupancyDataReady" << endl;
+	emit occupancyDataReady(trackSection, _occupied);
+	return(_description);
 }
 
 QString LocoSerial::parse_B1(LocoPacket _packet) {
-    QString _description = "B1: Turnout sensor state report.";
-    return(_description);
+	QString _description = "B1: Turnout sensor state report.";
+	return(_description);
 }
 
 QString LocoSerial::parse_B0(LocoPacket _packet) {
-    QString _description = "B0:";
-    LocoByte _arg1 = _packet.get_locobyte(1);
-    LocoByte _arg2 = _packet.get_locobyte(2);
-    bool _state = _arg2.get_qBitArray()[2];
+	QString _description = "B0:";
+	LocoByte _arg1 = _packet.get_locobyte(1);
+	LocoByte _arg2 = _packet.get_locobyte(2);
+	bool _state = _arg2.get_qBitArray()[2];
 
 
-    int _swch = _arg1.get_decimal();
-    _swch++;
+	int _swch = _arg1.get_decimal();
+	_swch++;
 
-    if(!_state)
-    {
-        _description.append(" The Switch: " + QString::number(_swch) + " is thrown ");
-    }
-    else {
-        _description.append(" The Switch: " + QString::number(_swch) + " is closed ");
-    }
+	if (!_state)
+	{
+		_description.append(" The Switch: " + QString::number(_swch) + " is thrown ");
+	}
+	else {
+		_description.append(" The Switch: " + QString::number(_swch) + " is closed ");
+	}
 
-    QByteArray _adr;
-    _adr.append(_arg2.get_hex().mid(1, 1)); // Load MS byte of address
-    _adr.append(_arg1.get_hex()); // Load LS 2 bytes of address
+	QByteArray _adr;
+	_adr.append(_arg2.get_hex().mid(1, 1)); // Load MS byte of address
+	_adr.append(_arg1.get_hex()); // Load LS 2 bytes of address
 
 
-    emit switchUpdated(_swch, _state);
-    return(_description);
+	emit switchUpdated(_swch, _state);
+	return(_description);
 }
 
 QString LocoSerial::LocoSerial::parse_A2(LocoPacket _packet) {
-    QString _description = "A2: Setting slot sound functions.";
-    return(_description);
+	QString _description = "A2: Setting slot sound functions.";
+	return(_description);
 }
 
 QString LocoSerial::LocoSerial::parse_A1(LocoPacket _packet) {
-    QString _description = "A1: Setting slot direction.";
-    return(_description);
+	QString _description = "A1: Setting slot direction.";
+	return(_description);
 }
 
 QString LocoSerial::LocoSerial::parse_A0(LocoPacket _packet) {
-    QString _description = "A0: Setting slot speed.";
-    LocoByte _arg1 = _packet.get_locobyte(1);
-    LocoByte _arg2 = _packet.get_locobyte(2);
+	QString _description = "A0: Setting slot speed.";
+	LocoByte _arg1 = _packet.get_locobyte(1);
+	LocoByte _arg2 = _packet.get_locobyte(2);
 
-    emit querySlot(_arg1); // Ask for E7 slot data
-    return(_description);
+	emit querySlot(_arg1); // Ask for E7 slot data
+	return(_description);
 }
 
 
 int LocoSerial::getTimeDiff()
 {
-    int temp = QTime::currentTime().toString("zzz").toInt();
-    int result = abs((last_time -  temp));
-    last_time = temp;
+	int temp = QTime::currentTime().toString("zzz").toInt();
+	int result = abs((last_time - temp));
+	last_time = temp;
 
-    return result;
+	return result;
 }
 
 void LocoSerial::do_sectionOff(int boardNum, int section)
 {
-    bool _isStal = true;
+	bool _isStal = true;
+    qDebug() << "do_sectionOff:" << QString::number(boardNum) << " " << QString::number(section);
+	// Prepare message and check if star or stal
+	switch (boardNum)
+	{
+	case 5: {
+		boardNum = 1;
+		_isStal = false;
+		break;
+	}
+	case 6: {
+		boardNum = 2;
+		_isStal = false;
+		break;
+	}
+	case 7: {
+		boardNum = 3;
+		_isStal = false;
+		break;
+	}
+	case 8: {
+		boardNum = 4;
+		_isStal = false;
+		break;
+	}
 
-    // Prepare message and check if star or stal
-    switch (boardNum)
-    {
-    case 5: {
-        boardNum = 1;
-        _isStal = false;
-        break;
-    }
-    case 6: {
-        boardNum = 2;
-        _isStal = false;
-        break;
-    }
-    case 7: {
-        boardNum = 3;
-        _isStal = false;
-        break;
-    }
-    case 8: {
-        boardNum = 4;
-        _isStal = false;
-        break;
-    }
+	}
+	QString _echocmd = "echo " + QString::number(boardNum) + QString(QChar(TO_HEX(section - 1))) + "0";
 
-    }
-    QString _echocmd = "echo " + QString::number(boardNum)+ QString(QChar(TO_HEX(section-1)))+"0";
+	QProcess echo;
+	QProcess netcat;
+	// send message
+	echo.setStandardOutputProcess(&netcat);
+	echo.start(_echocmd);
+	if (_isStal) {
+		netcat.start("netcat " + stal);
+	}
+	else {
+		netcat.start("netcat " + star);
+	}
+	netcat.setProcessChannelMode(QProcess::ForwardedChannels);
 
-    QProcess echo;
-    QProcess netcat;
-    // send message
-    echo.setStandardOutputProcess(&netcat);
-        echo.start(_echocmd);
-        if (_isStal) {
-            netcat.start("netcat " + stal);
-        } else {
-            netcat.start("netcat " + star);
-        }
-    netcat.setProcessChannelMode(QProcess::ForwardedChannels);
+	// Wait for it to start
+	if (!echo.waitForStarted())
+		qFatal("Failed to turn off section, echo process not working\n");
 
-    // Wait for it to start
-    if(!echo.waitForStarted())
-        qFatal("Failed to turn off section, echo process not working\n");
-
-    bool retval = false;
-    QByteArray buffer;
-    while ((retval = netcat.waitForFinished()));
-        buffer.append(netcat.readAll());
-    qDebug() << "Section off power Output: " << buffer << endl;
-    echo.close();
-    netcat.close();
-    setSectionOffCmds(getSectionOffCmds() + 1);
+	bool retval = false;
+	QByteArray buffer;
+	while ((retval = netcat.waitForFinished()));
+	buffer.append(netcat.readAll());
+	qDebug() << "Section off power Output: " << buffer << endl;
+	echo.close();
+	netcat.close();
+	setSectionOffCmds(getSectionOffCmds() + 1);
 }
 
 void LocoSerial::do_sectionOn(int boardNum, int section)
 {
-    bool _isStal = true;
+    qDebug() << "do_sectionOn:" << QString::number(boardNum) << " " << QString::number(section);
+	bool _isStal = true;
 
-    // Prepare message and check if star or stal
-    switch (boardNum)
-    {
-    case 5: {
-        boardNum = 1;
-        _isStal = false;
-        break;
-    }
-    case 6: {
-        boardNum = 2;
-        _isStal = false;
-        break;
-    }
-    case 7: {
-        boardNum = 3;
-        _isStal = false;
-        break;
-    }
-    case 8: {
-        boardNum = 4;
-        _isStal = false;
-        break;
-    }
+	// Prepare message and check if star or stal
+	switch (boardNum)
+	{
+	case 5: {
+		boardNum = 1;
+		_isStal = false;
+		break;
+	}
+	case 6: {
+		boardNum = 2;
+		_isStal = false;
+		break;
+	}
+	case 7: {
+		boardNum = 3;
+		_isStal = false;
+		break;
+	}
+	case 8: {
+		boardNum = 4;
+		_isStal = false;
+		break;
+	}
 
-    }
+	}
 
 
-    // create commands
-    QString _echocmd = "echo " + QString::number(boardNum)+ QString(QChar(TO_HEX(section-1)))+"1";
+	// create commands
+	QString _echocmd = "echo " + QString::number(boardNum) + QString(QChar(TO_HEX(section - 1))) + "1";
 
-    QProcess echo;
-    QProcess netcat;
-    // send message
-    echo.setStandardOutputProcess(&netcat);
-        echo.start(_echocmd);
-        if (_isStal) {
-            netcat.start("netcat " + stal);
-        } else {
-            netcat.start("netcat " + star);
-        }
+	QProcess echo;
+	QProcess netcat;
+	// send message
+	echo.setStandardOutputProcess(&netcat);
+	echo.start(_echocmd);
+	if (_isStal) {
+		netcat.start("netcat " + stal);
+	}
+	else {
+		netcat.start("netcat " + star);
+	}
 
-        netcat.setProcessChannelMode(QProcess::ForwardedChannels);
+	netcat.setProcessChannelMode(QProcess::ForwardedChannels);
 
-    // Wait for it to start
-    if(!echo.waitForStarted())
-        qFatal("Failed to turn on section, echo process not working\n");
+	// Wait for it to start
+	if (!echo.waitForStarted())
+		qFatal("Failed to turn on section, echo process not working\n");
 
-    bool retval = false;
-    QByteArray buffer;
-    while ((retval = netcat.waitForFinished()));
-        buffer.append(netcat.readAll());
-    qDebug() << "Section on power Output: " << buffer << endl;
-    echo.close();
-    netcat.close();
-    setSectionOnCmds(getSectionOnCmds() + 1);
+	bool retval = false;
+	QByteArray buffer;
+	while ((retval = netcat.waitForFinished()));
+	buffer.append(netcat.readAll());
+	qDebug() << "Section on power Output: " << buffer << endl;
+	echo.close();
+	netcat.close();
+	setSectionOnCmds(getSectionOnCmds() + 1);
 
 }
 
 void LocoSerial::do_clearSectionOff()
 {
-    setSectionOffCmds(0);
+	setSectionOffCmds(0);
 }
 
 void LocoSerial::do_clearSectionOn()
 {
-    setSectionOnCmds(0);
+	setSectionOnCmds(0);
 }
 
 void LocoSerial::do_getSectionsOff()
 {
-    qDebug() << getSectionOffCmds() << " Sections Off" << endl;
+	qDebug() << getSectionOffCmds() << " Sections Off" << endl;
 }
 
 void LocoSerial::do_getSectionsOn()
 {
-        qDebug() << getSectionOnCmds() << " Sections On" << endl;
+	qDebug() << getSectionOnCmds() << " Sections On" << endl;
 }
 

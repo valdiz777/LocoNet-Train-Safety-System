@@ -41,10 +41,10 @@ public:
 	QString timeStamp();
 	static bool debug;
 
-public slots:
-    void do_enableArgs();
-    void do_genPacket();
-    void do_refreshSerialList();
+	public slots:
+	void do_enableArgs();
+	void do_genPacket();
+	void do_refreshSerialList();
 	void do_openSerial();
 	void do_sendSerial();
 	void do_connectDB();
@@ -53,26 +53,26 @@ public slots:
 	void do_printDescriptions(QString);
 	void do_loadOPComboBox();
 	void do_OPfromComboBox();
-    void do_showCollisionEvt(QStringList collisionsSections);
+    void do_showCollisionEvt(QStringList collisionSections);
 
 
 	void handle_serialOpened();
 	void handle_serialClosed();
 	void handle_DBopened();
 	void handle_DBclosed();
-    void msgBoxClosed(QAbstractButton *button, QStringList collisionSections);
+    void msgBoxClosed(QAbstractButton *button);
 signals:
-    void locoserial_open(QextPortInfo _device);
+	void locoserial_open(QextPortInfo _device);
 	void locoserial_write(LocoPacket outgoingPacket);
 	void locosql_open(QString hostname, int port, QString database, QString username, QString password);
-    void nodeOn(QString node);
-    void nodeOff(QString node);
+	void nodeOn(QString node);
+	void nodeOff(QString node);
 
 private:
 	Ui::MainWindow *ui;
 	LocoPacket outgoingPacket;
 	LocoPacket incomingPacket;
-    QextPortInfo usbPorts;
+	QextPortInfo usbPorts;
 	LocoSerial * locoserial;
 	QThread threadSerial;
 	LocoSQL * locosql;

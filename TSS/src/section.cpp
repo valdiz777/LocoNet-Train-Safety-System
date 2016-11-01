@@ -12,24 +12,26 @@ Section::Section()
 	m_conn1 = "";
 	m_conn2 = "";
 	m_conn3 = "";
-    m_ltnum = -1;
-    m_thrown = true;		// true for left; false for right
+	m_conn4 = "";
+	m_ltnum = -1;
+	m_thrown = true;		// true for left; false for right
 	m_occupancy = false;
-    m_thrownLeft = true;
+	m_thrownLeft = true;
 }
 
 Section::Section(QString Node, int NumOfConns,
-    QString Conn1, QString Conn2, QString Conn3, int ltNum, bool thrownLeft)
+	QString Conn1, QString Conn2, QString Conn3, QString Conn4, int ltNum, bool thrownLeft)
 {
 	m_node = Node;
 	m_numOfConns = NumOfConns;
 	m_conn1 = Conn1;
 	m_conn2 = Conn2;
 	m_conn3 = Conn3;
-    m_thrown = true;
+	m_conn4 = Conn4;
+	m_thrown = true;
 	m_occupancy = false;
-    m_ltnum = ltNum;
-    m_thrownLeft = thrownLeft;
+	m_ltnum = ltNum;
+	m_thrownLeft = thrownLeft;
 }
 
 Section::~Section()
@@ -64,17 +66,17 @@ QString Section::getConn3()
 
 bool Section::getThrown()
 {
-    return m_thrown;
+	return m_thrown;
 }
 
 bool Section::getThrownLeft()
 {
-    return m_thrownLeft;
+	return m_thrownLeft;
 }
 
 void Section::setThrown(bool thrown)
 {
-    m_thrown = thrown;
+	m_thrown = thrown;
 }
 
 void Section::setOccupancy(bool state)
@@ -89,26 +91,36 @@ bool Section::getOccupancy()
 
 int Section::getLtNum()
 {
-    return m_ltnum;
+	return m_ltnum;
 }
 
 int Section::getBoardNum() const
 {
-    return m_boardNum;
+	return m_boardNum;
 }
 
 void Section::setBoardNum(int boardNum)
 {
-    m_boardNum = boardNum;
+	m_boardNum = boardNum;
 }
 
 int Section::getSection() const
 {
-    return m_section;
+	return m_section;
 }
 
 void Section::setSection(int section)
 {
-    m_section = section;
+	m_section = section;
+}
+
+QString Section::getConn4() const
+{
+	return m_conn4;
+}
+
+void Section::setConn4(const QString &conn4)
+{
+	m_conn4 = conn4;
 }
 

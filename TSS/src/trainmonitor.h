@@ -24,22 +24,22 @@ public:
 	~TrainMonitor();
 	void startMonitor();
 	void stopMonitor();
-    void Monitor(QString monitorSection);
-    bool updateSingleConnList(Section current);
-    bool updateDoubleConnList(Section current);
-    bool updateTripleConnList(Section current);
-    bool updateQuadConnList(Section current);
-    QString getNextStraightSection(Section previous, Section current);
-    QString getNextSwitchSection(Section previous, Section current);
-    QString getNextEndpointSection(Section previous, Section current);
-    void generateSectionList();
-    void printHeader(QString message);
+	void Monitor(QString monitorSection);
+	bool updateSingleConnList(Section current);
+	bool updateDoubleConnList(Section current);
+	bool updateTripleConnList(Section current);
+	bool updateQuadConnList(Section current);
+	QString getNextStraightSection(Section previous, Section current);
+	QString getNextSwitchSection(Section previous, Section current);
+	QString getNextEndpointSection(Section previous, Section current);
+	void generateSectionList();
+	void printHeader(QString message);
 
-public slots:
+	public slots:
 	void do_run();
 	void do_handleOccupancy(QString sec, bool state);
-    void do_handleSwitch(int LT, bool closed);
-    void handle_serialOpened();
+	void do_handleSwitch(int LT, bool closed);
+	void handle_serialOpened();
 
 signals:
 	void slotScan(LocoByte _slot);
@@ -50,29 +50,29 @@ signals:
 	void trackReset();
 	void trackOn();
 	void trackOff();
-    void sectionOff(int boardNum, int section);
-    void sectionOn(int boardNum, int section);
-    void nodeOn(QString node);
-    void nodeOff(QString node);
-    void closeTurnout(int locoTurnout);
-    void throwTurnout(int locoTurnout);
-    void clearSectionOnCount();
-    void clearSectionOffCount();
-    void printSectionsOn();
-    void printSectionsOff();
-    void collisionEvt(QStringList collisionSections);
+	void sectionOff(int boardNum, int section);
+	void sectionOn(int boardNum, int section);
+	void nodeOn(QString node);
+	void nodeOff(QString node);
+	void closeTurnout(int locoTurnout);
+	void throwTurnout(int locoTurnout);
+	void clearSectionOnCount();
+	void clearSectionOffCount();
+	void printSectionsOn();
+	void printSectionsOff();
+	void collisionEvt(QStringList collisionSections);
 
 protected:
 
 private:
 	void endpointMonitor(Section sec);
-    void straightMonitor(Section sec);
-    void switchMonitor(Section sec);
-    void crossoverMonitor(Section sec);
-    QList<std::pair<QString, QString>> sectionPairs; // First QString = lastSection, Second = currentSection
-    QList<EnginePath> enginePaths; // may take place of sectionPairs.......
+	void straightMonitor(Section sec);
+	void switchMonitor(Section sec);
+	void crossoverMonitor(Section sec);
+	QList<std::pair<QString, QString>> sectionPairs; // First QString = lastSection, Second = currentSection
+	QList<EnginePath> enginePaths; // may take place of sectionPairs.......
 
-    bool running;
+	bool running;
 	Section retrieveSections(QString section);
 	QList<Section> m_sectionList;
 	Section findNextSection(Section previousSection, Section currentSection);

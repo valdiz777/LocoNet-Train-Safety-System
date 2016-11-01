@@ -76,48 +76,48 @@ extern "C" {
 class QextSerialRegistrationWidget;
 class QextSerialEnumeratorPrivate
 {
-    Q_DECLARE_PUBLIC(QextSerialEnumerator)
+	Q_DECLARE_PUBLIC(QextSerialEnumerator)
 public:
-    QextSerialEnumeratorPrivate(QextSerialEnumerator *enumrator);
-    ~QextSerialEnumeratorPrivate();
-    void init_sys();
-    void destroy_sys();
+	QextSerialEnumeratorPrivate(QextSerialEnumerator *enumrator);
+	~QextSerialEnumeratorPrivate();
+	void init_sys();
+	void destroy_sys();
 
-    static QList<QextPortInfo> getPorts_sys();
-    bool setUpNotifications_sys(bool setup);
+	static QList<QextPortInfo> getPorts_sys();
+	bool setUpNotifications_sys(bool setup);
 
 #if defined(Q_OS_WIN) && defined(QT_GUI_LIB)
-    LRESULT onDeviceChanged(WPARAM wParam, LPARAM lParam);
-    bool matchAndDispatchChangedDevice(const QString &deviceID, const GUID &guid, WPARAM wParam);
-    QextSerialRegistrationWidget *notificationWidget;
+	LRESULT onDeviceChanged(WPARAM wParam, LPARAM lParam);
+	bool matchAndDispatchChangedDevice(const QString &deviceID, const GUID &guid, WPARAM wParam);
+	QextSerialRegistrationWidget *notificationWidget;
 #endif /*Q_OS_WIN*/
 
 #ifdef Q_OS_MAC
-    /*!
-     * Search for serial ports using IOKit.
-     *    \param infoList list with result.
-     */
-    static void iterateServicesOSX(io_object_t service, QList<QextPortInfo> &infoList);
-    static bool getServiceDetailsOSX(io_object_t service, QextPortInfo *portInfo);
-    void onDeviceDiscoveredOSX(io_object_t service);
-    void onDeviceTerminatedOSX(io_object_t service);
-    friend void deviceDiscoveredCallbackOSX(void *ctxt, io_iterator_t serialPortIterator);
-    friend void deviceTerminatedCallbackOSX(void *ctxt, io_iterator_t serialPortIterator);
+	/*!
+	 * Search for serial ports using IOKit.
+	 *    \param infoList list with result.
+	 */
+	static void iterateServicesOSX(io_object_t service, QList<QextPortInfo> &infoList);
+	static bool getServiceDetailsOSX(io_object_t service, QextPortInfo *portInfo);
+	void onDeviceDiscoveredOSX(io_object_t service);
+	void onDeviceTerminatedOSX(io_object_t service);
+	friend void deviceDiscoveredCallbackOSX(void *ctxt, io_iterator_t serialPortIterator);
+	friend void deviceTerminatedCallbackOSX(void *ctxt, io_iterator_t serialPortIterator);
 
-    IONotificationPortRef notificationPortRef;
+	IONotificationPortRef notificationPortRef;
 #endif // Q_OS_MAC
 
 #if defined(Q_OS_LINUX) && !defined(QESP_NO_UDEV)
-    QSocketNotifier *notifier;
-    int notifierFd;
-    struct udev *udev;
-    struct udev_monitor *monitor;
+	QSocketNotifier *notifier;
+	int notifierFd;
+	struct udev *udev;
+	struct udev_monitor *monitor;
 
-    void _q_deviceEvent();
+	void _q_deviceEvent();
 #endif
 
 private:
-    QextSerialEnumerator *q_ptr;
+	QextSerialEnumerator *q_ptr;
 };
 
 #endif //_QEXTSERIALENUMERATOR_P_H_
