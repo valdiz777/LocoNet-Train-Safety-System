@@ -31,7 +31,8 @@ SOURCES += src/main.cpp\
     src/section.cpp \
     src/trainmonitor.cpp \
     src/log.cpp \
-    src/enginepath.cpp
+    src/enginepath.cpp \
+    src/TrainMonitorTestDriver.cpp
 
 HEADERS  += src/mainwindow.h \
         src/locopacket.h \
