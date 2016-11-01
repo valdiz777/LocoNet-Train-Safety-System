@@ -223,8 +223,8 @@ void MainWindow::do_loadOPComboBox()
 {
 	ui->comboBox_opcodes->clear();
 	LocoPacket _tmp;
-	QVector<QString> _opcodes = _tmp.get_DBopcodes();
-	QVector<QString> _names = _tmp.get_DBnames();
+    QVector<QString> _opcodes = _tmp.get_Opcodes();
+    QVector<QString> _names = _tmp.get_Names();
 	if (_opcodes.count() != _names.count())
 	{
 		qDebug() << timeStamp() << "database opcodes and names don't match.";
@@ -241,7 +241,7 @@ void MainWindow::do_loadOPComboBox()
 void MainWindow::do_OPfromComboBox()
 {
 	LocoPacket _tmp;
-	QVector<QString> _opcodes = _tmp.get_DBopcodes();
+    QVector<QString> _opcodes = _tmp.get_Opcodes();
 	QString _hex = _opcodes[ui->comboBox_opcodes->currentIndex()];
 	ui->lineEdit_opcode->setText(_hex);
 	do_enableArgs();
