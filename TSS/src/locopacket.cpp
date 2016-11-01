@@ -120,9 +120,6 @@ void LocoPacket::set_allFromHex(QString _hex)
 	{
 		if (debug) qDebug() << timeStamp() << "Valid Checksum x)";
 	}
-	else {
-		do_genChecksum();
-	}
 }
 
 bool LocoPacket::operator ==(LocoPacket _arg)

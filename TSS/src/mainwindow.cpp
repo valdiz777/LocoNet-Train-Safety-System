@@ -375,7 +375,7 @@ void MainWindow::do_sendSerial()
 	outgoingPacket.set_allFromHex(ui->lineEdit_packet->text());
 	if (!outgoingPacket.validChk())
 	{
-		qDebug() << timeStamp() << "Packet isn't right ~_~;";
+        qDebug() << timeStamp() << "Not a valid LocoPacket, Incorrect Opcode.";
 		return;
 	}
 	ui->textBrowser_packets->append(timeStamp() + "Asking for write: " + outgoingPacket.get_packet().toLatin1());

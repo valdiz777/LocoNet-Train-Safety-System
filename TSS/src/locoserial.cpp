@@ -333,10 +333,8 @@ void LocoSerial::do_closeTurnout(int locoTurnout)
 {
 	QString on = "B0" + QString::number(locoTurnout - 1, 16) + "30";
 	QString off = "B0" + QString::number(locoTurnout - 1, 16) + "20";
-	LocoPacket outputOn;
-	outputOn.set_allFromHex(on);
-	LocoPacket outputOff;
-	outputOff.set_allFromHex(off);
+    LocoPacket outputOn = LocoPacket(on);
+    LocoPacket outputOff = LocoPacket(off);
 	do_writePacket(outputOn);
 	do_writePacket(outputOff);
 }
@@ -345,12 +343,10 @@ void LocoSerial::do_throwTurnout(int locoTurnout)
 {
 	QString on = "B0" + QString::number(locoTurnout - 1, 16) + "10";
 	QString off = "B0" + QString::number(locoTurnout - 1, 16) + "00";
-	LocoPacket outputOn;
-	outputOn.set_allFromHex(on);
-	LocoPacket outputOff;
-	outputOff.set_allFromHex(off);
-	do_writePacket(outputOn);
-	do_writePacket(outputOff);
+    LocoPacket outputOn = LocoPacket(on);
+    LocoPacket outputOff = LocoPacket(off);
+    do_writePacket(outputOn);
+    do_writePacket(outputOff);
 }
 
 
