@@ -25,8 +25,13 @@ void TrainMonitor::do_handleOccupancy(QString section, bool state)
 {
 	qDebug() << "do_handleOccupancy entered";
 	qDebug() << "New Occupancy Data at Monitor:" << section << " State:" << state;
-	Section monitoredSection = retrieveSections(section);
-	monitoredSection.setOccupancy(state);
+    QList<Section> monitoredSections = retrieveSections(section);
+
+    for(auto it : monitoredSections)
+    {
+        it.setOccupancy(state);
+    }
+
 	//if (state) Monitor(monitoredSection);
 	if (state) Monitor(section);
 }
@@ -45,82 +50,135 @@ void TrainMonitor::Monitor(QString section)
 #pragma message("[MKJ] Will nextSection1 be enough padding for a crash scenario?")
 	//Section monitorSection = es.path.getNextSection1();
 
-	Section currentSection = retrieveSections(section);
+    int totalConnections = 0;
+    QList<Section> currentSections = retrieveSections(section);
 	qDebug() << "Starting monitor ....." << endl;
-	switch (currentSection.getNumOfConns())
-	{
-	case 1:		// Endpoint case
-	{
-		if (!updateSingleConnList(currentSection))
-		{
-			emit collisionEvt(QStringList());
-		}
-		//            qDebug() << "entered endpoint monitor" << endl;
-		//            endpointMonitor(currentSection);
-		break;
-	}
-	case 2:		// Straight case
-	{
-		if (!updateDoubleConnList(currentSection))
-		{
-			qDebug() << "Section " << currentSection.getNode() << " needs to be shutdown (straight)";
-			qDebug() << "Section " << currentSection.getConn1() << " needs to be shutdown (straight)";
-			qDebug() << "Section " << currentSection.getConn2() << " needs to be shutdown (straight)";
-			emit collisionEvt(QStringList() << currentSection.getNode()
-				<< currentSection.getConn1()
-				<< currentSection.getConn2());
-		}
-		//qDebug() << "entered straight monitor" << endl;
-		//straightMonitor(currentSection);
-		break;
-	}
-	case 3:		// Switch case
-	{
-		if (!updateTripleConnList(currentSection))
-		{
-			qDebug() << "Section " << currentSection.getNode() << " needs to be shutdown (switch)";
-			qDebug() << "Section " << currentSection.getConn1() << " needs to be shutdown (switch)";
-			qDebug() << "Section " << currentSection.getConn2() << " needs to be shutdown (switch)";
-			qDebug() << "Section " << currentSection.getConn3() << " needs to be shutdown (switch)";
-			emit collisionEvt(QStringList() << currentSection.getNode()
-				<< currentSection.getConn1()
-				<< currentSection.getConn2()
-				<< currentSection.getConn3());
 
-		}
-		//            qDebug() << "entered switch monitor" << endl;
-		//            switchMonitor(currentSection);
-		break;
-	}
-	case 4:		// Crossover case
-	{
-		if (!updateQuadConnList(currentSection))
-		{
-			qDebug() << "Section " << currentSection.getNode() << " needs to be shutdown (crossover)";
-			qDebug() << "Section " << currentSection.getConn1() << " needs to be shutdown (crossover)";
-			qDebug() << "Section " << currentSection.getConn2() << " needs to be shutdown (crossover)";
-			qDebug() << "Section " << currentSection.getConn3() << " needs to be shutdown (crossover)";
-			//qDebug() << "Section " << currentSection.getConn4() << " needs to be shutdown (crossover)";
-			emit collisionEvt(QStringList() << currentSection.getNode()
-				<< currentSection.getConn1()
-				<< currentSection.getConn2()
-				<< currentSection.getConn3()
-			/*<< currentSection.getConn4()*/);
+    for(auto currentSection : currentSections)
+    {
+        switch (currentSection.getNumOfConns())
+        {
+            case 1:		// Endpoint case
+            {
+                totalConnections += updateSingleConnList(currentSection);
+                break;
+            }
+            case 2:		// Straight case
+            {
+                totalConnections += updateDoubleConnList(currentSection);
+                break;
+            }
+            case 3:		// Switch case
+            {
+                totalConnections += updateTripleConnList(currentSection);
+                break;
+            }
+            case 4:		// Crossover case
+            {
+                totalConnections += updateQuadConnList(currentSection);
+                break;
+            }
+            default:
+            {
+                qFatal("Invalid track type");
+                break;
+            }
+        }
+    }
 
-		}
-		//            qDebug() << "entered crossover monitor" << endl;
-					//crossoverMonitor(currentSection);
-		break;
-	}
-	default:
-	{
-		qFatal("Invalid track type");
-		break;
-	}
-	}
+    if(totalConnections > 1)
+    {
+        for(auto currentSection : currentSections)
+        {
+            switch (currentSection.getNumOfConns())
+            {
+                case 1:		// Endpoint case
+                {
+                    qDebug() << "Section "
+                             << currentSection.getNode()
+                             << " needs to be shutdown (endpoint)";
+                    emit collisionEvt(QStringList()
+                             << currentSection.getNode());
+
+                    break;
+                }
+                case 2:		// Straight case
+                {
+                    qDebug() << "Section "
+                             << currentSection.getNode()
+                             << " needs to be shutdown (straight)";
+                    qDebug() << "Section "
+                             << currentSection.getConn1()
+                             << " needs to be shutdown (straight)";
+                    qDebug() << "Section "
+                             << currentSection.getConn2()
+                             << " needs to be shutdown (straight)";
+                    emit collisionEvt(QStringList()
+                             << currentSection.getNode()
+                             << currentSection.getConn1()
+                             << currentSection.getConn2());
+
+                    break;
+                }
+                case 3:		// Switch case
+                {
+                    qDebug() << "Section "
+                             << currentSection.getNode()
+                             << " needs to be shutdown (switch)";
+                    qDebug() << "Section "
+                             << currentSection.getConn1()
+                             << " needs to be shutdown (switch)";
+                    qDebug() << "Section "
+                             << currentSection.getConn2()
+                             << " needs to be shutdown (switch)";
+                    qDebug() << "Section "
+                             << currentSection.getConn3()
+                             << " needs to be shutdown (switch)";
+                    emit collisionEvt(QStringList()
+                             << currentSection.getNode()
+                             << currentSection.getConn1()
+                             << currentSection.getConn2()
+                             << currentSection.getConn3());
+
+                    break;
+                }
+                case 4:		// Crossover case
+                {
+                    qDebug() << "Section "
+                             << currentSection.getNode()
+                             << " needs to be shutdown (crossover)";
+                    qDebug() << "Section "
+                             << currentSection.getConn1()
+                             << " needs to be shutdown (crossover)";
+                    qDebug() << "Section "
+                             << currentSection.getConn2()
+                             << " needs to be shutdown (crossover)";
+                    qDebug() << "Section "
+                             << currentSection.getConn3()
+                             << " needs to be shutdown (crossover)";
+                    /*qDebug() << "Section "
+                             << currentSection.getConn4()
+                             << " needs to be shutdown (crossover)";*/
+                    emit collisionEvt(QStringList()
+                             << currentSection.getNode()
+                             << currentSection.getConn1()
+                             << currentSection.getConn2()
+                             << currentSection.getConn3()
+                             /*<< currentSection.getConn4()*/);
+
+                    break;
+                }
+                default:
+                {
+                    qFatal("Invalid track type");
+                    break;
+                }
+            }
+        }
+    }
 }
 
-void TrainMonitor::endpointMonitor(Section sec)
+/*void TrainMonitor::endpointMonitor(Section sec)
 {
 	qDebug() << "endpointMonitor()";
 	// Shutdown the section since the means the train is headed
@@ -136,9 +194,9 @@ void TrainMonitor::endpointMonitor(Section sec)
 			}
 		}
 	}
-}
+}*/
 
-void TrainMonitor::straightMonitor(Section sec)
+/*void TrainMonitor::straightMonitor(Section sec)
 {
 	qDebug() << "straightMonitor()" << sec.getNode();
 	QString nextSection;
@@ -162,7 +220,7 @@ void TrainMonitor::straightMonitor(Section sec)
 		 qDebug() << "Shit didn't work homie!!!";
 	 }*/
 
-	for (auto section : sectionPairs)
+    /*for (auto section : sectionPairs)
 	{
 		qDebug() << "nextSection: " << nextSection << " section.second:" << section.second << endl;
 		if (nextSection == section.second)
@@ -172,9 +230,9 @@ void TrainMonitor::straightMonitor(Section sec)
 			emit collisionEvt(QStringList() << section.second);
 		}
 	}
-}
+}*/
 
-void TrainMonitor::switchMonitor(Section sec)
+/*void TrainMonitor::switchMonitor(Section sec)
 {
 	qDebug() << "switchMonitor()";
 	QString monitorSection;
@@ -211,7 +269,7 @@ void TrainMonitor::switchMonitor(Section sec)
 					break;
 			}
 		}*/
-	}
+    /*}
 
 	for (auto section : sectionPairs)
 	{
@@ -222,17 +280,17 @@ void TrainMonitor::switchMonitor(Section sec)
 			emit  collisionEvt(QStringList() << section.second);
 		}
 	}
-}
+}*/
 
 //void TrainMonitor::crossoverMonitor(Section sec, engineSection es)
 //{
 
 //}
 
-Section TrainMonitor::retrieveSections(QString section)
+QList<Section> TrainMonitor::retrieveSections(QString section)
 {
-	qDebug() << "retrieveSections() " << section;
-	Section newSection;
+    QList<Section> ret;
+    qDebug() << "retrieveSections() " << section;
 	//int NotFoundIndex;
 
 	bool found = false;
@@ -240,7 +298,7 @@ Section TrainMonitor::retrieveSections(QString section)
 	{
 		if (it.getNode() == section)
 		{
-			newSection = it;
+            ret.push_back(it);
 			found = true;
 			break;
 		}
@@ -251,7 +309,7 @@ Section TrainMonitor::retrieveSections(QString section)
 		qDebug() << "Invalid section:" << section << ", Are you sure the section exists?" << section;
 	}
 
-	return newSection;
+    return ret;
 }
 
 void TrainMonitor::generateSectionList()
@@ -330,7 +388,7 @@ void TrainMonitor::handle_serialOpened()
 	emit printSectionsOn();
 }
 
-Section TrainMonitor::findNextSection(Section previousSection,
+/*Section TrainMonitor::findNextSection(Section previousSection,
 	Section currentSection)
 {
 	qDebug() << "findNextSection()";
@@ -394,13 +452,13 @@ Section TrainMonitor::findNextSection(Section previousSection,
 	}
 
 	return nextSection;
-}
+}*/
 
 /// Updates to an endpoint.....fix comment later
-bool TrainMonitor::updateSingleConnList(Section current)
+int TrainMonitor::updateSingleConnList(Section current)
 {
 	qDebug() << "updateSingleConnList()";
-	bool ret = false;
+    bool ret = 2;
 	bool found = false;
 	int i = 0;
 	for (auto sec : sectionPairs)
@@ -412,13 +470,13 @@ bool TrainMonitor::updateSingleConnList(Section current)
 			//            sec.second = current.getNode();
 
 			QString past = current.getConn1();
-			std::pair<QString, QString> secPair =
+            std::pair<QString, QString> secPair =
 				std::make_pair<QString, QString>((QString)past, current.getNode());
 			sectionPairs.push_back(secPair);
 			sectionPairs.removeAt(i);
 
 			found = true;
-		}
+        }
 		++i;
 	}
 
@@ -429,16 +487,15 @@ bool TrainMonitor::updateSingleConnList(Section current)
 		std::pair<QString, QString> secPair =
 			std::make_pair<QString, QString>("", current.getNode());
 		sectionPairs.push_back(secPair);
-		ret = true;
+        ret = 0;
 	}
 
 	return ret;
 }
 
 /// Updates strait aways.....
-bool TrainMonitor::updateDoubleConnList(Section current)
+int TrainMonitor::updateDoubleConnList(Section current)
 {
-	bool ret = false;
 	qDebug() << "updateDoubleConnList()";
 	bool found = false;
 	int i = 0;
@@ -502,23 +559,18 @@ bool TrainMonitor::updateDoubleConnList(Section current)
 		//        }
 	}
 
-	if (numOccurrences < 2)
-	{
-		ret = true;
-	}
-
-	return ret;
+    return numOccurrences;
 }
 
 /// Updates switches.....
-bool TrainMonitor::updateTripleConnList(Section current)
+int TrainMonitor::updateTripleConnList(Section current)
 {
 	qDebug() << "updateTripleConnList()";
 	bool found = false;
 	int i = 0;
 	int numOccurrences = 0;
-	bool ret = false;
-	for (auto sec : sectionPairs)
+
+    for (auto sec : sectionPairs)
 	{
 		if (sec.second == current.getConn1() ||
 			sec.second == current.getConn2() ||
@@ -566,17 +618,12 @@ bool TrainMonitor::updateTripleConnList(Section current)
 		sectionPairs.push_back(secPair);
 	}
 
-	if (numOccurrences < 2)
-	{
-		ret = true;
-	}
-
-	return ret;
+    return numOccurrences;
 
 }
 
 /// Updates Crossovers....
-bool TrainMonitor::updateQuadConnList(Section current)
+int TrainMonitor::updateQuadConnList(Section current)
 {
 	qDebug() << "updateQuadConnList()";
 	bool found = false;
@@ -594,13 +641,13 @@ bool TrainMonitor::updateQuadConnList(Section current)
 
 			QString past;
 
-			if (sec.second == current.getConn2())
+            if (current.getConn1() != "" && sec.second == current.getConn2())
 			{
 				past = current.getConn2();
 				++numOccurrences;
 			}
 
-			if (sec.second == current.getConn1())
+            if (current.getConn2() != "" && sec.second == current.getConn1())
 			{
 				past = current.getConn1();
 				++numOccurrences;
@@ -637,12 +684,7 @@ bool TrainMonitor::updateQuadConnList(Section current)
 		sectionPairs.push_back(secPair);
 	}
 
-	if (numOccurrences < 2)
-	{
-		ret = true;
-	}
-
-	return ret;
+    return numOccurrences;
 }
 
 QString TrainMonitor::getNextStraightSection(Section previous, Section current)

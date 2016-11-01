@@ -25,10 +25,10 @@ public:
 	void startMonitor();
 	void stopMonitor();
 	void Monitor(QString monitorSection);
-	bool updateSingleConnList(Section current);
-	bool updateDoubleConnList(Section current);
-	bool updateTripleConnList(Section current);
-	bool updateQuadConnList(Section current);
+    int updateSingleConnList(Section current);
+    int updateDoubleConnList(Section current);
+    int updateTripleConnList(Section current);
+    int updateQuadConnList(Section current);
 	QString getNextStraightSection(Section previous, Section current);
 	QString getNextSwitchSection(Section previous, Section current);
 	QString getNextEndpointSection(Section previous, Section current);
@@ -65,17 +65,17 @@ signals:
 protected:
 
 private:
-	void endpointMonitor(Section sec);
-	void straightMonitor(Section sec);
-	void switchMonitor(Section sec);
-	void crossoverMonitor(Section sec);
+//	void endpointMonitor(Section sec);
+//	void straightMonitor(Section sec);
+//	void switchMonitor(Section sec);
+//	void crossoverMonitor(Section sec);
 	QList<std::pair<QString, QString>> sectionPairs; // First QString = lastSection, Second = currentSection
 	QList<EnginePath> enginePaths; // may take place of sectionPairs.......
 
 	bool running;
-	Section retrieveSections(QString section);
+    QList<Section> retrieveSections(QString section);
 	QList<Section> m_sectionList;
-	Section findNextSection(Section previousSection, Section currentSection);
+//	Section findNextSection(Section previousSection, Section currentSection);
 	void toggleSwitchDirectionLeft(QString section);
 	void toggleSwitchDirectionRight(QString section);
 };
