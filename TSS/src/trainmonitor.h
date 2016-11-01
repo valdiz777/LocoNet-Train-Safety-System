@@ -71,6 +71,8 @@ private:
 //	void crossoverMonitor(Section sec);
 	QList<std::pair<QString, QString>> sectionPairs; // First QString = lastSection, Second = currentSection
 	QList<EnginePath> enginePaths; // may take place of sectionPairs.......
+    std::pair<QString, QString> m_nextPair;
+    int m_pairIndex;
 
 	bool running;
     QList<Section> retrieveSections(QString section);
