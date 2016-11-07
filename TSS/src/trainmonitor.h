@@ -72,7 +72,7 @@ private:
 	QList<std::pair<QString, QString>> sectionPairs; // First QString = lastSection, Second = currentSection
 	QList<EnginePath> enginePaths; // may take place of sectionPairs.......
     std::pair<QString, QString> m_nextPair;
-    QString m_lastPairCurrent;
+    QString m_lastSectionCurrent;
 
 	bool running;
     QList<Section> retrieveSections(QString section);

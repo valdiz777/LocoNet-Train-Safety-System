@@ -89,29 +89,6 @@ void TrainMonitor::Monitor(QString section)
     }
 
     qDebug() << "totalConnections: " << totalConnections;
-
-    if(totalConnections == 0 || totalConnections == 1)
-    {
-        // It is safe to update the currently stored pair with the
-        // new pair found in update<numConnections>Conn
-        int i = 0;
-        for (auto sec : sectionPairs)
-        {
-            qDebug() << "sec.second = " << sec.second << "\tlastPairCurrent = " << m_lastPairCurrent;
-            if (sec.second == m_lastPairCurrent || m_lastPairCurrent == "NA")
-            {
-                qDebug() << "Attempting to update/add pair";
-                //sectionPairs.push_back(m_nextPair);
-                if(m_lastPairCurrent != "NA")
-                {
-                    sectionPairs.removeAt(i);
-                }
-            }
-            ++i;
-        }
-
-    }
-
     if(totalConnections > 1)
     {
         for(auto currentSection : currentSections)
@@ -202,43 +179,50 @@ void TrainMonitor::Monitor(QString section)
             }
         }
 
+        // Since there is no way to update the list of pairs when a collision occurs,
+        // the only thing that we can do is to inform the user of the collision,
+        // remove the pair within the list of pairs, and rely on the user to move
+        // the trains to a safe location (trains must have at least one section
+        // them at startup and during this situation).
         int i = 0;
-        for (auto sec : sectionPairs)
+        for (auto section : sectionPairs)
         {
-            if (sec.second == m_lastPairCurrent)
+            qDebug() << "last section is: " << section.first << " current section is:" << section.second << endl;
+            if(section.second == m_lastSectionCurrent)
             {
-                // There's no way to update the list of current pairs.
-                // Therefore, we can only remove this pair, disable
-                // the safety system for the given pair, and rely on
-                // the user to put the cars that were in the collision
-                // event to put them in a safe position.
                 sectionPairs.removeAt(i);
             }
+
             ++i;
         }
     }
+    else
+    {
+        qDebug() << "Attempting to update/create pair";
+        qDebug() << endl << endl << "Mike's debug 2.0";
 
-//    if(totalConnections == 0 || totalConnections == 1)
-//    {
-//        // It is safe to update the currently stored pair with the
-//        // new pair found in update<numConnections>Conn
-//        int i = 0;
-//        for (auto sec : sectionPairs)
-//        {
-//            qDebug() << "sec.second = " << sec.second << "\tlastPairCurrent = " << m_lastPairCurrent;
-//            if (sec.second == m_lastPairCurrent || m_lastPairCurrent == "NA")
-//            {
-//                qDebug() << "Attempting to update/add pair";
-//                sectionPairs.push_back(m_nextPair);
-//                if(m_lastPairCurrent != "NA")
-//                {
-//                    sectionPairs.removeAt(i);
-//                }
-//            }
-//            ++i;
-//        }
+        int i = 0;
+        if(m_lastSectionCurrent != "NA")
+        {
+            for (auto section : sectionPairs)
+            {
+                qDebug() << "last section is: " << section.first << " current section is:" << section.second << endl;
+                if(section.second == m_lastSectionCurrent)
+                {
+                    sectionPairs.removeAt(i);
+                }
+                ++i;
+            }
+        }
 
-//    }
+        sectionPairs.push_back(m_nextPair);
+        qDebug() << endl << endl << "Mike's debug 3.0";
+
+        for (auto section : sectionPairs)
+        {
+            qDebug() << "last section is: " << section.first << " current section is:" << section.second << endl;
+        }
+    }
 }
 
 /*void TrainMonitor::endpointMonitor(Section sec)
@@ -532,13 +516,13 @@ int TrainMonitor::updateSingleConnList(Section current)
 			//            sec.first = sec.second;
 			//            sec.second = current.getNode();
 
-            QString past = current.getConn1();
+			QString past = current.getConn1();
 //            std::pair<QString, QString> secPair =
             m_nextPair =
                 std::make_pair<QString, QString>((QString)past, current.getNode());
-            sectionPairs.push_back(m_nextPair);
+            m_lastSectionCurrent = past;
+//            sectionPairs.push_back(secPair);
 //            sectionPairs.removeAt(i);
-            m_lastPairCurrent = past;
 
             return 2;   // If an endpoint is already in the list, it is heading towards
                         // the endpoint resulting in a collision event.
@@ -551,11 +535,11 @@ int TrainMonitor::updateSingleConnList(Section current)
 	{
 		qDebug() << "Section " << current.getNode() << " not found, adding to list" << endl;
 		/// TODO
-//        std::pair<QString, QString> secPair =
+//		std::pair<QString, QString> secPair =
         m_nextPair =
 			std::make_pair<QString, QString>("", current.getNode());
-        sectionPairs.push_back(m_nextPair);
-        m_lastPairCurrent = "NA";
+        m_lastSectionCurrent = "NA";
+//        sectionPairs.push_back(secPair);
         ret = 0;
 	}
 
@@ -582,23 +566,15 @@ int TrainMonitor::updateDoubleConnList(Section current)
 			//            qDebug() << "current.conn1(AU) = '" << current.getConn1() << "'\tcurrent.conn2(AU) = '" << current.getConn2() << "'";
 
 			QString past;
-            qDebug() << "current.conn1 = '" << current.getConn1() << "'\tcurrent.conn2 = '" << current.getConn2() << "'"
-                        "\tsec.second = '" << sec.second << "'";
-            if (sec.second == current.getConn1())
+			if (sec.second == current.getConn1())
 			{
-                qDebug() << "current.conn1 = '" << current.getConn1() << "'\tcurrent.conn2 = '" << current.getConn2() << "'"
-                            "\tsec.second = '" << sec.second << "'";
-                past = current.getConn1();
+				past = current.getConn1();
 				++numOccurrences;
 			}
 
-            qDebug() << "current.conn1 = '" << current.getConn1() << "'\tcurrent.conn2 = '" << current.getConn2() << "'"
-                        "\tsec.second = '" << sec.second << "'";
             if (sec.second == current.getConn2())
 			{
-                qDebug() << "current.conn1 = '" << current.getConn1() << "'\tcurrent.conn2 = '" << current.getConn2() << "'"
-                            "\tsec.second = '" << sec.second << "'";
-                past = current.getConn2();
+				past = current.getConn2();
 				++numOccurrences;
 			}
 
@@ -607,7 +583,7 @@ int TrainMonitor::updateDoubleConnList(Section current)
                 std::make_pair<QString, QString>((QString)past, current.getNode());
 //            sectionPairs.push_back(secPair);
 //            sectionPairs.removeAt(i);
-            m_lastPairCurrent = past;
+            m_lastSectionCurrent = past;
             found = true;
 
 		}
@@ -623,9 +599,8 @@ int TrainMonitor::updateDoubleConnList(Section current)
 //		std::pair<QString, QString> secPair =
         m_nextPair =
 			std::make_pair<QString, QString>("", current.getNode());
-        m_lastPairCurrent = "NA";
-
-        sectionPairs.push_back(m_nextPair);
+        m_lastSectionCurrent = "NA";
+//        sectionPairs.push_back(secPair);
 		//        }
 		//        else if (current.getConn1() == "")
 		//        {
@@ -641,7 +616,6 @@ int TrainMonitor::updateDoubleConnList(Section current)
 		//        }
 	}
 
-    qDebug() << "updateDouble numOccurrences = " << numOccurrences;
     return numOccurrences;
 }
 
@@ -685,9 +659,9 @@ int TrainMonitor::updateTripleConnList(Section current)
 //            std::pair<QString, QString> secPair =
             m_nextPair =
                 std::make_pair<QString, QString>((QString)past, current.getNode());
-            sectionPairs.push_back(m_nextPair);
+            m_lastSectionCurrent = past;
+//            sectionPairs.push_back(secPair);
 //            sectionPairs.removeAt(i);
-            m_lastPairCurrent = past;
 
 			found = true;
 		}
@@ -701,10 +675,9 @@ int TrainMonitor::updateTripleConnList(Section current)
 //        std::pair<QString, QString> secPair =
         m_nextPair =
             std::make_pair<QString, QString>("", current.getNode());
-        m_lastPairCurrent = "NA";
-        sectionPairs.push_back(m_nextPair);
+        m_lastSectionCurrent = "NA";
+//        sectionPairs.push_back(secPair);
     }
-    qDebug() << "updateTriple numOccurrences = " << numOccurrences;
 
     return numOccurrences;
 
@@ -748,25 +721,26 @@ int TrainMonitor::updateQuadConnList(Section current)
 				++numOccurrences;
 			}
 
+
             if (current.getConn4() != "" && sec.second == current.getConn4())
             {
-                past = current.getConn3();
+                past = current.getConn4();
                 ++numOccurrences;
             }
 
-//            if (sec.second == current.getNode())
-//            {
-//                past = current.getNode();
-//                numOccurrences += 2;
-//            }
+            if (sec.second == current.getNode())
+            {
+                past = current.getNode();
+                numOccurrences += 2;
+            }
 
 
 //            std::pair<QString, QString> secPair =
             m_nextPair =
                 std::make_pair<QString, QString>((QString)past, current.getNode());
-            sectionPairs.push_back(m_nextPair);
+            m_lastSectionCurrent = past;
+//            sectionPairs.push_back(secPair);
 //            sectionPairs.removeAt(i);
-            m_lastPairCurrent = past;
 
 			found = true;
 		}
@@ -780,12 +754,10 @@ int TrainMonitor::updateQuadConnList(Section current)
 //		std::pair<QString, QString> secPair =
         m_nextPair =
 			std::make_pair<QString, QString>("", current.getNode());
-        m_lastPairCurrent = "NA";
-
-        sectionPairs.push_back(m_nextPair);
+        m_lastSectionCurrent = "NA";
+//		sectionPairs.push_back(secPair);
 	}
 
-    qDebug() << "updateQuad numOccurrences = " << numOccurrences;
     return numOccurrences;
 }
 
