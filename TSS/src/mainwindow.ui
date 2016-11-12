@@ -18,9 +18,12 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_packets">
+       <property name="focusPolicy">
+        <enum>Qt::TabFocus</enum>
+       </property>
        <attribute name="title">
         <string>Packets</string>
        </attribute>
