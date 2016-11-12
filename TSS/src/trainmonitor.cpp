@@ -5,8 +5,6 @@
 
 TrainMonitor::TrainMonitor()
 {
-#pragma message("[MKJ] Clean up when everything is done")
-#pragma message("[MKJ] Look for things that would be useful in a log")
 
 }
 

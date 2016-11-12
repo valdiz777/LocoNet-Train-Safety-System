@@ -6,10 +6,6 @@
 #include <QVector>
 #include <QByteArray>
 #include <QBitArray>
-#include <QSql>
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QSqlError>
 #include <QTime>
 
 #include "locobyte.h"
@@ -49,8 +45,6 @@ public:
 	int get_size();
     QString get_OPcode();
 	LocoByte get_locobyte(int _byte);
-	QString get_description(); // Pull packet description from sqlite
-	QString get_name(); // Pull packet name from sqlite
 	int get_locoaddr();
 	int get_locoaddr(LocoByte byte1, LocoByte byte2);
 	int get_sensoraddr();

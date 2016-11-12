@@ -303,14 +303,14 @@ bool LocoPacket::validOP()
 	}
 	QString _op = locobyte_array[0].get_hex();
 	if (debug) qDebug() << timeStamp() << "Checking opcodes database for " << _op;
+
     bool found = false;
     for (QString opcode : opcodes.keys())
     {
         if (_op == opcode) found = true;
-
     }
 
-    if (false)
+    if (found == false)
     {
         if (debug) qDebug() << timeStamp() << "Query to find valid OP codes failed.";
         return(false);
