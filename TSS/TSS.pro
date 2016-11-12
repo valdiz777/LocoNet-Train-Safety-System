@@ -28,7 +28,6 @@ SOURCES += src/main.cpp\
     src/locoserial.cpp \
     src/section.cpp \
     src/trainmonitor.cpp \
-    #src/TrainMonitorTestDriver.cpp
 
 HEADERS  += src/mainwindow.h \
         src/locopacket.h \
