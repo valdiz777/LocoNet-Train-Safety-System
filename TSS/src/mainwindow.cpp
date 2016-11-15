@@ -60,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->pushButton_serialRefreshList, SIGNAL(clicked()), this, SLOT(do_refreshSerialList()));
 	connect(ui->pushButton_serialConnect, SIGNAL(clicked()), this, SLOT(do_openSerial()));
 	connect(ui->pushButton_serialDisconnect, SIGNAL(clicked()), locoserial, SLOT(do_close()));
+    connect(ui->pushButton_serialDisconnect, SIGNAL(clicked()), this, SLOT(do_clearPair()));
 	connect(ui->pushButton_sendPacket, SIGNAL(clicked()), this, SLOT(do_sendSerial()));
 
 	// Serial
@@ -244,6 +245,11 @@ void MainWindow::do_showSystemReady()
     msgBox->setDefaultButton(QMessageBox::Ok);
     msgBox->setModal(false);
     msgBox->show();
+}
+
+void MainWindow::do_clearPairs()
+{
+    trainmonitor->clearSectionPairs();
 }
 
 
