@@ -693,57 +693,51 @@ int TrainMonitor::updateQuadConnList(Section current)
 	bool ret = false;
 	for (auto sec : sectionPairs)
 	{
-		if (sec.second == current.getConn1() ||
-            sec.second == current.getConn2() ||
-            sec.second == current.getNode())
-		{
-			qDebug() << "Found a pair to update (crossover)";
-			//            sec.first = sec.second;
-			//            sec.second = current.getNode();
+        qDebug() << "Found a pair to update (crossover)";
+        //            sec.first = sec.second;
+        //            sec.second = current.getNode();
 
-			QString past;
+        QString past;
+        if (current.getConn1() != "" && sec.second == current.getConn1())
+        {
+            past = current.getConn1();
+            ++numOccurrences;
+        }
 
-            if (current.getConn1() != "" && sec.second == current.getConn1())
-			{
-                past = current.getConn1();
-				++numOccurrences;
-			}
+        if (current.getConn2() != "" && sec.second == current.getConn2())
+        {
+            past = current.getConn2();
+            ++numOccurrences;
+        }
 
-            if (current.getConn2() != "" && sec.second == current.getConn2())
-			{
-                past = current.getConn2();
-				++numOccurrences;
-			}
-
-			if (current.getConn3() != "" && sec.second == current.getConn3())
-			{
-				past = current.getConn3();
-				++numOccurrences;
-			}
+        if (current.getConn3() != "" && sec.second == current.getConn3())
+        {
+            past = current.getConn3();
+            ++numOccurrences;
+        }
 
 
-            if (current.getConn4() != "" && sec.second == current.getConn4())
-            {
-                past = current.getConn4();
-                ++numOccurrences;
-            }
+        if (current.getConn4() != "" && sec.second == current.getConn4())
+        {
+            past = current.getConn4();
+            ++numOccurrences;
+        }
 
-            if (sec.second == current.getNode())
-            {
-                past = current.getNode();
-                numOccurrences += 2;
-            }
+//        if (sec.second == current.getNode())
+//        {
+//            past = current.getNode();
+//            numOccurrences += 2;
+//        }
 
 
 //            std::pair<QString, QString> secPair =
-            m_nextPair =
-                std::make_pair<QString, QString>((QString)past, current.getNode());
-            m_lastSectionCurrent = past;
+        m_nextPair =
+            std::make_pair<QString, QString>((QString)past, current.getNode());
+        m_lastSectionCurrent = past;
 //            sectionPairs.push_back(secPair);
 //            sectionPairs.removeAt(i);
 
-			found = true;
-		}
+        found = true;
 		++i;
 	}
 
