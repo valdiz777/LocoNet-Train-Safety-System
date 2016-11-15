@@ -11,9 +11,6 @@
 #include <QIODevice>
 #include <QTimer>
 #include <QTime>
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QtSql>
 #include <QThread>
 #include<QMessageBox>
 
@@ -23,8 +20,6 @@
 #include "locotrain.h"
 #include "locopacket.h"
 #include "locoserial.h"
-#include "locosql.h"
-#include "locoudp.h"
 #include "trainmonitor.h"
 
 namespace Ui {
@@ -46,20 +41,18 @@ public:
 	void do_genPacket();
 	void do_refreshSerialList();
 	void do_openSerial();
-	void do_sendSerial();
-	void do_connectDB();
-	void do_packetReceived(LocoPacket);
+    void do_sendSerial();
+    void do_packetReceived(LocoPacket);
 	void do_bytesWritten(QByteArray);
 	void do_printDescriptions(QString);
 	void do_loadOPComboBox();
 	void do_OPfromComboBox();
     void do_showCollisionEvt(QStringList collisionSections);
+    void do_showSystemReady();
 
 
 	void handle_serialOpened();
 	void handle_serialClosed();
-	void handle_DBopened();
-	void handle_DBclosed();
     void msgBoxClosed(QAbstractButton *button);
 signals:
 	void locoserial_open(QextPortInfo _device);
@@ -75,10 +68,6 @@ private:
 	QextPortInfo usbPorts;
 	LocoSerial * locoserial;
 	QThread threadSerial;
-	LocoSQL * locosql;
-	QThread threadSQL;
-	LocoUDP * locoudp;
-	QThread threadUDP;
 	TrainMonitor * trainmonitor;
 	QThread threadMonitor;
 	QList<Section> m_sectionList;

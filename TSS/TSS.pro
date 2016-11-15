@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui sql network
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 include(3rdparty/qextserialport/src/qextserialport.pri)
@@ -26,26 +26,17 @@ SOURCES += src/main.cpp\
     src/locotrain.cpp \
     src/locoblock.cpp \
     src/locoserial.cpp \
-    src/locosql.cpp \
-    src/locoudp.cpp \
     src/section.cpp \
     src/trainmonitor.cpp \
-    src/log.cpp \
-    src/enginepath.cpp \
-    src/TrainMonitorTestDriver.cpp
 
 HEADERS  += src/mainwindow.h \
         src/locopacket.h \
     src/locobyte.h \
     src/locotrain.h \
     src/locoblock.h \
-    src/locosql.h \
-    src/locoudp.h \
     src/section.h \
     src/trainmonitor.h \
-    src/log.h \
-    src/locoserial.h \
-    src/enginepath.h
+    src/locoserial.h
 
 FORMS    += src/mainwindow.ui
 

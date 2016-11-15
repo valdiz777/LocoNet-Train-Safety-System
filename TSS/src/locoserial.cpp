@@ -481,86 +481,103 @@ QString LocoSerial::parse_E7(LocoPacket _packet)
 
 QString LocoSerial::parse_EF(LocoPacket _packet) {
 	QString _description = "EF: Write slot data.";
+    _packet.clear();
 	return(_description);
 }
 
 QString LocoSerial::parse_E5(LocoPacket _packet) {
 	QString _description = "E5: Move 8 bytes Peer to Peer.";
+    _packet.clear();
 	return(_description);
 }
 
 QString LocoSerial::parse_ED(LocoPacket _packet) {
 	QString _description = "ED: Send n-byte packet.";
+    _packet.clear();
 	return(_description);
 }
 
 QString LocoSerial::parse_85(LocoPacket _packet) {
 	QString _description = "85: Requesting track state IDLE / EMG STOP.";
+    _packet.clear();
 	return(_description);
 }
 
 QString LocoSerial::parse_83(LocoPacket _packet) {
 	QString _description = "83: Requesting track state ON.";
+    _packet.clear();
 	return(_description);
 }
 
 QString LocoSerial::parse_82(LocoPacket _packet) {
 	QString _description = "82: Requesting track state OFF.";
+    _packet.clear();
 	return(_description);
 }
 
 QString LocoSerial::parse_81(LocoPacket _packet) {
 	QString _description = "81: MASTER sent BUSY code.";
+    _packet.clear();
 	return(_description);
 }
 
 QString LocoSerial::parse_BF(LocoPacket _packet) {
 	QString _description = "BF: Requesting locomotive address.";
+    _packet.clear();
 	return(_description);
 }
 
 QString LocoSerial::parse_BD(LocoPacket _packet) {
 	QString _description = "BD: Requesting switch with LACK function."; // LACK - Long ACKnowledge
+    _packet.clear();
 	return(_description);
 }
 
 QString LocoSerial::parse_BC(LocoPacket _packet) {
 	QString _description = "BC: Requesting state of switch.";
+    _packet.clear();
 	return(_description);
 }
 
 QString LocoSerial::parse_BB(LocoPacket _packet) {
 	QString _description = "BB: Requesting SLOT data/status block.";
+    _packet.clear();
 	return(_description);
 }
 
 QString LocoSerial::parse_BA(LocoPacket _packet) {
 	QString _description = "BA: Move slot SRC to DEST.";
+    _packet.clear();
 	return(_description);
 }
 
 QString LocoSerial::parse_B9(LocoPacket _packet) {
 	QString _description = "B9: Link slot ARG1 to slot ARG2.";
+    _packet.clear();
 	return(_description);
 }
 
 QString LocoSerial::parse_B8(LocoPacket _packet) {
 	QString _description = "B8: Unlink slot ARG1 from slot ARG2.";
+    _packet.clear();
 	return(_description);
 }
 
 QString LocoSerial::parse_B6(LocoPacket _packet) {
 	QString _description = "B6: Set FUNC bits in a CONSIST uplink element.";
+    _packet.clear();
 	return(_description);
 }
 
 QString LocoSerial::parse_B5(LocoPacket _packet) {
 	QString _description = "B5: Write slot stat1.";
+    _packet.clear();
 	return(_description);
 }
 
 QString LocoSerial::parse_B4(LocoPacket _packet) {
 	QString _description = "B4: Long Acknowledge - LACK.";
+    _packet.clear();
 	return(_description);
 }
 
@@ -609,6 +626,7 @@ QString LocoSerial::parse_B2(LocoPacket _packet)
 
 QString LocoSerial::parse_B1(LocoPacket _packet) {
 	QString _description = "B1: Turnout sensor state report.";
+    _packet.clear();
 	return(_description);
 }
 
@@ -641,11 +659,13 @@ QString LocoSerial::parse_B0(LocoPacket _packet) {
 
 QString LocoSerial::LocoSerial::parse_A2(LocoPacket _packet) {
 	QString _description = "A2: Setting slot sound functions.";
+    _packet.clear();
 	return(_description);
 }
 
 QString LocoSerial::LocoSerial::parse_A1(LocoPacket _packet) {
 	QString _description = "A1: Setting slot direction.";
+    _packet.clear();
 	return(_description);
 }
 

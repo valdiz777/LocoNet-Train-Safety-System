@@ -45,10 +45,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	// Declare threads
 	locoserial = new LocoSerial;
 	locoserial->moveToThread(&threadSerial);
-	locosql = new LocoSQL;
-	locosql->moveToThread(&threadSQL);
-	locoudp = new LocoUDP;
-	locoudp->moveToThread(&threadUDP);
 	trainmonitor = new TrainMonitor;
 	trainmonitor->moveToThread(&threadMonitor);
 	outgoingPacket.clear();
@@ -65,16 +61,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->pushButton_serialConnect, SIGNAL(clicked()), this, SLOT(do_openSerial()));
 	connect(ui->pushButton_serialDisconnect, SIGNAL(clicked()), locoserial, SLOT(do_close()));
 	connect(ui->pushButton_sendPacket, SIGNAL(clicked()), this, SLOT(do_sendSerial()));
-	connect(ui->pushButton_connect, SIGNAL(clicked()), this, SLOT(do_connectDB()));
-	connect(ui->pushButton_disconnect, SIGNAL(clicked()), locosql, SLOT(do_closeDB()));
-
-	// UDP
-	connect(locoudp, &LocoUDP::incomingRequest, locoserial, static_cast<void (LocoSerial::*)(LocoPacket)>(&LocoSerial::do_writePacket));
-	connect(locoudp, &LocoUDP::incomingRequest, this, &MainWindow::do_packetReceived);
-	connect(&threadUDP, &QThread::finished, locoudp, &QObject::deleteLater);
-	// Handle Initializing from Sig/Slot
-	//connect(ui->pushButton_thread_beginUDP, SIGNAL(clicked()), locoudp, SLOT(do_run()));
-	//connect(ui->pushButton_thread_beginUDP, SIGNAL(clicked(bool)), ui->pushButton_thread_beginUDP, SLOT(setEnabled(bool)));
 
 	// Serial
 	connect(this, &MainWindow::locoserial_open, locoserial, &LocoSerial::do_open);
@@ -87,33 +73,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(locoserial, &LocoSerial::serialOpened, this, &MainWindow::handle_serialOpened);
 	connect(locoserial, &LocoSerial::serialOpened, trainmonitor, &TrainMonitor::handle_serialOpened);
 	connect(locoserial, &LocoSerial::serialClosed, this, &MainWindow::handle_serialClosed);
-	connect(locoserial, &LocoSerial::trainUpdated, locosql, &LocoSQL::do_updateTrain);
-	connect(locoserial, &LocoSerial::blockUpdated, locosql, &LocoSQL::do_updateBlock);
 	connect(locoserial, &LocoSerial::occupancyDataReady, trainmonitor, &TrainMonitor::do_handleOccupancy);
 	connect(locoserial, &LocoSerial::querySlot, locoserial, &LocoSerial::do_querySlot);
 	connect(&threadSerial, &QThread::finished, locoserial, &QObject::deleteLater);
-
-	// Handle Initializing from Sig/Slot
-	//connect(ui->pushButton_thread_beginSerial, SIGNAL(clicked()), locoserial, SLOT(do_run()));
-	//connect(ui->pushButton_thread_beginSerial, SIGNAL(clicked(bool)), ui->pushButton_thread_beginSerial, SLOT(setEnabled(bool)));
-
-	// Macros / locoSQL
-	connect(locosql, &LocoSQL::incomingRequest, locoserial, static_cast<void (LocoSerial::*)(LocoPacket)>(&LocoSerial::do_writePacket));
-	connect(this, &MainWindow::locosql_open, locosql, &LocoSQL::do_openDB);
-	connect(locosql, &LocoSQL::DBopened, this, &MainWindow::handle_DBopened);
-	connect(locosql, &LocoSQL::DBclosed, this, &MainWindow::handle_DBclosed);
-	connect(locosql, &LocoSQL::slotScan, locoserial, &LocoSerial::do_slotScan);
-	connect(locosql, &LocoSQL::slotDispatch, locoserial, &LocoSerial::do_slotDispatch);
-	connect(locosql, &LocoSQL::slotReq, locoserial, &LocoSerial::do_slotReq);
-	connect(locosql, &LocoSQL::slotUse, locoserial, &LocoSerial::do_slotUse);
-	connect(locosql, &LocoSQL::slotClear, locoserial, &LocoSerial::do_slotClear);
-	connect(locosql, &LocoSQL::trackReset, locoserial, &LocoSerial::do_trackReset);
-	connect(locosql, &LocoSQL::trackOn, locoserial, &LocoSerial::do_trackOn);
-	connect(locosql, &LocoSQL::trackOff, locoserial, &LocoSerial::do_trackOff);
-	connect(&threadUDP, &QThread::finished, locoudp, &QObject::deleteLater);
-	// Handle Initializing from Sig/Slot
-	//connect(ui->pushButton_thread_beginSQL, SIGNAL(clicked()), locosql, SLOT(do_run()));
-	//connect(ui->pushButton_thread_beginSQL, SIGNAL(clicked(bool)), ui->pushButton_thread_beginSQL, SLOT(setEnabled(bool)));
 
 	// TrainMonitor
 	connect(trainmonitor, &TrainMonitor::slotScan, locoserial, &LocoSerial::do_slotScan);
@@ -133,17 +95,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(trainmonitor, &TrainMonitor::printSectionsOff, locoserial, &LocoSerial::do_getSectionsOff);
 	connect(trainmonitor, &TrainMonitor::printSectionsOn, locoserial, &LocoSerial::do_getSectionsOn);
 	connect(trainmonitor, &TrainMonitor::collisionEvt, this, &MainWindow::do_showCollisionEvt);
+    connect(trainmonitor, &TrainMonitor::systemReady, this, &MainWindow::do_showSystemReady);
 	connect(&threadMonitor, &QThread::finished, trainmonitor, &QObject::deleteLater);
-
-	// Kickstart threads
 
 	// Kickstart threads
 	threadSerial.start();
 	locoserial->do_run(); // Auto start locoserial
-	threadSQL.start();
-	locosql->do_run(); // Auto start locosql
-	threadUDP.start();
-	locoudp->do_run(); // Auto start locoudp
 	threadMonitor.start(); // Auto start trainmonitor
 	trainmonitor->do_run();
 
@@ -162,11 +119,8 @@ MainWindow::~MainWindow()
 	// Clean up sub-threads
 	threadSerial.quit();
 	threadSerial.wait();
-	threadSQL.quit();
-	threadSQL.wait();
-	threadUDP.quit();
-	threadUDP.wait();
-
+    threadMonitor.quit();
+    threadMonitor.wait();
 	delete ui;
 }
 
@@ -273,6 +227,23 @@ void MainWindow::do_showCollisionEvt(QStringList collisionSections)
     msgBox->setProperty("collisionSections", collisionSections);
 	msgBox->setModal(false);
     msgBox->open(this, SLOT(msgBoxClosed(QAbstractButton*)));
+}
+
+
+void MainWindow::do_showSystemReady()
+{
+    QString info = "Initialization finished.\n System Is Ready!";
+
+    QMessageBox *msgBox = new QMessageBox;
+    msgBox->setIcon(QMessageBox::Icon::Information);
+    msgBox->setWindowIcon(QIcon(":/images/logo"));
+    msgBox->setAttribute(Qt::WA_DeleteOnClose);
+    msgBox->setText("System Initialization Complete!");
+    msgBox->setInformativeText(info);
+    msgBox->setStandardButtons(QMessageBox::Ok);
+    msgBox->setDefaultButton(QMessageBox::Ok);
+    msgBox->setModal(false);
+    msgBox->show();
 }
 
 
@@ -386,50 +357,6 @@ void MainWindow::do_sendSerial()
 	if (debug) qDebug() << timeStamp() << "Firing off to serial: " << outgoingPacket.get_packet().toLatin1();
 	if (debug) qDebug() << timeStamp() << outgoingPacket.get_QByteArray() << outgoingPacket.get_QBitArray();
 }
-
-/*
- * SQL METHODS
- */
-
-void MainWindow::handle_DBopened()
-{
-	ui->textBrowser_sql->append(timeStamp() + "Database opened. Connection appears successful :)");
-	ui->pushButton_connect->setEnabled(false);
-	ui->lineEdit_database->setEnabled(false);
-	ui->lineEdit_hostname->setEnabled(false);
-	ui->lineEdit_password->setEnabled(false);
-	ui->lineEdit_user->setEnabled(false);
-	ui->spinBox_port->setEnabled(false);
-	ui->pushButton_disconnect->setEnabled(true);
-}
-
-void MainWindow::handle_DBclosed()
-{
-	ui->textBrowser_sql->append(timeStamp() + "Database closed.");
-	ui->pushButton_connect->setEnabled(true);
-	ui->lineEdit_database->setEnabled(true);
-	ui->lineEdit_hostname->setEnabled(true);
-	ui->lineEdit_password->setEnabled(true);
-	ui->lineEdit_user->setEnabled(true);
-	ui->spinBox_port->setEnabled(true);
-	ui->pushButton_disconnect->setEnabled(false);
-}
-
-void MainWindow::do_connectDB()
-{
-	// Collect information from window
-	QString hostname = ui->lineEdit_hostname->text();
-	int port = ui->spinBox_port->value();
-	QString database = ui->lineEdit_database->text();
-	QString username = ui->lineEdit_user->text();
-	QString password = ui->lineEdit_password->text();
-
-	emit locosql_open(hostname, port, database, username, password);
-}
-
-
-
-
 
 
 

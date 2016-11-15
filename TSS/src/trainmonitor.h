@@ -8,7 +8,6 @@
 #include "section.h"
 #include "locopacket.h"
 #include <queue>
-#include "enginepath.h"
 
 namespace std {
 	class TrainMonitor;
@@ -48,6 +47,7 @@ signals:
 	void slotReq(LocoByte _slot);
 	void slotUse(LocoByte _slot);
 	void trackReset();
+    void systemReady();
 	void trackOn();
 	void trackOff();
 	void sectionOff(int boardNum, int section);
@@ -70,7 +70,6 @@ private:
 //	void switchMonitor(Section sec);
 //	void crossoverMonitor(Section sec);
 	QList<std::pair<QString, QString>> sectionPairs; // First QString = lastSection, Second = currentSection
-	QList<EnginePath> enginePaths; // may take place of sectionPairs.......
     std::pair<QString, QString> m_nextPair;
     QString m_lastSectionCurrent;
 

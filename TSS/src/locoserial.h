@@ -80,8 +80,8 @@ signals:
 	void serialOpened();
 	void serialClosed();
 	void printPacketDesc(QString);
-	void trainUpdated(LocoTrain);
-	void blockUpdated(LocoBlock);
+    void trainUpdated(LocoTrain);
+    void blockUpdated(LocoBlock);
 	void switchUpdated(int _adr, bool _state);
 	void occupancyDataReady(QString, bool);
 	void querySlot(LocoByte _arg);
