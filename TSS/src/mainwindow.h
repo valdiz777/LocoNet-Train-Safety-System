@@ -49,6 +49,7 @@ public:
 	void do_OPfromComboBox();
     void do_showCollisionEvt(QStringList collisionSections);
     void do_showSystemReady();
+    void do_clearPairs();
 
 
 	void handle_serialOpened();

@@ -411,7 +411,12 @@ void TrainMonitor::generateSectionList()
 
 void TrainMonitor::printHeader(QString message)
 {
-	qDebug() << "-------------------" + message + "-------------------" << endl;
+    qDebug() << "-------------------" + message + "-------------------" << endl;
+}
+
+void TrainMonitor::clearSectionPairs()
+{
+    this->sectionPairs.clear();
 }
 
 void TrainMonitor::handle_serialOpened()

@@ -33,6 +33,7 @@ public:
 	QString getNextEndpointSection(Section previous, Section current);
 	void generateSectionList();
 	void printHeader(QString message);
+    void clearSectionPairs();
 
 	public slots:
 	void do_run();
@@ -69,7 +70,7 @@ private:
 //	void straightMonitor(Section sec);
 //	void switchMonitor(Section sec);
 //	void crossoverMonitor(Section sec);
-	QList<std::pair<QString, QString>> sectionPairs; // First QString = lastSection, Second = currentSection
+    QList<std::pair<QString, QString>> sectionPairs; // First QString = lastSection, Second = currentSection
     std::pair<QString, QString> m_nextPair;
     QString m_lastSectionCurrent;
 
