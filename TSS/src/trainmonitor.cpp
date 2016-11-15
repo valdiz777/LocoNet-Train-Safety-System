@@ -430,7 +430,9 @@ void TrainMonitor::handle_serialOpened()
 	}
 
 	qDebug() << switches << " switches have be initialized";
-	emit printSectionsOn();
+    emit printSectionsOn();
+    emit clearSectionOnCount();
+    emit systemReady();
 }
 
 /*Section TrainMonitor::findNextSection(Section previousSection,

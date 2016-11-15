@@ -95,6 +95,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(trainmonitor, &TrainMonitor::printSectionsOff, locoserial, &LocoSerial::do_getSectionsOff);
 	connect(trainmonitor, &TrainMonitor::printSectionsOn, locoserial, &LocoSerial::do_getSectionsOn);
 	connect(trainmonitor, &TrainMonitor::collisionEvt, this, &MainWindow::do_showCollisionEvt);
+    connect(trainmonitor, &TrainMonitor::systemReady, this, &MainWindow::do_showSystemReady);
 	connect(&threadMonitor, &QThread::finished, trainmonitor, &QObject::deleteLater);
 
 	// Kickstart threads
@@ -226,6 +227,23 @@ void MainWindow::do_showCollisionEvt(QStringList collisionSections)
     msgBox->setProperty("collisionSections", collisionSections);
 	msgBox->setModal(false);
     msgBox->open(this, SLOT(msgBoxClosed(QAbstractButton*)));
+}
+
+
+void MainWindow::do_showSystemReady()
+{
+    QString info = "Initialization finished.\n System Is Ready!";
+
+    QMessageBox *msgBox = new QMessageBox;
+    msgBox->setIcon(QMessageBox::Icon::Information);
+    msgBox->setWindowIcon(QIcon(":/images/logo"));
+    msgBox->setAttribute(Qt::WA_DeleteOnClose);
+    msgBox->setText("System Initialization Complete!");
+    msgBox->setInformativeText(info);
+    msgBox->setStandardButtons(QMessageBox::Ok);
+    msgBox->setDefaultButton(QMessageBox::Ok);
+    msgBox->setModal(false);
+    msgBox->show();
 }
 
 

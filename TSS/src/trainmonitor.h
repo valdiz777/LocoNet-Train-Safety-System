@@ -47,6 +47,7 @@ signals:
 	void slotReq(LocoByte _slot);
 	void slotUse(LocoByte _slot);
 	void trackReset();
+    void systemReady();
 	void trackOn();
 	void trackOff();
 	void sectionOff(int boardNum, int section);
