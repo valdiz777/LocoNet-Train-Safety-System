@@ -101,6 +101,19 @@ void TrainMonitor::Monitor(QString section)
                     emit collisionEvt(QStringList()
                              << currentSection.getNode());
 
+                    int i = 0;
+                    for(auto section:sectionPairs)
+                    {
+                        if(section.second == currentSection.getNode())
+                        {
+                            sectionPairs.removeAt(i);
+                        }
+                        else
+                        {
+                            ++i;
+                        }
+                    }
+
                     break;
                 }
                 case 2:		// Straight case
@@ -118,6 +131,21 @@ void TrainMonitor::Monitor(QString section)
                              << currentSection.getNode()
                              << currentSection.getConn1()
                              << currentSection.getConn2());
+
+                    int i = 0;
+                    for(auto section:sectionPairs)
+                    {
+                        if(section.second == currentSection.getNode() ||
+                                section.second == currentSection.getConn1() ||
+                                section.second == currentSection.getConn2())
+                        {
+                            sectionPairs.removeAt(i);
+                        }
+                        else
+                        {
+                            ++i;
+                        }
+                    }
 
                     break;
                 }
@@ -141,6 +169,22 @@ void TrainMonitor::Monitor(QString section)
                              << currentSection.getConn2()
                              << currentSection.getConn3());
 
+                    int i = 0;
+                    for(auto section:sectionPairs)
+                    {
+                        if(section.second == currentSection.getNode() ||
+                                section.second == currentSection.getConn1() ||
+                                section.second == currentSection.getConn2() ||
+                                section.second == currentSection.getConn3())
+                        {
+                            sectionPairs.removeAt(i);
+                        }
+                        else
+                        {
+                            ++i;
+                        }
+                    }
+
                     break;
                 }
                 case 4:		// Crossover case
@@ -157,15 +201,33 @@ void TrainMonitor::Monitor(QString section)
                     qDebug() << "Section "
                              << currentSection.getConn3()
                              << " needs to be shutdown (crossover)";
-                    /*qDebug() << "Section "
+                    qDebug() << "Section "
                              << currentSection.getConn4()
-                             << " needs to be shutdown (crossover)";*/
+                             << " needs to be shutdown (crossover)";
                     emit collisionEvt(QStringList()
                              << currentSection.getNode()
                              << currentSection.getConn1()
                              << currentSection.getConn2()
                              << currentSection.getConn3()
-                             /*<< currentSection.getConn4()*/);
+                             << currentSection.getConn4());
+
+                    int i = 0;
+                    for(auto section:sectionPairs)
+                    {
+                        if(section.second == currentSection.getNode() ||
+                                section.second == currentSection.getConn1() ||
+                                section.second == currentSection.getConn2() ||
+                                section.second == currentSection.getConn3() ||
+                                section.second == currentSection.getConn4())
+                        {
+                            sectionPairs.removeAt(i);
+                        }
+                        else
+                        {
+                            ++i;
+                        }
+                    }
+
 
                     break;
                 }
