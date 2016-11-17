@@ -17,10 +17,11 @@ Section::Section()
 	m_thrown = true;		// true for left; false for right
 	m_occupancy = false;
 	m_thrownLeft = true;
+    m_shortSection = false;
 }
 
 Section::Section(QString Node, int NumOfConns,
-	QString Conn1, QString Conn2, QString Conn3, QString Conn4, int ltNum, bool thrownLeft)
+    QString Conn1, QString Conn2, QString Conn3, QString Conn4, int ltNum, bool thrownLeft, bool shortSection)
 {
 	m_node = Node;
 	m_numOfConns = NumOfConns;
@@ -32,6 +33,7 @@ Section::Section(QString Node, int NumOfConns,
 	m_occupancy = false;
 	m_ltnum = ltNum;
 	m_thrownLeft = thrownLeft;
+    m_shortSection = shortSection;
 }
 
 Section::~Section()
@@ -122,5 +124,15 @@ QString Section::getConn4() const
 void Section::setConn4(const QString &conn4)
 {
 	m_conn4 = conn4;
+}
+
+bool Section::getShortSection() const
+{
+    return m_shortSection;
+}
+
+void Section::setShortSection(bool shortSection)
+{
+    m_shortSection = shortSection;
 }
 

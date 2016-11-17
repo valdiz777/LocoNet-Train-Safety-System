@@ -1,4 +1,4 @@
-
+﻿
 #ifndef SECTION_H
 #define SECTION_H
 
@@ -19,7 +19,7 @@ class Section
 
 public:
 	Section();
-	Section(QString node, int numOfConns, QString conn1, QString conn2, QString conn3, QString conn4, int ltNum, bool thrownLeft);
+    Section(QString node, int numOfConns, QString conn1, QString conn2, QString conn3, QString conn4, int ltNum, bool thrownLeft, bool shortSection);
 	~Section();
 
 	//void setNode( QString node );
@@ -54,11 +54,14 @@ public:
 	QString getConn4() const;
 	void setConn4(const QString &conn4);
 
+    bool getShortSection() const;
+    void setShortSection(bool shortSection);
+
 private:
-	int m_boardNum;
-	int m_section;
-	QString m_node;
-	int m_numOfConns;
+    int m_boardNum;
+    int m_section;
+    QString m_node;
+    int m_numOfConns;
 	QString m_conn1;
 	QString m_conn2;
 	QString m_conn3;
@@ -67,6 +70,7 @@ private:
 	bool m_thrownLeft;
 	bool m_thrown;		// true for left; false for right
 	bool m_occupancy;
+    bool m_shortSection;
 };
 
 #endif

@@ -374,7 +374,7 @@ void TrainMonitor::generateSectionList()
 	QString node;
 	int numOfConns;
 	QString conn1, conn2, conn3, conn4;
-	int ltNum; bool thrownLeft;
+    int ltNum; bool thrownLeft, shortSection;
 	int lines = 0;
 	while (!in.atEnd())
 	{
@@ -394,9 +394,10 @@ void TrainMonitor::generateSectionList()
 			conn4 = splitString[5];
 			ltNum = splitString[6].toInt();
 			thrownLeft = (splitString[7] == "false") ? false : true;
+            shortSection = (splitString[8] == "false") ? false : true;
 
 			Section sec = Section(node, numOfConns, conn1, conn2,
-				conn3, conn4, ltNum, thrownLeft);
+                conn3, conn4, ltNum, thrownLeft, shortSection);
 			QStringList shutdownList = node.split("-");
 			sec.setBoardNum(shutdownList[0].toInt());
 			sec.setSection(shutdownList[1].toInt());
