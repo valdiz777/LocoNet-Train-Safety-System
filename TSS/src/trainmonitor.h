@@ -80,5 +80,6 @@ private:
 //	Section findNextSection(Section previousSection, Section currentSection);
 	void toggleSwitchDirectionLeft(QString section);
 	void toggleSwitchDirectionRight(QString section);
+    QString getNextSection(QList<Section> currentSections, QString section);
 };
 #endif
