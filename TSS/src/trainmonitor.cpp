@@ -74,6 +74,11 @@ void TrainMonitor::Monitor(QString section)
     QList<Section> currentSections = retrieveSections(section);
 	qDebug() << "Starting monitor ....." << endl;
 
+    for(auto debug : currentSections)
+    {
+        qDebug() << "debug ==> " << debug.getNode();
+    }
+
     for(auto currentSection : currentSections)
     {
         switch (currentSection.getNumOfConns())
@@ -209,27 +214,34 @@ void TrainMonitor::Monitor(QString section)
                 }
                 case 4:		// Crossover case
                 {
-                    qDebug() << "Section "
-                             << currentSection.getNode()
-                             << " needs to be shutdown (crossover)";
-                    qDebug() << "Section "
-                             << currentSection.getConn1()
-                             << " needs to be shutdown (crossover)";
-                    qDebug() << "Section "
-                             << currentSection.getConn2()
-                             << " needs to be shutdown (crossover)";
-                    qDebug() << "Section "
-                             << currentSection.getConn3()
-                             << " needs to be shutdown (crossover)";
-                    qDebug() << "Section "
-                             << currentSection.getConn4()
-                             << " needs to be shutdown (crossover)";
-                    emit collisionEvt(QStringList()
-                             << currentSection.getNode()
-                             << currentSection.getConn1()
-                             << currentSection.getConn2()
-                             << currentSection.getConn3()
-                             << currentSection.getConn4());
+                    QStringList shutdownList;
+
+                    if(!currentSection.getConn1().isEmpty())
+                    {
+                        shutdownList.append(currentSection.getConn1());
+                    }
+
+                    if(!currentSection.getConn2().isEmpty())
+                    {
+                        shutdownList.append(currentSection.getConn2());
+                    }
+
+                    if(!currentSection.getConn3().isEmpty())
+                    {
+                        shutdownList.append(currentSection.getConn3());
+                    }
+
+                    if(!currentSection.getConn4().isEmpty())
+                    {
+                        shutdownList.append(currentSection.getConn4());
+                    }
+
+                    for(auto sd : shutdownList)
+                    {
+                        qDebug() << "Section " << sd << " needs to be shutdown (crossover)";
+                    }
+
+                    emit collisionEvt(shutdownList);
 
                     int i = 0;
                     for(auto section:sectionPairs)
@@ -314,9 +326,9 @@ void TrainMonitor::Monitor(QString section)
         // Now that the nextSection has been determined, we need to see if it's a short section
         for(auto ss : pss)
         {
-            if(ss.getShortSection())
+            if(ss.getNumOfConns() < 4 && ss.getNumOfConns() > 0 && ss.getShortSection())
             {
-                QString potentialCollision = getNextSection(currentSections,nextSection);
+                QString potentialCollision = getNextSectionWithoutPairs(section,nextSection);
                 for(auto pair : sectionPairs)
                 {
                     if (pair.second == potentialCollision)
@@ -483,7 +495,6 @@ QList<Section> TrainMonitor::retrieveSections(QString section)
 		{
             ret.push_back(it);
 			found = true;
-			break;
 		}
 	}
 
@@ -842,29 +853,29 @@ int TrainMonitor::updateQuadConnList(Section current)
         //            sec.first = sec.second;
         //            sec.second = current.getNode();
 
-        QString past;
+        //QString past;
         if (current.getConn1() != "" && sec.second == current.getConn1())
         {
-            past = current.getConn1();
+            //past = current.getConn1();
             ++numOccurrences;
         }
 
         if (current.getConn2() != "" && sec.second == current.getConn2())
         {
-            past = current.getConn2();
+            //past = current.getConn2();
             ++numOccurrences;
         }
 
         if (current.getConn3() != "" && sec.second == current.getConn3())
         {
-            past = current.getConn3();
+            //past = current.getConn3();
             ++numOccurrences;
         }
 
 
         if (current.getConn4() != "" && sec.second == current.getConn4())
         {
-            past = current.getConn4();
+            //past = current.getConn4();
             ++numOccurrences;
         }
 
@@ -876,9 +887,9 @@ int TrainMonitor::updateQuadConnList(Section current)
 
 
 //            std::pair<QString, QString> secPair =
-        m_nextPair =
-            std::make_pair<QString, QString>((QString)past, current.getNode());
-        m_lastSectionCurrent = past;
+        //m_nextPair =
+        //    std::make_pair<QString, QString>((QString)past, current.getNode());
+        //m_lastSectionCurrent = past;
 //            sectionPairs.push_back(secPair);
 //            sectionPairs.removeAt(i);
 
@@ -908,6 +919,11 @@ QString TrainMonitor::getNextSection(QList<Section> currentSections, QString sec
     {
         if(pair.second == section)
         {
+            if(pair.first == "")
+            {
+                return "";
+            }
+
             for(auto currentSection : currentSections)
             {
                 switch (currentSection.getNumOfConns())
@@ -921,6 +937,7 @@ QString TrainMonitor::getNextSection(QList<Section> currentSections, QString sec
                     {
                         QList<Section> currentPair = retrieveSections(pair.second);
                         QList<Section> pastPair = retrieveSections(pair.first);
+
                         Section here;
                         Section there;
 
@@ -947,6 +964,7 @@ QString TrainMonitor::getNextSection(QList<Section> currentSections, QString sec
                     {
                         QList<Section> currentPair = retrieveSections(pair.second);
                         QList<Section> pastPair = retrieveSections(pair.first);
+
                         Section here;
                         Section there;
 
@@ -983,12 +1001,77 @@ QString TrainMonitor::getNextSection(QList<Section> currentSections, QString sec
         }
     }
 
+    qDebug() << "nextSection = " << nextSection;
     return nextSection;
+}
+
+QString TrainMonitor::getNextSectionWithoutPairs(QString current, QString future)
+{
+    qDebug() << "getNextSectionWithoutPairs()";
+    QString nextSection;
+    for (auto pair : sectionPairs)
+    {
+        if(pair.second == current)
+        {
+            QList<Section> currentList = retrieveSections(current);
+            QList<Section> futureList = retrieveSections(future);
+            Section currentSection;
+            Section futureSection;
+
+            for(auto cs: currentList)
+            {
+                if(cs.getNumOfConns() != 4)
+                {
+                    currentSection = cs;
+                }
+            }
+
+            for(auto fs: futureList)
+            {
+                if(fs.getNumOfConns() != 4)
+                {
+                    futureSection = fs;
+                }
+            }
+
+            switch (futureSection.getNumOfConns())
+            {
+                case 1:		// Endpoint case
+                {
+                    // This will never get to this point without causing a collision event
+                }
+                case 2:     // Straight case
+                {
+                    nextSection = getNextStraightSection(currentSection,futureSection);
+                    break;
+                }
+                case 3:     // Switch case
+                {
+                    nextSection = getNextSwitchSection(currentSection, futureSection);
+                    break;
+                }
+                case 4:
+                {
+                    // This case will never be used for the next section
+                    break;
+                }
+                default:
+                {
+                    qDebug() << "Invalid numOfConns during nextSection lookup";
+                }
+            }
+        }
+    }
+
+    qDebug() << "nextSectionWithoutPairs = " << nextSection;
+    return nextSection;
+
 }
 
 QString TrainMonitor::getNextStraightSection(Section previous, Section current)
 {
 	qDebug() << "getNextStraightSection()";
+    qDebug() << "previous = " << previous.getNode() << "\tcurrent = " << current.getNode();
 	QString nextSection;
 	if (previous.getNode() == current.getConn1())
 	{
