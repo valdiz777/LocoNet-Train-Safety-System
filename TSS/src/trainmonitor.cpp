@@ -124,7 +124,7 @@ void TrainMonitor::Monitor(QString section)
                              << currentSection.getNode()
                              << " needs to be shutdown (endpoint)";
                     emit collisionEvt(QStringList()
-                             << currentSection.getNode());
+                             << "Endpoint Section Collision Detected" << currentSection.getNode());
 
                     int i = 0;
                     for(auto section:sectionPairs)
@@ -153,6 +153,7 @@ void TrainMonitor::Monitor(QString section)
                              << currentSection.getConn2()
                              << " needs to be shutdown (straight)";
                     emit collisionEvt(QStringList()
+                             << "Straight Section Collision Detected"
                              << currentSection.getNode()
                              << currentSection.getConn1()
                              << currentSection.getConn2());
@@ -189,6 +190,7 @@ void TrainMonitor::Monitor(QString section)
                              << currentSection.getConn3()
                              << " needs to be shutdown (switch)";
                     emit collisionEvt(QStringList()
+                             << "Switch Section Collision Detected"
                              << currentSection.getNode()
                              << currentSection.getConn1()
                              << currentSection.getConn2()
@@ -215,6 +217,7 @@ void TrainMonitor::Monitor(QString section)
                 case 4:		// Crossover case
                 {
                     QStringList shutdownList;
+                    shutdownList.append("Crossover Section Collision Detected");
 
                     if(!currentSection.getConn1().isEmpty())
                     {
@@ -344,6 +347,7 @@ void TrainMonitor::Monitor(QString section)
                                  << potentialCollision
                                  << " needs to be shutdown (short section)";
                         emit collisionEvt(QStringList()
+                                 << "Short Section Collision Detected"
                                  << section
                                  << nextSection
                                  << potentialCollision);
