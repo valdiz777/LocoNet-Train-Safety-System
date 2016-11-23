@@ -570,7 +570,7 @@ void TrainMonitor::handle_serialOpened()
 			qDebug()<<"Throwing "<< sec.getLtNum();
 			emit throwTurnout(sec.getLtNum());
 		}
-        //emit sectionOn(sec.getBoardNum(), sec.getSection());
+        emit sectionOn(sec.getBoardNum(), sec.getSection());
 		QThread::msleep(100);
 	}
 
