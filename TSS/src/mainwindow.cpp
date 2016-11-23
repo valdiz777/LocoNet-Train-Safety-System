@@ -204,17 +204,17 @@ void MainWindow::do_OPfromComboBox()
 
 void MainWindow::do_showCollisionEvt(QStringList collisionSections)
 {
-    QString info = "Resolve sections";
-
+    QString info = collisionSections[0];
+    info.append("\nResolve sections");
+    collisionSections.removeFirst();
     for (QString section : collisionSections)
 	{
-		if (!section.isEmpty())
-		{
-			info.append(" [" + section + "] ");
+        if (!section.isEmpty())
+        {
+            info.append(" [" + section + "] ");
             qDebug() << "Emitting node off for:" << section;
-			emit nodeOff(section);
-		}
-
+            emit nodeOff(section);
+        }
 	}
 
 	QMessageBox *msgBox = new QMessageBox;
