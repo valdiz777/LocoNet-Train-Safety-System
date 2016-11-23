@@ -564,9 +564,10 @@ void TrainMonitor::handle_serialOpened()
 	int switches = 0;
 	for (Section sec : m_sectionList)
 	{
-		if (sec.getNumOfConns() == 3)
+        if (sec.getLtNum() > -1)
 		{
 			switches++;
+			qDebug()<<"Throwing "<< sec.getLtNum();
 			emit throwTurnout(sec.getLtNum());
 		}
 		emit sectionOn(sec.getBoardNum(), sec.getSection());
