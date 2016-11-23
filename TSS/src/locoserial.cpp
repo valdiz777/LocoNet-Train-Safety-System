@@ -343,6 +343,7 @@ void LocoSerial::do_throwTurnout(int locoTurnout)
 {
 	QString on = "B0" + QString::number(locoTurnout - 1, 16) + "10";
 	QString off = "B0" + QString::number(locoTurnout - 1, 16) + "00";
+    qDebug() << "Throwing Switch on Packet: " << on << endl;
     LocoPacket outputOn = LocoPacket(on);
     LocoPacket outputOff = LocoPacket(off);
     do_writePacket(outputOn);
