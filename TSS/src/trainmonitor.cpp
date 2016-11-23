@@ -1,26 +1,58 @@
+//////////////////////////////////////////////////////////////
+/// \brief TrainMonitor.cpp
+/// Description: This class performs operations associated
+///     with monitoring the train track. When receiving
+///     occupancy data, this class will determine if there
+///     will be a crash scenario or not. If one is found, it
+///     is reported. Otherwise, the software will sit idle
+///     until more occupancy data is received.
+//////////////////////////////////////////////////////////////
+
 #include "trainmonitor.h"
 #include <QFile>
 #include <QTextStream>
 #include <QThread>
 
+//////////////////////////////////////////////////////////////
+/// \brief TrainMonitor::TrainMonitor
+/// Description: Constructor
+//////////////////////////////////////////////////////////////
 TrainMonitor::TrainMonitor()
 {
 
 }
 
+//////////////////////////////////////////////////////////////
+/// \brief TrainMonitor::TrainMonitor
+/// Description: Destructor
+//////////////////////////////////////////////////////////////
 TrainMonitor::~TrainMonitor()
 {
 
 
 }
 
+//////////////////////////////////////////////////////////////
+/// \brief TrainMonitor::do_run
+/// Description: Interface to the generateSectionList. Will
+///     be called during initialization to set up the list
+///     Sections based on Section.txt
+//////////////////////////////////////////////////////////////
 void TrainMonitor::do_run() {
 	qDebug() << "do_run()";
-    //Uncomment below to test emit collisionEvt();
-    //emit collisionEvt(QStringList() << "1-1");
     generateSectionList();
 }
 
+//////////////////////////////////////////////////////////////
+/// \brief TrainMonitor::do_handleOccupancy
+/// \param section
+/// \param state
+/// Description: Interface to the Monitor method. The Monitor
+///     function only needs to operate on occupancy data with
+///     a state of true (a train entering the section) and
+///     duplicate information must be ignored to prevent the
+///     pairs from getting messed up
+//////////////////////////////////////////////////////////////
 void TrainMonitor::do_handleOccupancy(QString section, bool state)
 {
 	qDebug() << "do_handleOccupancy entered";
@@ -32,7 +64,6 @@ void TrainMonitor::do_handleOccupancy(QString section, bool state)
         it.setOccupancy(state);
     }
 
-	//if (state) Monitor(monitoredSection);
     int found = false;
 
     for(auto pair:sectionPairs)
@@ -56,28 +87,24 @@ void TrainMonitor::do_handleOccupancy(QString section, bool state)
     }
 }
 
+//////////////////////////////////////////////////////////////
+/// \brief TrainMonitor::Monitor
+/// \param section
+/// Description: Main function of the TrainMonitor class.
+///     This class will attempt to update the pairs of
+///     sections that are used to represent the previous and
+///     current sections of a train (one to one correlation
+///     between pairs and trains on the track). If the pairs
+///     cannot be updated, a collision event is reported.
+///     If no collision event is reported, the section goes
+///     through a short section collision check
+//////////////////////////////////////////////////////////////
 void TrainMonitor::Monitor(QString section)
 {
 	qDebug() << "Monitor()";
-	qDebug() << endl << endl << "Mike's debug";
-
-	for (auto section : sectionPairs)
-	{
-		qDebug() << "last section is: " << section.first << " current section is:" << section.second << endl;
-	}
-
-	qDebug() << endl << endl;
-#pragma message("[MKJ] Will nextSection1 be enough padding for a crash scenario?")
-	//Section monitorSection = es.path.getNextSection1();
 
     int totalConnections = 0;
     QList<Section> currentSections = retrieveSections(section);
-	qDebug() << "Starting monitor ....." << endl;
-
-    for(auto debug : currentSections)
-    {
-        qDebug() << "debug ==> " << debug.getNode();
-    }
 
     for(auto currentSection : currentSections)
     {
@@ -111,7 +138,6 @@ void TrainMonitor::Monitor(QString section)
         }
     }
 
-    qDebug() << "totalConnections: " << totalConnections;
     if(totalConnections > 1)
     {
         for(auto currentSection : currentSections)
@@ -293,15 +319,13 @@ void TrainMonitor::Monitor(QString section)
     }
     else
     {
-        qDebug() << "Attempting to update/create pair";
-        qDebug() << endl << endl << "Mike's debug 2.0";
+        qDebug() << "Updating/creating pair " << section;
 
         int i = 0;
         if(m_lastSectionCurrent != "NA")
         {
             for (auto section : sectionPairs)
             {
-                qDebug() << "last section is: " << section.first << " current section is:" << section.second << endl;
                 if(section.second == m_lastSectionCurrent)
                 {
                     sectionPairs.removeAt(i);
@@ -311,14 +335,13 @@ void TrainMonitor::Monitor(QString section)
         }
 
         sectionPairs.push_back(m_nextPair);
-        qDebug() << endl << endl << "Mike's debug 3.0";
+
+        qDebug() << endl << endl << "======= List of Current Pairs =======";
 
         for (auto section : sectionPairs)
         {
             qDebug() << "last section is: " << section.first << " current section is:" << section.second << endl;
         }
-
-
 
         // The section that was received through occupancy data has been successfully updated.
         // The remaining task is to make sure, if the next section is a short track, that
@@ -370,127 +393,23 @@ void TrainMonitor::Monitor(QString section)
                 }
             }
         }
-
-
-
-
     }
 }
 
-/*void TrainMonitor::endpointMonitor(Section sec)
-{
-	qDebug() << "endpointMonitor()";
-	// Shutdown the section since the means the train is headed
-	// towards the end of the track
-	for (auto section : sectionPairs)
-	{
-		if (sec.getNode() == section.second)
-		{
-			if (section.first != "")
-			{
-				qDebug() << "Shutting off section " << section.second;
-				emit collisionEvt(QStringList() << section.second);
-			}
-		}
-	}
-}*/
-
-/*void TrainMonitor::straightMonitor(Section sec)
-{
-	qDebug() << "straightMonitor()" << sec.getNode();
-	QString nextSection;
-	bool found = false;
-
-	for (auto section : sectionPairs)
-	{
-
-		qDebug() << sec.getNode() << " sec.second is:" << section.second << endl;
-		if (sec.getNode() == section.second)
-		{
-			nextSection = getNextStraightSection(
-				retrieveSections(section.first), retrieveSections(section.second));
-			found = true;
-		}
-	}
-
-
-	/* if(!found)
-	 {
-		 qDebug() << "Shit didn't work homie!!!";
-	 }*/
-
-    /*for (auto section : sectionPairs)
-	{
-		qDebug() << "nextSection: " << nextSection << " section.second:" << section.second << endl;
-		if (nextSection == section.second)
-		{
-
-			qDebug() << "Shutting off section " << section.second;
-			emit collisionEvt(QStringList() << section.second);
-		}
-	}
-}*/
-
-/*void TrainMonitor::switchMonitor(Section sec)
-{
-	qDebug() << "switchMonitor()";
-	QString monitorSection;
-	QString nextSection;
-	for (auto section : sectionPairs)
-	{
-		if (sec.getNode() == section.second)
-		{
-			nextSection = getNextStraightSection(
-				retrieveSections(section.first), retrieveSections(section.second));
-		}
-
-		/*if(nextSection != "")
-		{
-			switch (retrieveSections(nextSection).getNumOfConns())
-			{
-				case 1: {
-					qDebug() << "Shutting off section " << section.second;
-					Section shutdownSection = retrieveSections(nextSection);
-					QStringList shutdownList = shutdownSection.getNode().split("-");
-					emit sectionOff(shutdownList[0].toInt(),shutdownList[1].toInt());
-
-					break;
-				} case 2: {
-					monitorSection = getNextStraightSection(
-								retrieveSections(section.first), retrieveSections(nextSection));
-					break;
-				} case 3: {
-					monitorSection = getNextStraightSection(
-								retrieveSections(section.second), retrieveSections(nextSection));
-					break;
-				} case 4:
-					// TODO
-					break;
-			}
-		}*/
-    /*}
-
-	for (auto section : sectionPairs)
-	{
-		//        if(section.second == monitorSection)
-		if (section.second == nextSection)
-		{
-			qDebug() << "Shutting off section " << section.second;
-			emit  collisionEvt(QStringList() << section.second);
-		}
-	}
-}*/
-
-//void TrainMonitor::crossoverMonitor(Section sec, engineSection es)
-//{
-
-//}
-
+//////////////////////////////////////////////////////////////
+/// \brief TrainMonitor::retrieveSections
+/// \param section
+/// \return
+/// Description: Uses the passed-in QString to find all
+///     corresponding sections within the list of sections.
+///     Due to the fact that there can be multiple entries
+///     (regular section type and zero or more crossover
+///     entries), a list is returned.
+//////////////////////////////////////////////////////////////
 QList<Section> TrainMonitor::retrieveSections(QString section)
 {
     QList<Section> ret;
     qDebug() << "retrieveSections() " << section;
-	//int NotFoundIndex;
 
 	bool found = false;
 	for (Section it : m_sectionList)
@@ -510,6 +429,11 @@ QList<Section> TrainMonitor::retrieveSections(QString section)
     return ret;
 }
 
+//////////////////////////////////////////////////////////////
+/// \brief TrainMonitor::generateSectionList
+/// Description: Uses the Sections.txt configuration file to
+///     populate the list of sections.
+//////////////////////////////////////////////////////////////
 void TrainMonitor::generateSectionList()
 {
 	qDebug() << "generateSectionList";
@@ -559,20 +483,34 @@ void TrainMonitor::generateSectionList()
 		}
 		lines++;
 	}
-	printHeader("Done loading " + QString::number(lines) + "sections");
+    printHeader("Done loading " + QString::number(lines) + " sections");
 	infile.close();
 }
 
+//////////////////////////////////////////////////////////////
+/// \brief TrainMonitor::printHeader
+/// \param message
+/// Description: Logs a header message
+//////////////////////////////////////////////////////////////
 void TrainMonitor::printHeader(QString message)
 {
     qDebug() << "-------------------" + message + "-------------------" << endl;
 }
 
+//////////////////////////////////////////////////////////////
+/// \brief TrainMonitor::clearSectionPairs
+/// Description: Clears all section pairs
+//////////////////////////////////////////////////////////////
 void TrainMonitor::clearSectionPairs()
 {
     this->sectionPairs.clear();
 }
 
+//////////////////////////////////////////////////////////////
+/// \brief TrainMonitor::handle_serialOpened
+/// Description: Initialization method that powers on all
+///     sections and throws all switches
+//////////////////////////////////////////////////////////////
 void TrainMonitor::handle_serialOpened()
 {
 	qDebug() << "handle_serialOpened()";
@@ -595,73 +533,14 @@ void TrainMonitor::handle_serialOpened()
     emit systemReady();
 }
 
-/*Section TrainMonitor::findNextSection(Section previousSection,
-	Section currentSection)
-{
-	qDebug() << "findNextSection()";
-	Section nextSection;
-	Section temp;
-
-	if (previousSection.getNode() != "" && currentSection.getNode() != "")
-	{
-		switch (currentSection.getNumOfConns())
-		{
-		case 1:
-		{
-			// The next section will be a null string
-			break;
-		}
-		case 2:
-		case 4:
-		{
-			// The next section will be the only other choice other
-			// than the previous section (straight section) or conn1
-			// or conn2 (crossover)
-			if (currentSection.getConn1() == previousSection.getNode())
-			{
-				nextSection = retrieveSections(
-					currentSection.getConn2());
-			}
-			else
-			{
-				nextSection = retrieveSections(
-					currentSection.getConn1());
-			}
-			break;
-		}
-		case 3:
-		{
-			if (currentSection.getConn1() == previousSection.getNode())
-			{
-				if (currentSection.getThrownLeft())	// configured left
-				{
-					nextSection = retrieveSections(
-						currentSection.getConn2());
-				}
-				else
-				{
-					nextSection = retrieveSections(
-						currentSection.getConn3());
-				}
-			}
-			else
-			{
-				nextSection = retrieveSections(
-					currentSection.getConn1());
-			}
-		}
-		}
-	}
-	else
-	{
-		// One or both of the track sections are null. Therefore, the next
-		// section will be null too
-	}
-
-	return nextSection;
-}*/
-
-/// Updates to an endpoint.....fix comment later
+//////////////////////////////////////////////////////////////
+/// \brief TrainMonitor::updateSingleConnList
+/// \param current
+/// \return
+/// Description: Called when an enpoint is entered to
+///     attempt to update the list of pairs. Prepares a new
+///     pair if unable to find an entry to update.
+//////////////////////////////////////////////////////////////
 int TrainMonitor::updateSingleConnList(Section current)
 {
 	qDebug() << "updateSingleConnList()";
@@ -672,17 +551,10 @@ int TrainMonitor::updateSingleConnList(Section current)
 	{
 		if (sec.second == current.getConn1())
 		{
-			qDebug() << "Found a pair to update (endpoint)";
-			//            sec.first = sec.second;
-			//            sec.second = current.getNode();
-
 			QString past = current.getConn1();
-//            std::pair<QString, QString> secPair =
             m_nextPair =
                 std::make_pair<QString, QString>((QString)past, current.getNode());
             m_lastSectionCurrent = past;
-//            sectionPairs.push_back(secPair);
-//            sectionPairs.removeAt(i);
 
             return 2;   // If an endpoint is already in the list, it is heading towards
                         // the endpoint resulting in a collision event.
@@ -694,19 +566,24 @@ int TrainMonitor::updateSingleConnList(Section current)
 	if (!found)
 	{
 		qDebug() << "Section " << current.getNode() << " not found, adding to list" << endl;
-		/// TODO
-//		std::pair<QString, QString> secPair =
         m_nextPair =
 			std::make_pair<QString, QString>("", current.getNode());
         m_lastSectionCurrent = "NA";
-//        sectionPairs.push_back(secPair);
+
         ret = 0;
 	}
 
 	return ret;
 }
 
-/// Updates strait aways.....
+//////////////////////////////////////////////////////////////
+/// \brief TrainMonitor::updateDoubleConnList
+/// \param current
+/// \return
+/// Description: Called when a straight section is entered to
+///     attempt to update the list of pairs. Prepares a new
+///     pair if unable to find an entry to update.
+//////////////////////////////////////////////////////////////
 int TrainMonitor::updateDoubleConnList(Section current)
 {
 	qDebug() << "updateDoubleConnList()";
@@ -716,15 +593,9 @@ int TrainMonitor::updateDoubleConnList(Section current)
 
 	for (auto sec : sectionPairs)
 	{
-		qDebug() << "current.conn1 = '" << current.getConn1() << "'\tcurrent.conn2 = '" << current.getConn2() << "'";
 		if (sec.second == current.getConn1() ||
 			sec.second == current.getConn2())
 		{
-			qDebug() << "Found a pair to update (straight)";
-			//            sec.first = sec.second;
-			//            sec.second = current.getNode();
-			//            qDebug() << "current.conn1(AU) = '" << current.getConn1() << "'\tcurrent.conn2(AU) = '" << current.getConn2() << "'";
-
 			QString past;
 			if (sec.second == current.getConn1())
 			{
@@ -738,11 +609,8 @@ int TrainMonitor::updateDoubleConnList(Section current)
 				++numOccurrences;
 			}
 
-//            std::pair<QString, QString> secPair =
             m_nextPair =
                 std::make_pair<QString, QString>((QString)past, current.getNode());
-//            sectionPairs.push_back(secPair);
-//            sectionPairs.removeAt(i);
             m_lastSectionCurrent = past;
             found = true;
 
@@ -753,33 +621,22 @@ int TrainMonitor::updateDoubleConnList(Section current)
 	if (!found)
 	{
 		qDebug() << "Section " << current.getNode() << " not found, adding to list" << endl;
-		/// TODO
-//        if(sectionPairs.count() == 0)
-//        {
-//		std::pair<QString, QString> secPair =
         m_nextPair =
 			std::make_pair<QString, QString>("", current.getNode());
         m_lastSectionCurrent = "NA";
-//        sectionPairs.push_back(secPair);
-		//        }
-		//        else if (current.getConn1() == "")
-		//        {
-		//            std::pair<QString, QString> secPair=
-		//                    std::make_pair<QString, QString>(current.getConn2(), current.getNode());
-		//            sectionPairs.push_back(secPair);
-		//        }
-		//        else
-		//        {
-		//            std::pair<QString, QString> secPair=
-		//                    std::make_pair<QString, QString>(current.getConn1(), current.getNode());
-		//            sectionPairs.push_back(secPair);
-		//        }
 	}
 
     return numOccurrences;
 }
 
-/// Updates switches.....
+//////////////////////////////////////////////////////////////
+/// \brief TrainMonitor::updateTripleConnList
+/// \param current
+/// \return
+/// Description: Called when a switch section is entered to
+///     attempt to update the list of pairs. Prepares a new
+///     pair if unable to find an entry to update.
+//////////////////////////////////////////////////////////////
 int TrainMonitor::updateTripleConnList(Section current)
 {
 	qDebug() << "updateTripleConnList()";
@@ -793,10 +650,6 @@ int TrainMonitor::updateTripleConnList(Section current)
 			sec.second == current.getConn2() ||
 			sec.second == current.getConn3())
 		{
-			qDebug() << "Found a pair to update (switch)";
-			//            sec.first = sec.second;
-			//            sec.second = current.getNode();
-
 			QString past;
 			if (sec.second == current.getConn1())
 			{
@@ -816,12 +669,9 @@ int TrainMonitor::updateTripleConnList(Section current)
 				++numOccurrences;
 			}
 
-//            std::pair<QString, QString> secPair =
             m_nextPair =
                 std::make_pair<QString, QString>((QString)past, current.getNode());
             m_lastSectionCurrent = past;
-//            sectionPairs.push_back(secPair);
-//            sectionPairs.removeAt(i);
 
 			found = true;
 		}
@@ -832,70 +682,53 @@ int TrainMonitor::updateTripleConnList(Section current)
 	{
 		qDebug() << "Section " << current.getNode() << " not found, adding to list" << endl;
 		/// TODO
-//        std::pair<QString, QString> secPair =
         m_nextPair =
             std::make_pair<QString, QString>("", current.getNode());
         m_lastSectionCurrent = "NA";
-//        sectionPairs.push_back(secPair);
     }
 
     return numOccurrences;
 
 }
 
-/// Updates Crossovers....
+//////////////////////////////////////////////////////////////
+/// \brief TrainMonitor::updateSingleConnList
+/// \param current
+/// \return
+/// Description: Called when a crossover is entered to
+///     determine if corresponding sections are within the
+///     list of pairs. Returns the number of occurrences
+///     within the pairs.
+//////////////////////////////////////////////////////////////
 int TrainMonitor::updateQuadConnList(Section current)
 {
 	qDebug() << "updateQuadConnList()";
 	bool found = false;
 	int i = 0;
 	int numOccurrences = 0;
-	bool ret = false;
-	for (auto sec : sectionPairs)
-	{
-        qDebug() << "Found a pair to update (crossover)";
-        //            sec.first = sec.second;
-        //            sec.second = current.getNode();
 
-        //QString past;
+    for (auto sec : sectionPairs)
+	{
         if (current.getConn1() != "" && sec.second == current.getConn1())
         {
-            //past = current.getConn1();
             ++numOccurrences;
         }
 
         if (current.getConn2() != "" && sec.second == current.getConn2())
         {
-            //past = current.getConn2();
             ++numOccurrences;
         }
 
         if (current.getConn3() != "" && sec.second == current.getConn3())
         {
-            //past = current.getConn3();
             ++numOccurrences;
         }
 
 
         if (current.getConn4() != "" && sec.second == current.getConn4())
         {
-            //past = current.getConn4();
             ++numOccurrences;
         }
-
-//        if (sec.second == current.getNode())
-//        {
-//            past = current.getNode();
-//            numOccurrences += 2;
-//        }
-
-
-//            std::pair<QString, QString> secPair =
-        //m_nextPair =
-        //    std::make_pair<QString, QString>((QString)past, current.getNode());
-        //m_lastSectionCurrent = past;
-//            sectionPairs.push_back(secPair);
-//            sectionPairs.removeAt(i);
 
         found = true;
 		++i;
@@ -904,17 +737,23 @@ int TrainMonitor::updateQuadConnList(Section current)
 	if (!found)
 	{
 		qDebug() << "Section " << current.getNode() << " not found, adding to list" << endl;
-		/// TODO
-//		std::pair<QString, QString> secPair =
         m_nextPair =
 			std::make_pair<QString, QString>("", current.getNode());
         m_lastSectionCurrent = "NA";
-//		sectionPairs.push_back(secPair);
 	}
 
     return numOccurrences;
 }
 
+//////////////////////////////////////////////////////////////
+/// \brief TrainMonitor::getNextSection
+/// \param currentSections
+/// \param section
+/// \return
+/// Description: Uses the list of currentSections and the
+///     QString representation of the current section to
+///     determine the next section on the track.
+//////////////////////////////////////////////////////////////
 QString TrainMonitor::getNextSection(QList<Section> currentSections, QString section)
 {
     qDebug() << "getNextSection()";
@@ -1005,10 +844,19 @@ QString TrainMonitor::getNextSection(QList<Section> currentSections, QString sec
         }
     }
 
-    qDebug() << "nextSection = " << nextSection;
     return nextSection;
 }
 
+//////////////////////////////////////////////////////////////
+/// \brief TrainMonitor::getNextSectionWithoutPairs
+/// \param current
+/// \param future
+/// \return
+/// Description: Used when trying to find the section
+///     following a short section. Since the short section
+///     won't be in the pairs, the pairs cannot be used to
+///     find the section.
+//////////////////////////////////////////////////////////////
 QString TrainMonitor::getNextSectionWithoutPairs(QString current, QString future)
 {
     qDebug() << "getNextSectionWithoutPairs()";
@@ -1067,11 +915,17 @@ QString TrainMonitor::getNextSectionWithoutPairs(QString current, QString future
         }
     }
 
-    qDebug() << "nextSectionWithoutPairs = " << nextSection;
     return nextSection;
-
 }
 
+//////////////////////////////////////////////////////////////
+/// \brief TrainMonitor::getNextStraightSection
+/// \param previous
+/// \param current
+/// \return
+/// Description: Used to find the next section when currently
+///     within a straight section.
+//////////////////////////////////////////////////////////////
 QString TrainMonitor::getNextStraightSection(Section previous, Section current)
 {
 	qDebug() << "getNextStraightSection()";
@@ -1089,6 +943,14 @@ QString TrainMonitor::getNextStraightSection(Section previous, Section current)
 	return nextSection;
 }
 
+//////////////////////////////////////////////////////////////
+/// \brief TrainMonitor::getNextSwitchSection
+/// \param previous
+/// \param current
+/// \return
+/// Description: Used to find the next section when currently
+///     within a switch section.
+/// //////////////////////////////////////////////////////////////
 QString TrainMonitor::getNextSwitchSection(Section previous, Section current)
 {
 	qDebug() << "getNextSwitchSection()";
@@ -1128,6 +990,13 @@ QString TrainMonitor::getNextSwitchSection(Section previous, Section current)
 	return nextSection;
 }
 
+//////////////////////////////////////////////////////////////
+/// \brief TrainMonitor::do_handleSwitch
+/// \param LT
+/// \param closed
+/// Description: Interface class for switch configuration
+///     changes.
+//////////////////////////////////////////////////////////////
 void TrainMonitor::do_handleSwitch(int LT, bool closed)
 {
 	qDebug() << "do_handleSwitch() entered";

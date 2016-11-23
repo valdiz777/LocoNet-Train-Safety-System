@@ -1,4 +1,9 @@
-﻿
+﻿//////////////////////////////////////////////////////////////
+/// \brief Section.h
+/// Description: This class holds the attributes
+///     associated with each section.
+//////////////////////////////////////////////////////////////
+
 #ifndef SECTION_H
 #define SECTION_H
 
@@ -22,19 +27,10 @@ public:
     Section(QString node, int numOfConns, QString conn1, QString conn2, QString conn3, QString conn4, int ltNum, bool thrownLeft, bool shortSection);
 	~Section();
 
-	//void setNode( QString node );
 	QString getNode();
-
-	//void setNumOfConns( int numConn );
 	int getNumOfConns();
-
-	//void setConn1( QString conn1 );
 	QString getConn1();
-
-	//void setConn2( QString conn1 );
 	QString getConn2();
-
-	//void setConn3( QString conn1 );
 	QString getConn3();
 
 	void setOccupancy(bool state);

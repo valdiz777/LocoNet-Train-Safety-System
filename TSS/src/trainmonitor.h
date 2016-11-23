@@ -1,3 +1,13 @@
+//////////////////////////////////////////////////////////////
+/// \brief TrainMonitor.h
+/// Description: This class performs operations associated
+///     with monitoring the train track. When receiving
+///     occupancy data, this class will determine if there
+///     will be a crash scenario or not. If one is found, it
+///     is reported. Otherwise, the software will sit idle
+///     until more occupancy data is received.
+//////////////////////////////////////////////////////////////
+
 #ifndef TRAINMONITOR_H
 #define TRAINMONITOR_H
 
@@ -66,10 +76,6 @@ signals:
 protected:
 
 private:
-//	void endpointMonitor(Section sec);
-//	void straightMonitor(Section sec);
-//	void switchMonitor(Section sec);
-//	void crossoverMonitor(Section sec);
     QList<std::pair<QString, QString>> sectionPairs; // First QString = lastSection, Second = currentSection
     std::pair<QString, QString> m_nextPair;
     QString m_lastSectionCurrent;
@@ -77,7 +83,6 @@ private:
 	bool running;
     QList<Section> retrieveSections(QString section);
 	QList<Section> m_sectionList;
-//	Section findNextSection(Section previousSection, Section currentSection);
 	void toggleSwitchDirectionLeft(QString section);
 	void toggleSwitchDirectionRight(QString section);
     QString getNextSection(QList<Section> currentSections, QString section);
