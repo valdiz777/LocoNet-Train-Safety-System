@@ -14,6 +14,7 @@ echo "Installing Qt5Defaults"
 echo "========================="
 sudo apt-get install -y qt5-default
 cd TSS
+chmod +x startTSS.sh
 chmod +x startTSS.bash
 qmake TSS.pro
 make
