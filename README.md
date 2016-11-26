@@ -22,4 +22,4 @@ Running the software:
 
 Start from the project root (TSS) then navigate to build/[debug|release]/ then run:
 
-`../../startTSS.bash`
+`./../../startTSS.sh`
