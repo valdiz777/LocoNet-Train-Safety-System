@@ -2,7 +2,7 @@
 
 Generate makefile:
 
-In order to generate the makefile, navigate to the project root folder. 
+In order to generate the makefile, navigate to the project root folder.
 There you will find the TSS.pro file which is needed to generate the Makefile.
 run this to generate a Makefile:
 
@@ -22,4 +22,4 @@ Running the software:
 
 Start from the project root (TSS) then navigate to build/[debug|release]/ then run:
 
-`./TSS`
+`../../startTSS.bash`
