@@ -75,6 +75,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(locoserial, &LocoSerial::serialOpened, trainmonitor, &TrainMonitor::handle_serialOpened);
 	connect(locoserial, &LocoSerial::serialClosed, this, &MainWindow::handle_serialClosed);
 	connect(locoserial, &LocoSerial::occupancyDataReady, trainmonitor, &TrainMonitor::do_handleOccupancy);
+    connect(locoserial, &LocoSerial::switchUpdated, trainmonitor, &TrainMonitor::do_handleSwitch);
 	connect(locoserial, &LocoSerial::querySlot, locoserial, &LocoSerial::do_querySlot);
 	connect(&threadSerial, &QThread::finished, locoserial, &QObject::deleteLater);
 
