@@ -88,7 +88,7 @@ signals:
 
 
 
-	public slots:
+public slots:
 	void do_writePacket(LocoPacket _packet);
 	void do_writeBytes(QByteArray _bytes);
 	void do_querySlot(LocoByte _slot);
@@ -120,7 +120,7 @@ protected:
 	void readTimerStop();
 	void readTimerStart(int _msec);
 
-	protected slots:
+protected slots:
 
 private:
 	QPointer<QextSerialPort> usbBuffer;
