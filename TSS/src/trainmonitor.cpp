@@ -1000,6 +1000,7 @@ QString TrainMonitor::getNextSwitchSection(Section previous, Section current)
 void TrainMonitor::do_handleSwitch(int LT, bool closed)
 {
 	qDebug() << "do_handleSwitch() entered";
+    qDebug() << "New Switch Data at Monitor for Turnout:" << LT << " Closed_State:" << closed;
 
 	for (auto section : m_sectionList)
 	{

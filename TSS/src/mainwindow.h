@@ -36,7 +36,7 @@ public:
 	QString timeStamp();
 	static bool debug;
 
-	public slots:
+public slots:
 	void do_enableArgs();
 	void do_genPacket();
 	void do_refreshSerialList();
