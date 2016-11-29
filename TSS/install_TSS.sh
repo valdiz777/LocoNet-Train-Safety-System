@@ -26,10 +26,10 @@ echo "======================"
 if [ -f ~/.bash_aliases ];
 then
    echo "File ~/.bash_aliases exists."
-   echo "alias TSS \"cd $tss_dir/build/debug && ./../../startTSS.sh\"" >> ~/.bash_aliases
+   echo "alias TSS=\"cd $tss_dir/build/debug && ./../../startTSS.sh\"" >> ~/.bash_aliases
 else
    echo "File ~/.bash_aliases does not exist."
-   echo "alias TSS \"cd $tss_dir/build/debug && ./../../startTSS.sh\"" >> ~/.bash_aliases
+   echo "alias TSS=\"cd $tss_dir/build/debug && ./../../startTSS.sh\"" >> ~/.bash_aliases
 fi
 . ~/.bashrc_aliases
 echo "All systems are a go. type TSS to begin..."
