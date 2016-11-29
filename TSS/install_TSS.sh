@@ -31,5 +31,5 @@ else
    echo "File ~/.bash_aliases does not exist."
    echo "alias TSS=\"cd $tss_dir/build/debug && ./../../startTSS.sh\"" >> ~/.bash_aliases
 fi
-. ~/.bashrc_aliases
+. ~/.bash_aliases
 echo "All systems are a go. type TSS to begin..."
