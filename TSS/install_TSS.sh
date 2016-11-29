@@ -15,7 +15,6 @@ echo "========================="
 sudo apt-get install -y qt5-default
 cd TSS
 tss_dir=`pwd`
-echo "$tss_dir is the current directory"
 
 chmod +x startTSS.sh
 chmod +x startTSS.bash
@@ -24,8 +23,13 @@ make
 echo "Done installing TSS: Train Safety System..."
 echo "Creating Alias for TSS"
 echo "======================"
-echo "alias TSS \"cd $tss_dir/build/debug && ./../../startTSS.sh\"" >> ~/.bashrc
-echo "alias TSS \"cd $tss_dir/build/debug && ./../../startTSS.sh\"" >> ~/.profile
-source ~/.bashrc
-source ~/.profile
+if [ -f ~/.bash_aliases ];
+then
+   echo "File ~/.bash_aliases exists."
+   echo "alias TSS \"cd $tss_dir/build/debug && ./../../startTSS.sh\"" >> ~/.bash_aliases
+else
+   echo "File ~/.bash_aliases does not exist."
+   echo "alias TSS \"cd $tss_dir/build/debug && ./../../startTSS.sh\"" >> ~/.bash_aliases
+fi
+. ~/.bashrc_aliases
 echo "All systems are a go. type TSS to begin..."
