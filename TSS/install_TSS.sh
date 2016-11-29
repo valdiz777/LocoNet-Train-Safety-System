@@ -14,7 +14,7 @@ echo "Installing Qt5Defaults"
 echo "========================="
 sudo apt-get install -y qt5-default
 cd TSS
-tss_dir = "$PWD"
+tss_dir = `pwd`
 
 chmod +x startTSS.sh
 chmod +x startTSS.bash
