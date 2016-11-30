@@ -17,7 +17,6 @@ cd TSS
 tss_dir=`pwd`
 
 chmod +x startTSS.sh
-chmod +x startTSS.bash
 qmake TSS.pro
 make
 echo "Done installing TSS: Train Safety System..."
@@ -31,5 +30,4 @@ else
    echo "File ~/.bash_aliases does not exist."
    echo "alias TSS=\"cd $tss_dir/build/debug && ./../../startTSS.sh\"" >> ~/.bash_aliases
 fi
-. ~/.bash_aliases
 echo "All systems are a go. type TSS to begin..."
