@@ -58,7 +58,6 @@ public slots:
 signals:
 	void locoserial_open(QextPortInfo _device);
 	void locoserial_write(LocoPacket outgoingPacket);
-	void locosql_open(QString hostname, int port, QString database, QString username, QString password);
 	void nodeOn(QString node);
 	void nodeOff(QString node);
 
