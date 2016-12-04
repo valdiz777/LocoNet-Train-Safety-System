@@ -8,17 +8,17 @@ run this to generate a Makefile:
 
 `qmake`
 
-Building the software:
+*Building the software:*
 
 This will create a Makefile or override an already existing Makefile. Next run:
 
 `make`
 
-Cleaning generated files:
+*Cleaning generated files:*
 
 `make clean`
 
-Running the software:
+*Running the software:*
 
 Start from the project root (TSS) then navigate to build/[debug|release]/ then run:
 
@@ -26,7 +26,7 @@ Start from the project root (TSS) then navigate to build/[debug|release]/ then r
 
 Or
 
-Installer
+*Installer*
 
 `chmod +x install_TSS.sh`
 then run `./install_TSS.sh` to begin installation.
